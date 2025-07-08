@@ -7,27 +7,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('frontend/assets/image/icon_univ_bsi.png') }}">
-    <title>tokoonline</title>
+    <title>E-SHOP HTML Template</title>
 
     <!-- Google font -->
     <link href="https://fonts.googleapis.com/css?family=Hind:400,700" rel="stylesheet">
 
     <!-- Bootstrap -->
-    <link type="text/css" rel="stylesheet" href="{{ asset('frontend/assets/css/bootstrap.min.css') }}">
+    <link type="text/css" rel="stylesheet" href="{{ asset('eshop/css/bootstrap.min.css') }}" />
 
     <!-- Slick -->
-    <link type="text/css" rel="stylesheet" href="{{ asset('frontend/assets/css/slick.css') }}">
-    <link type="text/css" rel="stylesheet" href="{{ asset('frontend/assets/css/slick-theme.css') }}">
+    <link type="text/css" rel="stylesheet" href="{{ asset('eshop/css/slick.css') }}" />
+    <link type="text/css" rel="stylesheet" href="{{ asset('eshop/css/slick-theme.css') }}" />
 
     <!-- nouislider -->
-    <link type="text/css" rel="stylesheet" href="{{ asset('frontend/assets/css/nouislider.min.css') }}">
+    <link type="text/css" rel="stylesheet" href="{{ asset('eshop/css/nouislider.min.css') }}" />
 
     <!-- Font Awesome Icon -->
-    <link rel="stylesheet" href="{{ asset('frontend/assets/css/font-awesome.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('eshop/css/font-awesome.min.css') }}">
 
     <!-- Custom stlylesheet -->
-    <link type="text/css" rel="stylesheet" href="{{ asset('frontend/assets/css/style.css') }}">
+    <link type="text/css" rel="stylesheet" href="{{ asset('eshop/css/style.css') }}" />
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -35,6 +34,13 @@
   <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
+    <style>
+        .menu-list a.active {
+            font-weight: bold;
+            color: #ff4d4d;
+            border-bottom: 2px solid #ff4d4d;
+        }
+    </style>
 
 </head>
 
@@ -45,7 +51,7 @@
         <div id="top-header">
             <div class="container">
                 <div class="pull-left">
-                    <span>Selamat datang di toko online</span>
+                    <span>Welcome to E-shop!</span>
                 </div>
             </div>
         </div>
@@ -58,71 +64,82 @@
                     <!-- Logo -->
                     <div class="header-logo">
                         <a class="logo" href="#">
-                            <img src="{{ asset('frontend/assets/image/logo.png') }}" alt="">
+                            <img src="{{ asset('eshop/img/logo.png') }}" alt="">
                         </a>
                     </div>
                     <!-- /Logo -->
-
                     <!-- Search -->
-
                     <!-- /Search -->
                 </div>
                 <div class="pull-right">
                     <ul class="header-btns">
+                        <!-- Account -->
+                        <li class="header-account dropdown default-dropdown">
+                            <div class="dropdown-toggle" role="button" data-toggle="dropdown" aria-expanded="true">
+                                <div class="header-btns-icon">
+                                    <i class="fa fa-user-o"></i>
+                                </div>
+                                <strong class="text-uppercase">My Account <i class="fa fa-caret-down"></i></strong>
+                            </div>
+                            <a href="#" class="text-uppercase">Login</a> / <a href="#"
+                                class="text-uppercase">Join</a>
+                            <ul class="custom-menu">
+                                <li><a href="#"><i class="fa fa-user-o"></i> My Account</a></li>
+                                <li><a href="#"><i class="fa fa-heart-o"></i> My Wishlist</a></li>
+                                <li><a href="#"><i class="fa fa-exchange"></i> Compare</a></li>
+                                <li><a href="#"><i class="fa fa-check"></i> Checkout</a></li>
+                                <li><a href="#"><i class="fa fa-unlock-alt"></i> Login</a></li>
+                                <li><a href="#"><i class="fa fa-user-plus"></i> Create An Account</a></li>
+                            </ul>
+                        </li>
+                        <!-- /Account -->
+
                         <!-- Cart -->
                         <li class="header-cart dropdown default-dropdown">
-                            <a href="{{ route('order.cart') }}" class="dropdown-toggle">
+                            <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
                                 <div class="header-btns-icon">
                                     <i class="fa fa-shopping-cart"></i>
+                                    <span class="qty">3</span>
                                 </div>
-                                <strong class="text-uppercase">Keranjang</strong>
+                                <strong class="text-uppercase">My Cart:</strong>
+                                <br>
+                                <span>35.20$</span>
                             </a>
+                            <div class="custom-menu">
+                                <div id="shopping-cart">
+                                    <div class="shopping-cart-list">
+                                        <div class="product product-widget">
+                                            <div class="product-thumb">
+                                                <img src="{{ asset('eshop/img/thumb-product01.jpg') }}" alt="">
+                                            </div>
+                                            <div class="product-body">
+                                                <h3 class="product-price">$32.50 <span class="qty">x3</span></h3>
+                                                <h2 class="product-name"><a href="#">Product Name Goes Here</a>
+                                                </h2>
+                                            </div>
+                                            <button class="cancel-btn"><i class="fa fa-trash"></i></button>
+                                        </div>
+                                        <div class="product product-widget">
+                                            <div class="product-thumb">
+                                                <img src="{{ asset('eshop/img/thumb-product01.jpg') }}" alt="">
+                                            </div>
+                                            <div class="product-body">
+                                                <h3 class="product-price">$32.50 <span class="qty">x3</span></h3>
+                                                <h2 class="product-name"><a href="#">Product Name Goes Here</a>
+                                                </h2>
+                                            </div>
+                                            <button class="cancel-btn"><i class="fa fa-trash"></i></button>
+                                        </div>
+                                    </div>
+                                    <div class="shopping-cart-btns">
+                                        <button class="main-btn">View Cart</button>
+                                        <button class="primary-btn">Checkout <i
+                                                class="fa fa-arrow-circle-right"></i></button>
+                                    </div>
+                                </div>
+                            </div>
                         </li>
                         <!-- /Cart -->
-
-                        @if (Auth::check())
-                            <!-- Account -->
-                            <li class="header-account dropdown default-dropdown">
-                                <div class="dropdown-toggle" role="button" data-toggle="dropdown" aria-expanded="true">
-                                    <div class="header-btns-icon">
-                                        <i class="fa fa-user-o"></i>
-                                    </div>
-                                    <strong class="text-uppercase">{{ Auth::user()->nama }}<i
-                                            class="fa fa-caret-down"></i></strong>
-                                </div>
-                                <ul class="custom-menu">
-                                    <li><a href="{{ route('customer.akun', ['id' => Auth::user()->id]) }}">
-                                            <i class="fa fa-user-o"></i> Akun Saya</a>
-                                    </li>
-                                    <li><a href="#"><i class="fa fa-check"></i> History</a></li>
-                                    <li>
-                                        <a href="#"
-                                            onclick="event.preventDefault(); document.getElementById('keluar-app').submit();"><i
-                                                class="fa fa-power-off"></i> Keluar
-                                        </a>
-                                        <!-- form keluar app -->
-                                        <form id="keluar-app" action="{{ route('customer.logout') }}" method="POST"
-                                            class="d-none">
-                                            @csrf
-                                        </form>
-                                        <!-- form keluar app end -->
-                                    </li>
-                                </ul>
-                            </li>
-                        @else
-                            <li class="header-account dropdown default-dropdown">
-                                <div class="dropdown-toggle" role="button" data-toggle="dropdown" aria-expanded="true">
-                                    <div class="header-btns-icon">
-                                        <i class="fa fa-user-o"></i>
-                                    </div>
-                                    <strong class="text-uppercase">Akun Saya<i class="fa fa-caret-down"></i></strong>
-                                </div>
-                                <a href="{{ route('auth.redirect') }}" class="text-uppercase">Login</a>
-                            </li>
-                            <!-- /Account -->
-                        @endif
-
-                        <!-- /Account -->
 
                         <!-- Mobile nav toggle-->
                         <li class="nav-toggle">
@@ -143,190 +160,45 @@
         <!-- container -->
         <div class="container">
             <div id="responsive-nav">
-                @php
-                    $kategori = DB::table('kategori')->orderBy('nama_kategori', 'asc')->get();
-                @endphp
-                @if (request()->segment(1) == '' || request()->segment(1) == 'beranda')
-                    <!-- category nav -->
-                    <div class="category-nav">
-                        <span class="category-header">Kategori <i class="fa fa-list"></i></span>
-                        <ul class="category-list">
-                            @foreach ($kategori as $row)
-                                <li><a href="{{ route('produk.kategori', $row->id) }}">{{ $row->nama_kategori }}</a>
-                                </li>
-                            @endforeach
-                        </ul>
-                        <ul class="category-list">
-                    </div>
-                @else
-                    <div class="category-nav show-on-click">
-                        <span class="category-header">Kategori <i class="fa fa-list"></i></span>
-                        <ul class="category-list">
-                            @foreach ($kategori as $row)
-                                <li><a href="{{ route('produk.kategori', $row->id) }}">{{ $row->nama_kategori }}</a>
-                                </li>
-                            @endforeach
-                        </ul>
-                    </div>
-                    <!-- /category nav -->
-                @endif
+                <!-- category nav -->
+                <div class="category-nav">
+                    <span class="category-header" onclick="toggleKategoriList()" style="cursor: pointer;">
+                        Kategori <i class="fa fa-list"></i>
+                    </span>
+                    <ul class="category-list" id="kategori-list" style="display: none;">
+                        @foreach ($jenisobat as $item)
+                            <li><a href="#">{{ $item->jenisobat_label }}</a></li>
+                        @endforeach
+                    </ul>
+                </div>
+                <!-- /category nav -->
 
                 <!-- menu nav -->
                 <div class="menu-nav">
                     <span class="menu-header">Menu <i class="fa fa-bars"></i></span>
                     <ul class="menu-list">
-                        <li><a href="{{ route('beranda') }}">Beranda</a></li>
-                        <li><a href="{{ route('produk.all') }}">Produk</a></li>
-                        <li><a href="#">Lokasi</a></li>
-                        <li><a href="#">Hubungi Kami</a></li>
+                        <li>
+                            <a href="{{ route('home-page') }}"
+                                class="{{ request()->routeIs('home-page') ? 'active' : '' }}">
+                                Home
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('produk.all') }}"
+                                class="{{ request()->routeIs('produk.all') ? 'active' : '' }}">
+                                All Produk
+                            </a>
+                        </li>
                     </ul>
                 </div>
                 <!-- menu nav -->
-
             </div>
         </div>
         <!-- /container -->
     </div>
     <!-- /NAVIGATION -->
 
-    @if (request()->segment(1) == '' || request()->segment(1) == 'beranda')
-        <!-- HOME -->
-        <div id="home">
-            <!-- container -->
-            <div class="container">
-                <!-- home wrap -->
-                <div class="home-wrap">
-                    <!-- home slick -->
-                    <div id="home-slick">
-                        <!-- banner -->
-                        <div class="banner banner-1">
-                            <img src="{{ asset('frontend/banner/banner01.jpg') }}" alt="">
-                            <div class="banner-caption text-center">
-                                <h1>Jajanan Tradisional</h1>
-                                <h3 class="font-weak" style="color: 30323a;">Khas Makanan Indonesia</h3>
-                                <button class="primary-btn">Pesan Sekarang</button>
-                            </div>
-                        </div>
-
-
-                        <!-- /banner -->
-
-                        <!-- banner -->
-                        <div class="banner banner-1">
-                            <img src="{{ asset('frontend/banner/banner02.jpg') }}" alt="">
-                            <div class="banner-caption">
-                                <h1 class="primary-color">Khas Makanan Indonesia<br><span
-                                        class="white-color font-weak">Jajanan Tradisional</span></h1>
-                                <button class="primary-btn">Pesan Sekarang</button>
-                            </div>
-                        </div>
-
-
-                        <!-- /banner -->
-
-                        <!-- banner -->
-                        <div class="banner banner-1">
-                            <img src="{{ asset('frontend/banner/banner03.jpg') }}" alt="">
-                            <div class="banner-caption">
-                                <h1 style="color: f8694a;">Khas Makanan <span>Indonesia</span></h1>
-                                <button class="primary-btn">Pesan Sekarang</button>
-                            </div>
-                        </div>
-                        <!-- /banner -->
-                    </div>
-                    <!-- /home slick -->
-                </div>
-                <!-- /home wrap -->
-            </div>
-            <!-- /container -->
-        </div><br><br>
-        <!-- /HOME -->
-    @endif
-
-    <!-- section -->
-    <div class="section">
-        <!-- container -->
-        <div class="container">
-            <!-- row -->
-            <div class="row">
-                <!-- ASIDE -->
-                <div id="aside" class="col-md-3">
-                    <!-- aside widget -->
-                    <div class="aside">
-                        <h3 class="aside-title">Top Rated Product</h3>
-                        <!-- widget product -->
-                        <div class="product product-widget">
-                            <div class="product-thumb">
-                                <img src="{{ asset('frontend/img/thumb-product01.jpg') }}" alt="">
-                            </div>
-                            <div class="product-body">
-                                <h2 class="product-name"><a href="#">Product Name Goes Here</a></h2>
-                                <h3 class="product-price">$32.50 <del class="product-old-price">$45.00</del></h3>
-                                <div class="product-rating">
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star-o empty"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- /widget product -->
-
-                        <!-- widget product -->
-                        <div class="product product-widget">
-                            <div class="product-thumb">
-                                <img src="{{ asset('frontend/img/thumb-product01.jpg') }}" alt="">
-                            </div>
-                            <div class="product-body">
-                                <h2 class="product-name"><a href="#">Product Name Goes Here</a></h2>
-                                <h3 class="product-price">$32.50</h3>
-                                <div class="product-rating">
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star"></i>
-                                    <i class="fa fa-star-o empty"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- /widget product -->
-                    </div>
-                    <!-- /aside widget -->
-                    <!-- aside widget -->
-                    <div class="aside">
-                        <h3 class="aside-title">Filter Kategori</h3>
-                        <ul class="list-links">
-                            @foreach ($kategori as $row)
-                                <li><a href="{{ route('produk.kategori', $row->id) }}">{{ $row->nama_kategori }}</a>
-                                </li>
-                            @endforeach
-                        </ul>
-                    </div>
-                    <!-- /aside widget -->
-                </div>
-                <!-- /ASIDE -->
-
-                <!-- MAIN -->
-                <div id="main" class="col-md-9">
-                    <!-- store top filter -->
-                    <!-- /store top filter -->
-
-                    <!-- yieldAwal -->
-                    @yield('content')
-                    <!-- yieldAkhir-->
-
-                    <!-- store bottom filter -->
-
-                    <!-- /store bottom filter -->
-                </div>
-                <!-- /MAIN -->
-            </div>
-            <!-- /row -->
-        </div>
-        <!-- /container -->
-    </div>
-    <!-- /section -->
+    @yield('content')
 
     <!-- FOOTER -->
     <footer id="footer" class="section section-grey">
@@ -340,7 +212,7 @@
                         <!-- footer logo -->
                         <div class="footer-logo">
                             <a class="logo" href="#">
-                                <img src="./img/logo.png" alt="">
+                                <img src="{{ asset('eshop/img/logo.png') }}" alt="">
                             </a>
                         </div>
                         <!-- /footer logo -->
@@ -433,12 +305,18 @@
     <!-- /FOOTER -->
 
     <!-- jQuery Plugins -->
-    <script src="{{ asset('frontend/assets/js/jquery.min.js') }}"></script>
-    <script src="{{ asset('frontend/assets/js/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('frontend/assets/js/slick.min.js') }}"></script>
-    <script src="{{ asset('frontend/assets/js/nouislider.min.js') }}"></script>
-    <script src="{{ asset('frontend/assets/js/jquery.zoom.min.js') }}"></script>
-    <script src="{{ asset('frontend/assets/js/main.js') }}"></script>
+    <script>
+        function toggleKategoriList() {
+            const list = document.getElementById('kategori-list');
+            list.style.display = (list.style.display === 'none' || list.style.display === '') ? 'block' : 'none';
+        }
+    </script>
+    <script src="{{ asset('eshop/js/jquery.min.js') }}"></script>
+    <script src="{{ asset('eshop/js/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('eshop/js/slick.min.js') }}"></script>
+    <script src="{{ asset('eshop/js/nouislider.min.js') }}"></script>
+    <script src="{{ asset('eshop/js/jquery.zoom.min.js') }}"></script>
+    <script src="{{ asset('eshop/js/main.js') }}"></script>
 
 </body>
 

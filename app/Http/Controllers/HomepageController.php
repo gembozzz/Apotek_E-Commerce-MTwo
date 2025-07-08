@@ -2,20 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
+use App\Models\homepage;
 use Illuminate\Http\Request;
 use App\Models\JenisObat;
+use App\Models\Product;
 
-class ProductController extends Controller
+class HomepageController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
+
     {
         $jenisobat = JenisObat::get();
-        $produk = Product::paginate(8);
-        return view('frontend.v_produk.index', compact('produk', 'jenisobat'));
+        $latestProject = Product::where('jenisobat','OTC1')->paginate(4);
+        $databarang = Product::paginate(6);
+        return view('frontend.dashboard.index', compact('databarang','latestProject', 'jenisobat'));
     }
 
     /**
@@ -37,7 +40,7 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Product $product)
+    public function show(homepage $homepage)
     {
         //
     }
@@ -45,7 +48,7 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Product $product)
+    public function edit(homepage $homepage)
     {
         //
     }
@@ -53,7 +56,7 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Product $product)
+    public function update(Request $request, homepage $homepage)
     {
         //
     }
@@ -61,21 +64,8 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Product $product)
+    public function destroy(homepage $homepage)
     {
         //
-    }
-
-    public function detail($id)
-    {
-        $jenisobat = JenisObat::get();
-        $produks = Product::with('jenisObat')->findOrFail($id);
-        $kategori = JenisObat::orderBy('jenisobat', 'desc')->get();
-        return view('frontend.v_produk.detail', [
-            'judul' => 'Detail Produk',
-            'kategori' => $kategori,
-            'produks' => $produks,
-            'jenisobat' => $jenisobat
-        ]);
     }
 }
