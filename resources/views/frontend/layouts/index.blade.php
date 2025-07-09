@@ -37,8 +37,8 @@
     <style>
         .menu-list a.active {
             font-weight: bold;
-            color: #ff4d4d;
-            border-bottom: 2px solid #ff4d4d;
+            color: #3ea110;
+            border-bottom: 2px solid #3ea110;
         }
     </style>
 
@@ -64,7 +64,7 @@
                     <!-- Logo -->
                     <div class="header-logo">
                         <a class="logo" href="#">
-                            <img src="{{ asset('eshop/img/logo.png') }}" alt="">
+                            <img src="{{ asset('eshop/img/image.png') }}" alt="">
                         </a>
                     </div>
                     <!-- /Logo -->
@@ -160,17 +160,29 @@
         <!-- container -->
         <div class="container">
             <div id="responsive-nav">
-                <!-- category nav -->
-                <div class="category-nav">
-                    <span class="category-header" onclick="toggleKategoriList()" style="cursor: pointer;">
-                        Kategori <i class="fa fa-list"></i>
-                    </span>
-                    <ul class="category-list" id="kategori-list" style="display: none;">
-                        @foreach ($jenisobat as $item)
-                            <li><a href="#">{{ $item->jenisobat_label }}</a></li>
-                        @endforeach
-                    </ul>
-                </div>
+                @if (request()->segment(1) == '' || request()->segment(1) == 'home-page')
+                    <!-- category nav -->
+                    <div class="category-nav">
+                        <span class="category-header" onclick="toggleKategoriList()" style="cursor: pointer;">
+                            Kategori <i class="fa fa-list"></i>
+                        </span>
+                        <ul class="category-list" id="kategori-list" style="display: none;">
+                            @foreach ($jenisobat as $item)
+                                <li><a href="{{ route('produk.kategori', $item->idjenis) }}">{{ $item->jenisobat_label }}</a></li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @else
+                    <div class="category-nav show-on-click">
+                        <span class="category-header">Kategori <i class="fa fa-list"></i></span>
+                        <ul class="category-list">
+                            @foreach ($jenisobat as $item)
+                                <li><a href="{{ route('produk.kategori', $item->idjenis) }}">{{ $item->jenisobat_label }}</a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
                 <!-- /category nav -->
 
                 <!-- menu nav -->
@@ -212,7 +224,7 @@
                         <!-- footer logo -->
                         <div class="footer-logo">
                             <a class="logo" href="#">
-                                <img src="{{ asset('eshop/img/logo.png') }}" alt="">
+                                <img src="{{ asset('eshop/img/image.png') }}" alt="">
                             </a>
                         </div>
                         <!-- /footer logo -->

@@ -20,6 +20,7 @@ Route::get('/home-page', [HomepageController::class, 'index'])->name('home-page'
 // Route Product
 Route::get('/produk/all', [ProductController::class, 'index'])->name('produk.all');
 Route::get('/produk/detail/{id}', [ProductController::class, 'detail'])->name('produk.detail');
+Route::get('/produk/kategori/{id}', [ProductController::class, 'produkKategori'])->name('produk.kategori');
 
 Route::prefix('/backend')->middleware('auth')->group(function () {
     // Dashboard backend

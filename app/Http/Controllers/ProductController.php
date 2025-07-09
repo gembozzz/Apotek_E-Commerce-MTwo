@@ -78,4 +78,23 @@ class ProductController extends Controller
             'jenisobat' => $jenisobat
         ]);
     }
+
+    public function produkKategori($id)
+    {
+        // Ambil semua kategori untuk sidebar/menu
+        $jenisobat = JenisObat::all();
+
+        // Cari kategori berdasarkan id (karena di URL yang dikirim tetap idjenis)
+        $selectedKategori = JenisObat::where('idjenis', $id)->firstOrFail();
+
+        // Ambil produk berdasarkan label 'jenisobat' (bukan id)
+        $produk = Product::where('jenisobat', $selectedKategori->jenisobat)->paginate(8);
+
+        return view('frontend.v_produk.produkkategori', [
+            'judul' => 'Kategori: ' . $selectedKategori->jenisobat_label,
+            'kategori' => $jenisobat,
+            'produk' => $produk,
+            'jenisobat' => $jenisobat
+        ]);
+    }
 }
