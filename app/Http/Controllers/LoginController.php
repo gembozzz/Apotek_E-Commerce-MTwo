@@ -7,6 +7,9 @@ use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
+    /**
+     * Tampilkan form login admin backend.
+     */
     public function loginBackend()
     {
         return view('backend.auth.login', [
@@ -14,29 +17,46 @@ class LoginController extends Controller
         ]);
     }
 
+    /**
+     * Proses autentikasi admin.
+     */
     public function authenticateBackend(Request $request)
     {
+        // Validasi input login
         $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
+            'username' => 'required|string',
+            'password' => 'required|string',
         ]);
 
-        if (Auth::attempt($credentials)) {
-            if (Auth::user()->status == 'inactive') {
-                Auth::logout();
-                return back()->with('error', 'User belum aktif');
+        // Gunakan guard 'admin' sesuai konfigurasi
+        if (Auth::guard('admin')->attempt($credentials)) {
+            $admin = Auth::guard('admin')->user();
+
+            // Cek apakah admin diblokir
+            if ($admin->blokir === 'Y') {
+                Auth::guard('admin')->logout();
+                return back()->with('error', 'Akun Anda diblokir.');
             }
+
+            // Regenerasi session
             $request->session()->regenerate();
+
             return redirect()->intended(route('backend.dashboard'));
         }
-        return back()->with('error', 'Login Gagal');
+
+        return back()->with('error', 'Username atau password salah.');
     }
 
+    /**
+     * Logout admin dari backend.
+     */
     public function logoutBackend()
     {
-        Auth::logout();
+        Auth::guard('admin')->logout();
+
         request()->session()->invalidate();
         request()->session()->regenerateToken();
-        return redirect(route('backend.login'));
+
+        return redirect(route('login'))->with('success', 'Anda telah berhasil logout.');
     }
 }
