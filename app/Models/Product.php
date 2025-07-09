@@ -33,6 +33,8 @@ class Product extends Model
         'waktu',
         't30',
         'q30',
+        'status',
+        'image',
     ];
 
     protected $casts = [
@@ -46,6 +48,7 @@ class Product extends Model
         'waktu'           => 'datetime',
         't30'             => 'integer',
         'q30'             => 'integer',
+        'status'          => 'string',
     ];
 
     public function jenisObat()

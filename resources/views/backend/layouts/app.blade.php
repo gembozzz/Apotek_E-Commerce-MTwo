@@ -51,8 +51,7 @@
             <!-- Left navbar links -->
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i
-                            class="fas fa-bars"></i></a>
+                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
                 </li>
             </ul>
 
@@ -79,7 +78,7 @@
                             class="img-circle elevation-2" alt="User Image">
                     </div>
                     <div class="info">
-                        <a href="#" class="d-block">{{ Auth::user()->name }}</a>
+                        <a href="#" class="d-block">{{ Auth::user()->nama_lengkap }}</a>
                     </div>
                 </div>
 
@@ -111,9 +110,9 @@
                             </a>
                         </li>
                         <li
-                            class="nav-item {{ in_array(Route::currentRouteName(), ['pesanan.proses', 'produk.index']) ? 'menu-open' : '' }}  ">
+                            class="nav-item {{ in_array(Route::currentRouteName(), ['pesanan.proses', 'product.index']) ? 'menu-open' : '' }}  ">
                             <a href="#"
-                                class="nav-link {{ in_array(Route::currentRouteName(), ['pesanan.proses', 'produk.index']) ? 'active bg-blue-600 text-white' : 'text-white' }}}">
+                                class="nav-link {{ in_array(Route::currentRouteName(), ['pesanan.proses', 'product.index']) ? 'active bg-blue-600 text-white' : 'text-white' }}}">
                                 <i class="nav-icon fas fa-bars"></i>
                                 <p>
                                     Data Master
@@ -262,8 +261,10 @@
     </script>
     <script src="{{ asset('backend/AdminLTE-3.2.0/plugins/datatables-responsive/js/responsive.bootstrap4.min.js') }}">
     </script>
-    <script src="{{ asset('backend/AdminLTE-3.2.0/plugins/datatables-buttons/js/dataTables.buttons.min.js') }}"></script>
-    <script src="{{ asset('backend/AdminLTE-3.2.0/plugins/datatables-buttons/js/buttons.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset('backend/AdminLTE-3.2.0/plugins/datatables-buttons/js/dataTables.buttons.min.js') }}">
+    </script>
+    <script src="{{ asset('backend/AdminLTE-3.2.0/plugins/datatables-buttons/js/buttons.bootstrap4.min.js') }}">
+    </script>
     <script src="{{ asset('backend/AdminLTE-3.2.0/plugins/jszip/jszip.min.js') }}"></script>
     <script src="{{ asset('backend/AdminLTE-3.2.0/plugins/pdfmake/pdfmake.min.js') }}"></script>
     <script src="{{ asset('backend/AdminLTE-3.2.0/plugins/pdfmake/vfs_fonts.js') }}"></script>
@@ -272,13 +273,13 @@
     <script src="{{ asset('backend/AdminLTE-3.2.0/plugins/datatables-buttons/js/buttons.colVis.min.js') }}"></script>
     <script src="{{ asset('plugins/sweetalert/sweetalert2.all.min.js') }}"></script>
     @if (session('success'))
-        <script>
-            Swal.fire({
+    <script>
+        Swal.fire({
                 icon: 'success',
                 title: 'Berhasil!',
                 text: "{{ session('success') }}"
             });
-        </script>
+    </script>
     @endif
     <script type="text/javascript">
         $('.show_confirm').click(function(event) {
