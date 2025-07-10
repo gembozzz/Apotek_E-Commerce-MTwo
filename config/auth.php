@@ -71,7 +71,7 @@ return [
 
         'admins' => [
             'driver' => 'eloquent',
-            'model' => App\Models\User::class, // ← ini model admin yang kamu buat
+            'model' => App\Models\Admin::class, // ← ini model admin yang kamu buat
         ],
     ],
 

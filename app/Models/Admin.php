@@ -4,19 +4,21 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class User extends Authenticatable
+class Admin extends Authenticatable
 {
-    use Notifiable;
+    use HasFactory, Notifiable;
 
-    // Jika pakai tabel 'users', baris ini bisa dihapus
-    // protected $table = 'users';
+    protected $table = 'admin';
+    protected $primaryKey = 'id_admin';
+    public $timestamps = false;
 
     protected $fillable = [
-        'name',
-        'email',
+        'username',
         'password',
-        'google_id',
+        'nama_lengkap',
+        'no_telp'
     ];
 
     protected $hidden = [
@@ -26,5 +28,6 @@ class User extends Authenticatable
 
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'password' => 'hashed',
     ];
 }

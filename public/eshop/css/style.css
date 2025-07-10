@@ -1697,6 +1697,29 @@ textarea.input {
   margin: 15px 0px;
 }
 
+.product-single {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.row-equal {
+  display: flex;
+  flex-wrap: wrap;
+}
+.row-equal > [class*='col-'] {
+  display: flex;
+  flex-direction: column;
+}
+
+.product-name a {
+  display: block;
+  height: 40px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 /*=========================================================
 	12 -> RESPONSIVE
 ===========================================================*/

@@ -11,6 +11,9 @@
 
     <!-- Google font -->
     <link href="https://fonts.googleapis.com/css?family=Hind:400,700" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <!-- Di bagian <head> -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet" />
 
     <!-- Bootstrap -->
     <link type="text/css" rel="stylesheet" href="{{ asset('eshop/css/bootstrap.min.css') }}" />
@@ -81,16 +84,28 @@
                                 </div>
                                 <strong class="text-uppercase">My Account <i class="fa fa-caret-down"></i></strong>
                             </div>
-                            <a href="#" class="text-uppercase">Login</a> / <a href="#"
-                                class="text-uppercase">Join</a>
-                            <ul class="custom-menu">
-                                <li><a href="#"><i class="fa fa-user-o"></i> My Account</a></li>
-                                <li><a href="#"><i class="fa fa-heart-o"></i> My Wishlist</a></li>
-                                <li><a href="#"><i class="fa fa-exchange"></i> Compare</a></li>
-                                <li><a href="#"><i class="fa fa-check"></i> Checkout</a></li>
-                                <li><a href="#"><i class="fa fa-unlock-alt"></i> Login</a></li>
-                                <li><a href="#"><i class="fa fa-user-plus"></i> Create An Account</a></li>
-                            </ul>
+                            @if (Auth::check())
+                                <a href="#" class="text-uppercase">{{ Auth::user()->name }}</a>
+                                <ul class="custom-menu">
+                                    <li><a href="{{ route('customer.akun', ['id' => Auth::user()->id]) }}"><i
+                                                class="fa fa-user-o"></i> My Account</a></li>
+                                    <li><a href="#"><i class="fa fa-heart-o"></i> My Wishlist</a></li>
+                                    <li><a href="#"><i class="fa fa-check"></i> Checkout</a></li>
+                                    <form id="logoutForm" action="{{ route('logout') }}" method="POST" class="d-none">
+                                        @csrf
+                                        <li><a href="#"
+                                                onclick="event.preventDefault(); document.getElementById('logoutForm').submit();"><i
+                                                    class="fa
+                                            fa-unlock-alt"></i>
+                                                Logout</a></li>
+                                    </form>
+                                </ul>
+                            @else
+                                <ul class="custom-menu">
+                                    <li><a href="{{ route('login.form') }}"><i class="fa fa-unlock-alt"></i> Login</a>
+                                    </li>
+                                </ul>
+                            @endif
                         </li>
                         <!-- /Account -->
 
@@ -168,7 +183,9 @@
                         </span>
                         <ul class="category-list" id="kategori-list" style="display: none;">
                             @foreach ($jenisobat as $item)
-                                <li><a href="{{ route('produk.kategori', $item->idjenis) }}">{{ $item->jenisobat_label }}</a></li>
+                                <li><a
+                                        href="{{ route('produk.kategori', $item->idjenis) }}">{{ $item->jenisobat_label }}</a>
+                                </li>
                             @endforeach
                         </ul>
                     </div>
@@ -177,7 +194,8 @@
                         <span class="category-header">Kategori <i class="fa fa-list"></i></span>
                         <ul class="category-list">
                             @foreach ($jenisobat as $item)
-                                <li><a href="{{ route('produk.kategori', $item->idjenis) }}">{{ $item->jenisobat_label }}</a>
+                                <li><a
+                                        href="{{ route('produk.kategori', $item->idjenis) }}">{{ $item->jenisobat_label }}</a>
                                 </li>
                             @endforeach
                         </ul>
@@ -329,6 +347,10 @@
     <script src="{{ asset('eshop/js/nouislider.min.js') }}"></script>
     <script src="{{ asset('eshop/js/jquery.zoom.min.js') }}"></script>
     <script src="{{ asset('eshop/js/main.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    <script>
+        AOS.init();
+    </script>
 
 </body>
 

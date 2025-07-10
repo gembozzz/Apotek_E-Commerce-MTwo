@@ -12,8 +12,7 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="{{ asset('backend/AdminLTE-3.2.0/plugins/fontawesome-free/css/all.min.css') }}">
     <!-- icheck bootstrap -->
-    <link rel="stylesheet"
-        href="{{ asset('backend/AdminLTE-3.2.0/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('backend/AdminLTE-3.2.0/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('backend/AdminLTE-3.2.0/dist/css/adminlte.min.css') }}">
 </head>
@@ -27,14 +26,13 @@
             </div>
             <div class="card-body">
                 <p class="login-box-msg">Aplikasi Pengelola Apotek E-Commerce <br> Silahkan Login</p>
-                <form action="{{ route('backend.login') }}" method="post">
+                <form action="{{ route('login') }}" method="post">
                     @csrf
                     <div class="input-group mb-3">
-                        <input type="text" name="username" value="{{ old('username') }}" class="form-control"
-                            placeholder="Username">
+                        <input type="text" name="login" class="form-control" placeholder="Username atau Email">
                         <div class="input-group-append">
                             <div class="input-group-text">
-                                <span class="fas fa-envelope"></span>
+                                <span class="fas fa-user"></span>
                             </div>
                         </div>
                     </div>
@@ -50,22 +48,25 @@
                         <div class="col-8">
                             <div class="icheck-primary">
                                 <input type="checkbox" id="remember">
-                                <label for="remember">
-                                    Remember Me
-                                </label>
+                                <label for="remember">Remember Me</label>
                             </div>
                         </div>
-                        <!-- /.col -->
                         <div class="col-4">
                             <button type="submit" class="btn btn-primary btn-block">Sign In</button>
                         </div>
-                        <!-- /.col -->
                     </div>
                 </form>
-                @if (session('error'))
-                <div class="alert alert-danger">
-                    {{ session('error') }}
+
+                <div class="social-auth-links text-center mt-2 mb-3">
+                    <a href="{{ route('google.login') }}" class="btn btn-block btn-danger">
+                        <i class="fab fa-google mr-2"></i> Login dengan Google
+                    </a>
                 </div>
+
+                @if ($errors->has('login'))
+                    <div class="alert alert-danger">
+                        {{ $errors->first('login') }}
+                    </div>
                 @endif
             </div>
             <!-- /.card-body -->

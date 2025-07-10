@@ -87,7 +87,7 @@
                                     <div class="product-thumb">
                                         <button class="main-btn quick-view"><i class="fa fa-search-plus"></i> Quick
                                             view</button>
-                                        <img src="{{ asset('eshop/img/product06.jpg') }}" alt="">
+                                        <img src="{{ asset('storage/' . $item->image) }}" alt="">
                                     </div>
                                     <div class="product-body">
                                         <h3 class="product-price">Rp{{ number_format($item->hrgjual_barang, 0, ',', '.') }}

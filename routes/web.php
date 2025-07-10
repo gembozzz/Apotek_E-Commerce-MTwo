@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CustomerController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\OrderController;
@@ -11,9 +12,13 @@ Route::get('/', function () {
     return redirect()->route('home-page');
 });
 
-Route::get('login', [LoginController::class, 'loginBackend'])->name('login');
-Route::post('backend/login', [LoginController::class, 'authenticateBackend'])->name('backend.login');
+Route::get('/login', [LoginController::class, 'loginForm'])->name('login.form');
+Route::post('/login', [LoginController::class, 'unifiedLogin'])->name('login');
 Route::post('backend/logout', [LoginController::class, 'logoutBackend'])->name('backend.logout');
+Route::post('/logout', [LoginController::class, 'logoutFrontend'])->name('logout');
+
+Route::get('auth/google', [LoginController::class, 'redirectToGoogle'])->name('google.login');
+Route::get('auth/google/callback', [LoginController::class, 'handleGoogleCallback']);
 
 Route::get('/home-page', [HomepageController::class, 'index'])->name('home-page');
 
@@ -21,6 +26,14 @@ Route::get('/home-page', [HomepageController::class, 'index'])->name('home-page'
 Route::get('/produk/all', [ProductController::class, 'index'])->name('produk.all');
 Route::get('/produk/detail/{id}', [ProductController::class, 'detail'])->name('produk.detail');
 Route::get('/produk/kategori/{id}', [ProductController::class, 'produkKategori'])->name('produk.kategori');
+Route::get('/produk/cari', [ProductController::class, 'search'])->name('produk.search');
+
+
+Route::middleware('is.customer')->group(function () {
+    //route untuk Menampilkan halaman Akun Customer
+    Route::get('/customer/akun/{id}', [CustomerController::class, 'akun'])->name('customer.akun');
+    Route::put('/customer/updateakun/{id}', [CustomerController::class, 'updateAkun'])->name('customer.updateakun');
+});
 
 Route::prefix('/backend')->middleware('auth:admin')->group(function () {
     // Dashboard backend

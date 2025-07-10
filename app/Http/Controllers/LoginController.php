@@ -4,13 +4,15 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Socialite\Facades\Socialite;
+use App\Models\User;
 
 class LoginController extends Controller
 {
     /**
      * Tampilkan form login admin backend.
      */
-    public function loginBackend()
+    public function loginForm()
     {
         return view('backend.auth.login', [
             'judul' => 'Login',
@@ -20,31 +22,20 @@ class LoginController extends Controller
     /**
      * Proses autentikasi admin.
      */
-    public function authenticateBackend(Request $request)
+    public function unifiedLogin(Request $request)
     {
-        // Validasi input login
-        $credentials = $request->validate([
-            'username' => 'required|string',
-            'password' => 'required|string',
-        ]);
+        $login = $request->input('login');
+        $password = $request->input('password');
 
-        // Gunakan guard 'admin' sesuai konfigurasi
-        if (Auth::guard('admin')->attempt($credentials)) {
-            $admin = Auth::guard('admin')->user();
-
-            // Cek apakah admin diblokir
-            if ($admin->blokir === 'Y') {
-                Auth::guard('admin')->logout();
-                return back()->with('error', 'Akun Anda diblokir.');
-            }
-
-            // Regenerasi session
-            $request->session()->regenerate();
-
-            return redirect()->intended(route('backend.dashboard'));
+        if (Auth::guard('admin')->attempt(['username' => $login, 'password' => $password])) {
+            return redirect()->route('backend.dashboard');
         }
 
-        return back()->with('error', 'Username atau password salah.');
+        if (Auth::guard('web')->attempt(['email' => $login, 'password' => $password])) {
+            return redirect()->route('home-page');
+        }
+
+        return back()->withErrors(['login' => 'Username/email atau password salah.']);
     }
 
     /**
@@ -58,5 +49,46 @@ class LoginController extends Controller
         request()->session()->regenerateToken();
 
         return redirect(route('login'))->with('success', 'Anda telah berhasil logout.');
+    }
+
+    public function logoutFrontend()
+    {
+        Auth::guard('web')->logout();
+
+        request()->session()->invalidate();
+        request()->session()->regenerateToken();
+
+        return redirect(route('home-page'))->with('success', 'Anda telah berhasil logout.');
+    }
+
+    // Arahkan ke Google
+    public function redirectToGoogle()
+    {
+        return Socialite::driver('google')->redirect();
+    }
+
+    // Handle callback dari Google
+    public function handleGoogleCallback()
+    {
+        try {
+            $googleUser = Socialite::driver('google')->user();
+
+            // Simpan atau update user
+            $user = User::updateOrCreate(
+                ['google_id' => $googleUser->id],
+                [
+                    'name' => $googleUser->name,
+                    'email' => $googleUser->email,
+                    'google_id' => $googleUser->id,
+                ]
+            );
+
+            Auth::login($user);
+
+            // Arahkan ke beranda atau halaman yang diinginkan
+            return redirect()->route('home-page');
+        } catch (\Throwable $th) {
+            return redirect()->route('login')->with('error', 'Gagal login via Google.');
+        }
     }
 }

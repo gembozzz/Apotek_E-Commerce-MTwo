@@ -15,9 +15,8 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $jenisobat = JenisObat::get();
-        $produk = Product::paginate(8);
-        return view('frontend.v_produk.index', compact('produk', 'jenisobat'));
+        $produk = Product::paginate(16);
+        return view('frontend.v_produk.index', compact('produk'));
     }
 
     public function indexbackend()
@@ -25,6 +24,22 @@ class ProductController extends Controller
         $index = Product::get();
         return view('backend.product.index', compact('index'));
     }
+
+    public function search(Request $request)
+    {
+        $keyword = $request->q;
+
+        $produk = Product::where('nm_barang', 'like', "%{$keyword}%")
+            ->orWhere('kd_barang', 'like', "%{$keyword}%")
+            ->paginate(8);
+
+        $produk->appends(['q' => $keyword]); // jaga keyword tetap ada saat paginasi
+
+        return view('frontend.v_produk.index', [
+            'produk' => $produk,
+        ]);
+    }
+
 
     public function data(Request $request)
     {
