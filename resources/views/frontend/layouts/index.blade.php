@@ -85,26 +85,40 @@
                                 <strong class="text-uppercase">My Account <i class="fa fa-caret-down"></i></strong>
                             </div>
                             @if (Auth::check())
-                                <a href="#" class="text-uppercase">{{ Auth::user()->name }}</a>
-                                <ul class="custom-menu">
-                                    <li><a href="{{ route('customer.akun', ['id' => Auth::user()->id]) }}"><i
-                                                class="fa fa-user-o"></i> My Account</a></li>
-                                    <li><a href="#"><i class="fa fa-heart-o"></i> My Wishlist</a></li>
-                                    <li><a href="#"><i class="fa fa-check"></i> Checkout</a></li>
-                                    <form id="logoutForm" action="{{ route('logout') }}" method="POST" class="d-none">
-                                        @csrf
-                                        <li><a href="#"
-                                                onclick="event.preventDefault(); document.getElementById('logoutForm').submit();"><i
-                                                    class="fa
-                                            fa-unlock-alt"></i>
-                                                Logout</a></li>
-                                    </form>
-                                </ul>
+                            <a href="#" class="text-uppercase">{{ Auth::user()->name }}</a>
+                            <ul class="custom-menu list-unstyled">
+                                <li>
+                                    <a href="{{ route('customer.akun', ['id' => Auth::user()->id]) }}">
+                                        <i class="fa fa-user-o me-2"></i> My Account
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <i class="fa fa-heart-o me-2"></i> My Wishlist
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#">
+                                        <i class="fa fa-check me-2"></i> Checkout
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#"
+                                        onclick="event.preventDefault(); document.getElementById('logoutForm').submit();">
+                                        <i class="fa fa-unlock-alt me-2"></i> Logout
+                                    </a>
+                                </li>
+                            </ul>
+
+                            <form id="logoutForm" action="{{ route('logout') }}" method="POST" class="d-none">
+                                @csrf
+                            </form>
+
                             @else
-                                <ul class="custom-menu">
-                                    <li><a href="{{ route('login.form') }}"><i class="fa fa-unlock-alt"></i> Login</a>
-                                    </li>
-                                </ul>
+                            <ul class="custom-menu">
+                                <li><a href="{{ route('login.form') }}"><i class="fa fa-unlock-alt"></i> Login</a>
+                                </li>
+                            </ul>
                             @endif
                         </li>
                         <!-- /Account -->
@@ -176,30 +190,30 @@
         <div class="container">
             <div id="responsive-nav">
                 @if (request()->segment(1) == '' || request()->segment(1) == 'home-page')
-                    <!-- category nav -->
-                    <div class="category-nav">
-                        <span class="category-header" onclick="toggleKategoriList()" style="cursor: pointer;">
-                            Kategori <i class="fa fa-list"></i>
-                        </span>
-                        <ul class="category-list" id="kategori-list" style="display: none;">
-                            @foreach ($jenisobat as $item)
-                                <li><a
-                                        href="{{ route('produk.kategori', $item->idjenis) }}">{{ $item->jenisobat_label }}</a>
-                                </li>
-                            @endforeach
-                        </ul>
-                    </div>
+                <!-- category nav -->
+                <div class="category-nav">
+                    <span class="category-header" onclick="toggleKategoriList()" style="cursor: pointer;">
+                        Kategori <i class="fa fa-list"></i>
+                    </span>
+                    <ul class="category-list" id="kategori-list" style="display: none;">
+                        @foreach ($kategori as $item)
+                        <li>
+                            <a href="{{ route('produk.kategori', ['id' => $item->id]) }}">{{ $item->name }}</a>
+                        </li>
+                        @endforeach
+                    </ul>
+                </div>
                 @else
-                    <div class="category-nav show-on-click">
-                        <span class="category-header">Kategori <i class="fa fa-list"></i></span>
-                        <ul class="category-list">
-                            @foreach ($jenisobat as $item)
-                                <li><a
-                                        href="{{ route('produk.kategori', $item->idjenis) }}">{{ $item->jenisobat_label }}</a>
-                                </li>
-                            @endforeach
-                        </ul>
-                    </div>
+                <div class="category-nav show-on-click">
+                    <span class="category-header">Kategori <i class="fa fa-list"></i></span>
+                    <ul class="category-list">
+                        @foreach ($kategori as $item)
+                        <li>
+                            <a href="{{ route('produk.kategori', ['id' => $item->id]) }}">{{ $item->name }}</a>
+                        </li>
+                        @endforeach
+                    </ul>
+                </div>
                 @endif
                 <!-- /category nav -->
 
@@ -320,9 +334,8 @@
                         Copyright &copy;
                         <script>
                             document.write(new Date().getFullYear());
-                        </script> All rights reserved | This template is made with <i
-                            class="fa fa-heart-o" aria-hidden="true"></i> by <a href="https://colorlib.com"
-                            target="_blank">Colorlib</a>
+                        </script> All rights reserved | This template is made with <i class="fa fa-heart-o"
+                            aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
                         <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
                     </div>
                     <!-- /footer copyright -->

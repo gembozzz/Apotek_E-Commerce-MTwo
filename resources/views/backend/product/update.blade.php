@@ -13,7 +13,7 @@
                 <h3 class="card-title">Form Edit Produk</h3>
             </div>
 
-            <form action="{{ route('backend.product.update', $product->id_barang) }}" method="POST"
+            <form action="{{ route('product.update', $product->id_barang) }}" method="POST"
                 enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
@@ -25,8 +25,8 @@
                             <label>Preview Gambar</label>
                             <div class="border p-2">
                                 <img src="{{ asset('storage/' . ($product->image ?? 'default.png')) }}"
-                                    id="preview-image" class="img-fluid img-thumbnail" style="max-height: 200px;"
-                                    alt="Preview Gambar">
+                                    id="preview-image" class="img-fluid img-thumbnail"
+                                    style="height: 270px; width: auto;" alt="Preview Gambar">
                             </div>
                         </div>
 
@@ -51,6 +51,21 @@
                                         '' }}>Aktif</option>
                                     <option value="inactive" {{ old('status', $product->status) == 'inactive' ?
                                         'selected' : '' }}>Nonaktif</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="category_id">Kategori</label>
+                                <select name="category_id" class="form-control" required>
+                                    <option value="" disabled {{ old('category_id', $product->category_id) ? '' :
+                                        'selected' }}>
+                                        Pilih Kategori
+                                    </option>
+                                    @foreach ($categories as $category)
+                                    <option value="{{ $category->id }}" {{ old('category_id', $product->category_id) ==
+                                        $category->id ? 'selected' : '' }}>
+                                        {{ $category->name }}
+                                    </option>
+                                    @endforeach
                                 </select>
                             </div>
                         </div>

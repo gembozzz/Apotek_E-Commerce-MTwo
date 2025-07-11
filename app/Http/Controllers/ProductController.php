@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use Yajra\DataTables\Facades\DataTables;
 use App\Models\Product;
 use Illuminate\Http\Request;
@@ -15,8 +16,9 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $produk = Product::paginate(16);
-        return view('frontend.v_produk.index', compact('produk'));
+        $produk = Product::where('status', 'active')->paginate(16);
+        $kategori = Category::orderBy('name', 'desc')->get();
+        return view('frontend.v_produk.index', compact('produk', 'kategori'));
     }
 
     public function indexbackend()
@@ -49,6 +51,7 @@ class ProductController extends Controller
             'nm_barang',
             'status',
             'sat_barang',
+            'category_id',
             'jenisobat',
             'hrgsat_barang',
             'hrgjual_barang'
@@ -56,14 +59,17 @@ class ProductController extends Controller
 
         return DataTables::of($query)
             ->addIndexColumn()
+            ->addColumn('kategori', function ($row) {
+                return $row->category->name ?? '-';
+            })
             ->addColumn('aksi', function ($row) {
                 $btn = '<div class="dropdown">
                         <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown">Action</button>
                         <div class="dropdown-menu p-2">
-                            <a href="' . route('backend.product.show', $row->id_barang) . '" class="btn btn-info btn-sm w-100 mb-1">
+                            <a href="' . route('product.show', $row->id_barang) . '" class="btn btn-info btn-sm w-100 mb-1">
                                 <i class="fas fa-eye"></i> Detail
                             </a>
-                            <a href="' . route('backend.product.edit', $row->id_barang) . '" class="btn btn-warning btn-sm w-100 mb-1">
+                            <a href="' . route('product.edit', $row->id_barang) . '" class="btn btn-warning btn-sm w-100 mb-1">
                                 <i class="far fa-edit"></i> Edit
                             </a>
                         </div>
@@ -103,7 +109,8 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        return view('backend.product.update', compact('product'));
+        $categories = Category::all(); // Ambil semua kategori untuk dropdown
+        return view('backend.product.update', compact('product', 'categories'));
     }
 
     /**
@@ -114,6 +121,7 @@ class ProductController extends Controller
         $request->validate([
             'status' => 'required|in:active,inactive',
             'gambar_produk' => 'nullable|image|mimes:jpg,jpeg,png|max:2048', // max 2MB
+            'category_id' => 'required|exists:categories,id', // Validasi kategori
         ]);
 
         // Cek jika ada file gambar baru yang diupload
@@ -135,6 +143,7 @@ class ProductController extends Controller
 
         // Update data lainnya
         $product->status = $request->status;
+        $product->category_id = $request->category_id;
         $product->save();
 
         return redirect()->route('product.index')->with('success', 'Produk berhasil diperbarui.');
@@ -148,11 +157,12 @@ class ProductController extends Controller
     public function detail($id)
     {
         $jenisobat = JenisObat::get();
-        $produks = Product::with('jenisObat')->findOrFail($id);
-        $kategori = JenisObat::orderBy('jenisobat', 'desc')->get();
+        $produks = Product::findOrFail($id);
+        $categories = Category::orderBy('name', 'desc')->get();
+
         return view('frontend.v_produk.detail', [
             'judul' => 'Detail Produk',
-            'kategori' => $kategori,
+            'kategori' => $categories,
             'produks' => $produks,
             'jenisobat' => $jenisobat
         ]);
@@ -161,19 +171,20 @@ class ProductController extends Controller
     public function produkKategori($id)
     {
         // Ambil semua kategori untuk sidebar/menu
-        $jenisobat = JenisObat::all();
+        // $jenisobat = JenisObat::all();
+        $categories = Category::orderBy('name', 'desc')->get();
 
         // Cari kategori berdasarkan id (karena di URL yang dikirim tetap idjenis)
-        $selectedKategori = JenisObat::where('idjenis', $id)->firstOrFail();
+        // $selectedKategori = JenisObat::where('idjenis', $id)->firstOrFail();
 
         // Ambil produk berdasarkan label 'jenisobat' (bukan id)
-        $produk = Product::where('jenisobat', $selectedKategori->jenisobat)->paginate(8);
+        // $produk = Product::where('jenisobat', $selectedKategori->jenisobat)->paginate(8);
+        $produk = Product::where('category_id', $id)->where('status', 1)->orderBy('nm_barang', 'desc')->paginate(6);
 
         return view('frontend.v_produk.produkkategori', [
-            'judul' => 'Kategori: ' . $selectedKategori->jenisobat_label,
-            'kategori' => $jenisobat,
+            'judul' => 'Kategori' . ' ' . $categories->find($id)->name,
+            'kategori' => $categories,
             'produk' => $produk,
-            'jenisobat' => $jenisobat
         ]);
     }
 }

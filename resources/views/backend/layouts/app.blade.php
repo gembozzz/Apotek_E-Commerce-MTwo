@@ -110,9 +110,9 @@
                             </a>
                         </li>
                         <li
-                            class="nav-item {{ in_array(Route::currentRouteName(), ['pesanan.proses', 'product.index']) ? 'menu-open' : '' }}  ">
+                            class="nav-item {{ in_array(Route::currentRouteName(), ['product.index', 'product.edit', 'product.show', 'customer.index', 'customer.show', 'category.index', 'category.create', 'category.edit']) ? 'menu-open' : '' }}  ">
                             <a href="#"
-                                class="nav-link {{ in_array(Route::currentRouteName(), ['pesanan.proses', 'product.index']) ? 'active bg-blue-600 text-white' : 'text-white' }}}">
+                                class="nav-link {{ in_array(Route::currentRouteName(), ['product.index', 'product.edit', 'product.show', 'customer.index', 'customer.show', 'category.index', 'category.create', 'category.edit']) ? 'active bg-blue-600 text-white' : 'text-white' }}">
                                 <i class="nav-icon fas fa-bars"></i>
                                 <p>
                                     Data Master
@@ -121,17 +121,51 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
+                                    <a href="{{ route('customer.index') }}"
+                                        class="nav-link pl-4 {{ Route::currentRouteName() == 'customer.index' || Route::currentRouteName() == 'customer.show' ? 'active bg-blue-600 text-black' : 'text-white' }}">
+                                        <i class="fas fa-users nav-icon"></i>
+                                        <p>Customer</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('category.index') }}"
+                                        class="nav-link pl-4 {{ Route::currentRouteName() == 'category.index' || Route::currentRouteName() == 'category.create' || Route::currentRouteName() == 'category.edit' ? 'active bg-blue-600 text-black' : 'text-white' }}">
+                                        <i class="fas fa-tags nav-icon"></i>
+                                        <p>Kategori</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
                                     <a href="{{ route('product.index') }}"
-                                        class="nav-link {{ Route::currentRouteName() == 'product.index' ? 'active bg-blue-600 text-black' : 'text-white' }}">
+                                        class="nav-link pl-4 {{ Route::currentRouteName() == 'product.index' || Route::currentRouteName() == 'product.edit' || Route::currentRouteName() == 'product.show' ? 'active bg-blue-600 text-black' : 'text-white' }}">
                                         <i class="fas fa-database nav-icon"></i>
                                         <p>Produk</p>
                                     </a>
                                 </li>
+                            </ul>
+                        </li>
+                        <li
+                            class="nav-item {{ in_array(Route::currentRouteName(), ['pesanan.proses', 'pesanan.selesai']) ? 'menu-open' : '' }}  ">
+                            <a href="#"
+                                class="nav-link {{ in_array(Route::currentRouteName(), ['pesanan.proses', 'pesanan.selesai']) ? 'active bg-blue-600 text-white' : 'text-white' }}">
+                                <i class="nav-icon fas fa-shopping-bag"></i>
+                                <p>
+                                    Pesanan
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
                                 <li class="nav-item">
                                     <a href="{{ route('pesanan.proses') }}"
-                                        class="nav-link {{ Route::currentRouteName() == 'pesanan.proses' ? 'active bg-blue-600 text-black' : 'text-white' }}">
-                                        <i class="fas fa-database nav-icon"></i>
-                                        <p>Pesanan Customer</p>
+                                        class="nav-link pl-4 {{ Route::currentRouteName() == 'pesanan.proses' ? 'active bg-blue-600 text-black' : 'text-white' }}">
+                                        <i class="fas fa-sync-alt nav-icon"></i>
+                                        <p>Pesanan Proses</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('pesanan.selesai') }}"
+                                        class="nav-link pl-4 {{ Route::currentRouteName() == 'pesanan.selesai' ? 'active bg-blue-600 text-black' : 'text-white' }}">
+                                        <i class="fas fa-check nav-icon"></i>
+                                        <p>Pesanan Selesai</p>
                                     </a>
                                 </li>
                             </ul>

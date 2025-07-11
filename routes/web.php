@@ -7,6 +7,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomepageController;
+use App\Http\Controllers\CategoryController;
 
 Route::get('/', function () {
     return redirect()->route('home-page');
@@ -37,15 +38,25 @@ Route::middleware('is.customer')->group(function () {
 
 Route::prefix('/backend')->middleware('auth:admin')->group(function () {
     // Dashboard backend
-    Route::get('/dashboard', [DashboardController::class, 'backendIndex'])->name('backend.dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('backend.dashboard');
+
+    // Customer
+    Route::get('/customer', [CustomerController::class, 'index'])->name('customer.index');
+    Route::get('/customer/{customer}', [CustomerController::class, 'show'])->name('customer.show');
+    Route::get('/customer-data', [CustomerController::class, 'data'])->name('backend.customer.data');
 
     // Product
     Route::get('/product', [ProductController::class, 'indexbackend'])->name('product.index');
-    Route::get('/product/{product}/edit', [ProductController::class, 'edit'])->name('backend.product.edit');
-    Route::put('/product/{product}', [ProductController::class, 'update'])->name('backend.product.update');
-    Route::get('/product/{product}', [ProductController::class, 'show'])->name('backend.product.show');
+    Route::get('/product/{product}/edit', [ProductController::class, 'edit'])->name('product.edit');
+    Route::put('/product/{product}', [ProductController::class, 'update'])->name('product.update');
+    Route::get('/product/{product}', [ProductController::class, 'show'])->name('product.show');
     Route::get('/product-data', [ProductController::class, 'data'])->name('backend.product.data');
+
+    // category
+    Route::resource('category', CategoryController::class);
+    Route::get('/category-data', [CategoryController::class, 'data'])->name('backend.category.data');
 
     // Order backend
     Route::get('pesanan-proses', [OrderController::class, 'statusProses'])->name('pesanan.proses');
+    Route::get('pesanan-selesai', [OrderController::class, 'statusSelesai'])->name('pesanan.selesai');
 });

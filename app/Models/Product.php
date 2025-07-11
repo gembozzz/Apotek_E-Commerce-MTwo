@@ -16,6 +16,7 @@ class Product extends Model
 
     protected $fillable = [
         'kd_barang',
+        'category_id',
         'nm_barang',
         'stok_barang',
         'stok_buffer',
@@ -55,5 +56,11 @@ class Product extends Model
     {
         return $this->belongsTo(JenisObat::class, 'jenisobat', 'jenisobat');
         // (ModelTujuan::class, foreign_key_di_produk, primary_key_di_jenis_obat)
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(Category::class, 'category_id', 'id');
+        // (ModelTujuan::class, foreign_key_di_produk, primary_key_di_category)
     }
 }

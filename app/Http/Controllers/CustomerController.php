@@ -6,9 +6,51 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Yajra\DataTables\Facades\DataTables;
+
 
 class CustomerController extends Controller
 {
+    public function index()
+    {
+        $customers = User::get();
+        return view('backend.customer.index', [
+            'judul' => 'Customer',
+            'subJudul' => 'Data Customer',
+            'customers' => $customers
+        ]);
+    }
+
+    public function data(Request $request)
+    {
+        $query = User::select([
+            'id',
+            'name',
+            'email',
+        ]);
+
+        return DataTables::of($query)
+            ->addIndexColumn()
+            ->addColumn('aksi', function ($row) {
+                $btn = '<div class="dropdown">
+                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown">Action</button>
+                        <div class="dropdown-menu p-2">
+                            <a href="' . route('customer.show', $row->id) . '" class="btn btn-info btn-sm w-100 mb-1">
+                                <i class="fas fa-eye"></i> Detail
+                            </a>
+                        </div>
+                    </div>';
+                return $btn;
+            })
+            ->rawColumns(['aksi'])
+            ->make(true);
+    }
+
+    public function show(User $customer)
+    {
+        return view('backend.customer.show', compact('customer'));
+    }
+
     public function akun($id)
     {
         $loggedInCustomerId = Auth::user()->id;

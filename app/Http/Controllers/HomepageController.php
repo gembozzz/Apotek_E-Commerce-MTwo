@@ -6,6 +6,7 @@ use App\Models\homepage;
 use Illuminate\Http\Request;
 use App\Models\JenisObat;
 use App\Models\Product;
+use App\Models\Category;
 use Illuminate\Support\Facades\DB;
 
 class HomepageController extends Controller
@@ -23,9 +24,10 @@ class HomepageController extends Controller
             ->limit(6)
             ->get();
         $jenisobat = JenisObat::get();
-        $produkTerbaru = Product::orderBy('id_barang', 'desc')->take(4)->get();
-        $databarang = Product::paginate(6);
-        return view('frontend.dashboard.index', compact('databarang', 'produkTerbaru', 'jenisobat', 'produkpalingbanyakterjual'));
+        $kategori = Category::orderBy('name', 'desc')->get();
+        $produkTerbaru = Product::where('status', 'active')->take(4)->get();
+        $databarang = Product::where('status', 'active')->paginate(6);
+        return view('frontend.dashboard.index', compact('databarang', 'produkTerbaru', 'jenisobat', 'produkpalingbanyakterjual', 'kategori'));
     }
 
     /**

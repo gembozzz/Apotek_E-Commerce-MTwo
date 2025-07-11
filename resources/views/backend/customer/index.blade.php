@@ -1,8 +1,8 @@
 @extends('backend.layouts.app')
 
-@section('title', 'Produk')
+@section('title', 'Customer')
 
-@section('header', 'Halaman Data Produk')
+@section('header', 'Halaman Data Customer')
 
 @section('content')
 <section class="content">
@@ -10,7 +10,7 @@
 
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Data Produk</h3>
+                <h3 class="card-title">Data Customer</h3>
             </div>
 
             <div class="card-body">
@@ -18,14 +18,8 @@
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>Kode</th>
-                            <th>Nama Barang</th>
-                            <th>Status</th>
-                            <th>Satuan</th>
-                            <th>Kategori</th>
-                            <th>Jenis Obat</th>
-                            <th>Harga Beli</th>
-                            <th>Harga Jual</th>
+                            <th>Nama</th>
+                            <th>Email</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -49,17 +43,11 @@
             processing: true,
             serverSide: true,
             responsive: true,
-            ajax: "{{ route('backend.product.data') }}",
+            ajax: "{{ route('backend.customer.data') }}",
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
-                { data: 'kd_barang', name: 'kd_barang' },
-                { data: 'nm_barang', name: 'nm_barang' },
-                { data: 'status', name: 'status' },
-                { data: 'sat_barang', name: 'sat_barang' },
-                { data: 'kategori', name: 'kategori' },
-                { data: 'jenisobat', name: 'jenisobat' },
-                { data: 'hrgsat_barang', name: 'hrgsat_barang', render: $.fn.dataTable.render.number('.', ',', 0) },
-                { data: 'hrgjual_barang', name: 'hrgjual_barang', render: $.fn.dataTable.render.number('.', ',', 0) },
+                { data: 'name', name: 'name' },
+                { data: 'email', name: 'email' },
                 { data: 'aksi', name: 'aksi', orderable: false, searchable: false },
             ]
         });
