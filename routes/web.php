@@ -8,12 +8,13 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomepageController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ArticleController;
 
 Route::get('/', function () {
     return redirect()->route('home-page');
 });
 
-Route::get('/login', [LoginController::class, 'loginForm'])->name('login.form');
+Route::get('/login', [LoginController::class, 'loginForm'])->name('login.form')->middleware('prevent.back.history');
 Route::post('/login', [LoginController::class, 'unifiedLogin'])->name('login');
 Route::post('backend/logout', [LoginController::class, 'logoutBackend'])->name('backend.logout');
 Route::post('/logout', [LoginController::class, 'logoutFrontend'])->name('logout');
@@ -28,6 +29,11 @@ Route::get('/produk/all', [ProductController::class, 'index'])->name('produk.all
 Route::get('/produk/detail/{id}', [ProductController::class, 'detail'])->name('produk.detail');
 Route::get('/produk/kategori/{id}', [ProductController::class, 'produkKategori'])->name('produk.kategori');
 Route::get('/produk/cari', [ProductController::class, 'search'])->name('produk.search');
+
+Route::get('/artikel/all', [ArticleController::class, 'indexFrontend'])->name('artikel.all');
+Route::get('/artikel/{slug}', [ArticleController::class, 'show'])->name('article.show');
+
+
 
 
 Route::middleware('is.customer')->group(function () {
@@ -59,4 +65,13 @@ Route::prefix('/backend')->middleware('auth:admin')->group(function () {
     // Order backend
     Route::get('pesanan-proses', [OrderController::class, 'statusProses'])->name('pesanan.proses');
     Route::get('pesanan-selesai', [OrderController::class, 'statusSelesai'])->name('pesanan.selesai');
+
+    // Article
+    Route::get('/article', [ArticleController::class, 'index'])->name('article.index');
+    Route::get('/article/create', [ArticleController::class, 'create'])->name('article.create');
+    Route::post('/article', [ArticleController::class, 'store'])->name('article.store');
+    Route::get('/article/{article}/edit', [ArticleController::class, 'edit'])->name('article.edit');
+    Route::put('/article/{article}', [ArticleController::class, 'update'])->name('article.update');
+    Route::delete('/article/{article}', [ArticleController::class, 'destroy'])->name('article.destroy');
+    Route::get('/article-data', [ArticleController::class, 'data'])->name('backend.article.data');
 });

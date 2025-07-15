@@ -28,12 +28,12 @@ class CategoryController extends Controller
                 $btn = '<div class="dropdown">
                         <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown">Action</button>
                         <div class="dropdown-menu p-2">
-                        <a href="' . route('category.edit', $row->id) . '" class="btn btn-warning btn-sm w-100 mb-1">
+                            <a href="' . route('category.edit', $row->id) . '" class="btn btn-warning btn-sm w-100 mb-1">
                                 <i class="fas fa-edit"></i> Edit
                             </a>
-                            <a href="' . route('category.destroy', $row->id) . '" class="btn btn-danger btn-sm w-100 mb-1">
-                                <i class="fas fa-trash"></i> Hapus
-                            </a>
+                            <button onclick="deleteData(\'' . route('category.destroy', $row->id) . '\', this)" class="btn btn-danger btn-sm w-100" data-konf-delete="' . e($row->name) . '">
+                                <i class="fa fa-trash"></i> Hapus
+                            </button>
                         </div>
                     </div>';
                 return $btn;
@@ -55,8 +55,15 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $category = Category::create($request->all());
-        return redirect()->route('category.index')->with('success', 'Category created successfully.');
+        $request->validate([
+            'name' => 'required|string|max:255|unique:categories,name',
+        ]);
+
+        $category = new Category();
+        $category->name = $request->name;
+
+        $category->save();
+        return redirect()->route('category.index')->with('success', 'Kategori baru berhasil ditambahkan.');
     }
 
     /**
@@ -80,8 +87,14 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
-        $category->update($request->all());
-        return redirect()->route('category.index')->with('success', 'Category updated successfully.');
+        $request->validate([
+            'name' => 'required|string|max:255|unique:categories,name',
+        ]);
+
+        $category->name = $request->name;
+
+        $category->save();
+        return redirect()->route('category.index')->with('success', 'Kategori berhasil diperbarui.');
     }
 
     /**

@@ -30,4 +30,9 @@ class Admin extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function articles()
+    {
+        return $this->hasMany(Article::class, 'user_id', 'id_admin');
+    }
 }

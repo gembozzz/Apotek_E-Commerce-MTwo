@@ -14,6 +14,14 @@ class LoginController extends Controller
      */
     public function loginForm()
     {
+        if (Auth::guard('admin')->check()) {
+            return redirect()->route('backend.dashboard');
+        }
+
+        if (Auth::guard('web')->check()) {
+            return redirect()->route('home-page');
+        }
+
         return view('backend.auth.login', [
             'judul' => 'Login',
         ]);
@@ -24,6 +32,14 @@ class LoginController extends Controller
      */
     public function unifiedLogin(Request $request)
     {
+        $request->validate([
+            'login' => 'required',
+            'password' => 'required',
+        ], [
+            'login.required' => 'Username atau email wajib diisi.',
+            'password.required' => 'Password wajib diisi.',
+        ]);
+
         $login = $request->input('login');
         $password = $request->input('password');
 
@@ -35,7 +51,7 @@ class LoginController extends Controller
             return redirect()->route('home-page');
         }
 
-        return back()->withErrors(['login' => 'Username/email atau password salah.']);
+        return back()->withErrors(['auth' => 'Username/email atau password salah.']);
     }
 
     /**

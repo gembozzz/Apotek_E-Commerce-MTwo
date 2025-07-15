@@ -12,7 +12,8 @@
     <!-- Font Awesome -->
     <link rel="stylesheet" href="{{ asset('backend/AdminLTE-3.2.0/plugins/fontawesome-free/css/all.min.css') }}">
     <!-- icheck bootstrap -->
-    <link rel="stylesheet" href="{{ asset('backend/AdminLTE-3.2.0/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
+    <link rel="stylesheet"
+        href="{{ asset('backend/AdminLTE-3.2.0/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('backend/AdminLTE-3.2.0/dist/css/adminlte.min.css') }}">
 </head>
@@ -24,25 +25,33 @@
             <div class="card-header text-center">
                 <a href="#" class="h1"><b>My</b>Apotek</a>
             </div>
+
             <div class="card-body">
                 <p class="login-box-msg">Aplikasi Pengelola Apotek E-Commerce <br> Silahkan Login</p>
+                @if ($errors->has('auth'))
+                <div class="alert alert-danger">
+                    {{ $errors->first('auth') }}
+                </div>
+                @endif
                 <form action="{{ route('login') }}" method="post">
                     @csrf
                     <div class="input-group mb-3">
-                        <input type="text" name="login" class="form-control" placeholder="Username atau Email">
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-user"></span>
-                            </div>
-                        </div>
+                        <input type="text" name="login" class="form-control @error('login') is-invalid @enderror"
+                            placeholder="Username atau Email" value="{{ old('login') }}">
+                        @error('login')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                        @enderror
                     </div>
                     <div class="input-group mb-3">
-                        <input type="password" name="password" class="form-control" placeholder="Password">
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-lock"></span>
-                            </div>
-                        </div>
+                        <input type="password" name="password"
+                            class="form-control @error('password') is-invalid @enderror" placeholder="Password">
+                        @error('password')
+                        <span class="invalid-feedback" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                        @enderror
                     </div>
                     <div class="row">
                         <div class="col-8">
@@ -63,11 +72,7 @@
                     </a>
                 </div>
 
-                @if ($errors->has('login'))
-                    <div class="alert alert-danger">
-                        {{ $errors->first('login') }}
-                    </div>
-                @endif
+
             </div>
             <!-- /.card-body -->
         </div>

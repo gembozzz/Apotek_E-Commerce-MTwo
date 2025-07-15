@@ -1,8 +1,8 @@
 @extends('backend.layouts.app')
 
-@section('title', 'Kategori')
+@section('title', 'Artikel')
 
-@section('header', 'Halaman Data Kategori')
+@section('header', 'Halaman Data Artikel')
 
 @section('content')
 <section class="content">
@@ -10,23 +10,26 @@
 
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Data Kategori</h3>
+                <h3 class="card-title">Daftar Artikel</h3>
             </div>
 
             <div class="card-body">
-                <a href="{{ route('category.create') }}" class="btn btn-sm btn-primary mb-3">
-                    <i class="fas fa-plus"></i> Tambah Kategori
+                <a href="{{ route('article.create') }}" class="btn btn-sm btn-primary mb-3">
+                    <i class="fas fa-pen me-1"></i> Tulis Artikel
                 </a>
+
                 <table id="example1" class="table table-auto table-sm table-bordered table-striped w-100">
                     <thead>
                         <tr>
                             <th>No</th>
-                            <th>Nama Kategori</th>
+                            <th>Judul</th>
+                            <th>Slug</th>
+                            <th>Status</th>
+                            <th>Penulis</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
-                    <tbody>
-                    </tbody>
+                    <tbody></tbody>
                 </table>
             </div>
         </div>
@@ -35,22 +38,20 @@
 </section>
 @endsection
 
-@push('css')
-@endpush
-
 @push('scripts')
 <script>
-    var table;
-
     $(function () {
-        var table = $('#example1').DataTable({
+        $('#example1').DataTable({
             processing: true,
             serverSide: true,
             responsive: true,
-            ajax: "{{ route('backend.category.data') }}",
+            ajax: "{{ route('backend.article.data') }}", // ubah sesuai route kamu
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
-                { data: 'name', name: 'name' },
+                { data: 'title', name: 'title' },
+                { data: 'slug', name: 'slug' },
+                { data: 'status', name: 'status' },
+                { data: 'admin_nama', name: 'admin_nama' },
                 { data: 'aksi', name: 'aksi', orderable: false, searchable: false },
             ]
         });
@@ -98,6 +99,5 @@
             }
         });
     }
-
 </script>
 @endpush

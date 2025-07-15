@@ -38,7 +38,7 @@ Dashboard
                 <!-- small box -->
                 <div class="small-box bg-info">
                     <div class="inner">
-                        <h3></h3>
+                        <h3>{{ $products->count() }}</h3>
 
                         <p>Total produk</p>
                     </div>
@@ -53,9 +53,9 @@ Dashboard
                 <!-- small box -->
                 <div class="small-box bg-success">
                     <div class="inner">
-                        <h3></sup></h3>
+                        <h3>17</h3>
 
-                        <p>Pembelian</p>
+                        <p>Pesanan</p>
                     </div>
                     <div class="icon">
                         <i class="ion ion-bag"></i>
@@ -68,7 +68,7 @@ Dashboard
                 <!-- small box -->
                 <div class="small-box bg-warning">
                     <div class="inner">
-                        <h3></h3>
+                        <h3>{{ $customers->count() }}</h3>
 
                         <p>Pelanggan</p>
                     </div>
@@ -84,12 +84,12 @@ Dashboard
                 <!-- small box -->
                 <div class="small-box bg-danger">
                     <div class="inner">
-                        <h3></h3>
+                        <h3>{{ $articles->count() }}</h3>
 
-                        <p>Penjualan</p>
+                        <p>Artikel</p>
                     </div>
                     <div class="icon">
-                        <i class="fas fa-exchange-alt"></i>
+                        <i class="fas fa-file-alt"></i>
                     </div>
                     <a href="#" class="small-box-footer">Lihat detail <i class="fas fa-arrow-circle-right"></i></a>
                 </div>

@@ -110,9 +110,9 @@
                             </a>
                         </li>
                         <li
-                            class="nav-item {{ in_array(Route::currentRouteName(), ['product.index', 'product.edit', 'product.show', 'customer.index', 'customer.show', 'category.index', 'category.create', 'category.edit']) ? 'menu-open' : '' }}  ">
+                            class="nav-item {{ in_array(Route::currentRouteName(), ['product.index', 'product.edit', 'product.show', 'customer.index', 'customer.show', 'category.index', 'category.create', 'category.edit', 'article.index', 'article.create', 'article.edit', 'article.show']) ? 'menu-open' : '' }}  ">
                             <a href="#"
-                                class="nav-link {{ in_array(Route::currentRouteName(), ['product.index', 'product.edit', 'product.show', 'customer.index', 'customer.show', 'category.index', 'category.create', 'category.edit']) ? 'active bg-blue-600 text-white' : 'text-white' }}">
+                                class="nav-link {{ in_array(Route::currentRouteName(), ['product.index', 'product.edit', 'product.show', 'customer.index', 'customer.show', 'category.index', 'category.create', 'category.edit', 'article.index', 'article.create', 'article.edit', 'article.show']) ? 'active bg-blue-600 text-white' : 'text-white' }}">
                                 <i class="nav-icon fas fa-bars"></i>
                                 <p>
                                     Data Master
@@ -139,6 +139,13 @@
                                         class="nav-link pl-4 {{ Route::currentRouteName() == 'product.index' || Route::currentRouteName() == 'product.edit' || Route::currentRouteName() == 'product.show' ? 'active bg-blue-600 text-black' : 'text-white' }}">
                                         <i class="fas fa-database nav-icon"></i>
                                         <p>Produk</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('article.index') }}"
+                                        class="nav-link pl-4 {{ Route::currentRouteName() == 'article.index' || Route::currentRouteName() == 'article.create' || Route::currentRouteName() == 'article.edit' || Route::currentRouteName() == 'article.show' ? 'active bg-blue-600 text-black' : 'text-white' }}">
+                                        <i class="far fa-file-alt nav-icon"></i>
+                                        <p>Artikel</p>
                                     </a>
                                 </li>
                             </ul>
@@ -199,8 +206,7 @@
                         </li> --}}
                         <li class="nav-header">LOGOUT</li>
                         <li class="nav-item">
-                            <a href="pages/gallery.html" class="nav-link"
-                                onclick="event.preventDefault(); document.getElementById('keluar-app').submit();">
+                            <a href="pages/gallery.html" class="nav-link" onclick="logoutConfirm(event)">
                                 <i class="nav-icon fas fa-sign-out-alt"></i>
                                 <p>
                                     Logout
@@ -336,6 +342,26 @@
             });
         });
     </script>
+    <script>
+        function logoutConfirm(e) {
+            e.preventDefault();
+            Swal.fire({
+                title: 'Yakin ingin logout?',
+                text: "Kamu akan keluar dari aplikasi.",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, logout!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    document.getElementById('keluar-app').submit();
+                }
+            });
+        }
+    </script>
+
 
     @yield('script')
     @stack('scripts')

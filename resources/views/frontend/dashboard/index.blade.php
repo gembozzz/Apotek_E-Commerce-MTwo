@@ -169,4 +169,52 @@
     <!-- /container -->
 </div>
 <!-- /section -->
+
+<!-- section -->
+<div class="section">
+    <!-- container -->
+    <div class="container">
+        <!-- row -->
+        <div class="row">
+            <!-- section title -->
+            <div class="col-md-12">
+                <div class="section-title">
+                    <h2 class="title">Artikel Terbaru</h2>
+                </div>
+            </div>
+            <!-- section title -->
+
+            <!-- Product Single -->
+            @foreach ($articles as $article)
+            <div class="col-md-4 col-sm-6 col-xs-12" data-aos="fade-up">
+                <div class="product product-single d-flex flex-column shadow"
+                    style="height: 100%; display: flex; border-radius: 8px; overflow: hidden; transition: 0.3s;">
+                    <div class="product-thumb" style="overflow: hidden;">
+                        <a href="{{ route('article.show', $article->slug) }}">
+                            <img src="{{ asset('storage/' . $article->thumbnail) }}" alt="{{ $article->title }}"
+                                style="height: 200px; width: 100%; object-fit: cover; border-radius: 8px 8px 0 0;">
+                        </a>
+                    </div>
+                    <div class="product-body d-flex flex-column"
+                        style="flex: 1; padding: 15px; background-color: #fff;">
+                        <h3 class="product-price" style="min-height: 60px;">
+                            {{ Str::limit($article->title, 60) }}
+                        </h3>
+                        <p class="product-name" style="flex: 1;">
+                            {{ Str::limit(strip_tags($article->content), 100) }}
+                        </p>
+                        <a href="{{ route('article.show', $article->slug) }}" class="primary-btn btn-sm mt-auto"
+                            style="border-radius: 6px;">
+                            Baca Selengkapnya
+                        </a>
+                    </div>
+                </div>
+            </div>
+            @endforeach
+        </div>
+        <!-- /row -->
+    </div>
+    <!-- /container -->
+</div>
+<!-- /section -->
 @endsection

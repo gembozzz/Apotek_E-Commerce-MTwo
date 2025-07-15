@@ -24,9 +24,16 @@
                         <div class="col-md-4 text-center">
                             <label>Preview Gambar</label>
                             <div class="border p-2">
-                                <img src="{{ asset('storage/' . ($product->image ?? 'default.png')) }}"
-                                    id="preview-image" class="img-fluid img-thumbnail"
+                                @php
+                                $imagePath = (!empty($product->image) && file_exists(public_path('storage/' .
+                                $product->image)))
+                                ? asset('storage/' . $product->image)
+                                : asset('images/default.png');
+                                @endphp
+
+                                <img src="{{ $imagePath }}" id="preview-image" class="img-fluid img-thumbnail"
                                     style="height: 270px; width: auto;" alt="Preview Gambar">
+
                             </div>
                         </div>
 
@@ -36,6 +43,9 @@
                                 <label for="gambar_produk">Gambar Produk</label>
                                 <input type="file" name="gambar_produk" class="form-control-file" id="gambar_produk"
                                     oninput="document.getElementById('preview-image').src = this.value;">
+                                @error('gambar_produk')
+                                <small class="text-danger d-block mt-1">{{ $message }}</small>
+                                @enderror
                             </div>
 
                             <div class="form-group">
@@ -46,16 +56,21 @@
 
                             <div class="form-group">
                                 <label for="status">Status</label>
-                                <select name="status" class="form-control" required>
+                                <select name="status" class="form-control">
                                     <option value="active" {{ old('status', $product->status) == 'active' ? 'selected' :
                                         '' }}>Aktif</option>
                                     <option value="inactive" {{ old('status', $product->status) == 'inactive' ?
                                         'selected' : '' }}>Nonaktif</option>
                                 </select>
+                                @error('status')
+                                <div class="invalid-feedback d-block">
+                                    {{ $message }}
+                                </div>
+                                @enderror
                             </div>
                             <div class="form-group">
                                 <label for="category_id">Kategori</label>
-                                <select name="category_id" class="form-control" required>
+                                <select name="category_id" class="form-control">
                                     <option value="" disabled {{ old('category_id', $product->category_id) ? '' :
                                         'selected' }}>
                                         Pilih Kategori
@@ -67,6 +82,11 @@
                                     </option>
                                     @endforeach
                                 </select>
+                                @error('category_id')
+                                <div class="invalid-feedback d-block">
+                                    {{ $message }}
+                                </div>
+                                @enderror
                             </div>
                         </div>
                     </div>

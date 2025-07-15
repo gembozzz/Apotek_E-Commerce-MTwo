@@ -233,6 +233,12 @@
                                 All Produk
                             </a>
                         </li>
+                        <li>
+                            <a href="{{ route('artikel.all') }}"
+                                class="{{ request()->routeIs('artikel.all', 'article.show') ? 'active' : '' }}">
+                                Artikel
+                            </a>
+                        </li>
                     </ul>
                 </div>
                 <!-- menu nav -->
