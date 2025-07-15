@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('alamat')->nullable();
+            $table->string('no_tlp')->nullable();
             $table->string('password')->nullable(); // nullable untuk user Google login
             $table->string('google_id')->nullable(); // untuk Socialite
             $table->timestamp('email_verified_at')->nullable();

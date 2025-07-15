@@ -84,8 +84,8 @@ class LoginController extends Controller
             );
 
             Auth::login($user);
+            session()->regenerate();
 
-            // Arahkan ke beranda atau halaman yang diinginkan
             return redirect()->route('home-page');
         } catch (\Throwable $th) {
             return redirect()->route('login')->with('error', 'Gagal login via Google.');

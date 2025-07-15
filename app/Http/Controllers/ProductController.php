@@ -16,7 +16,9 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $produk = Product::where('status', 'active')->paginate(16);
+        $produk = Product::where('stok_barang', '>', 0)
+            ->where('status', 'active')
+            ->paginate(16);
         $kategori = Category::orderBy('name', 'desc')->get();
         return view('frontend.v_produk.index', compact('produk', 'kategori'));
     }
@@ -31,16 +33,27 @@ class ProductController extends Controller
     {
         $keyword = $request->q;
 
-        $produk = Product::where('nm_barang', 'like', "%{$keyword}%")
-            ->orWhere('kd_barang', 'like', "%{$keyword}%")
+        // Pecah keyword menjadi array kata
+        $keywords = explode(' ', $keyword);
+
+        $produk = Product::where('stok_barang', '>', 0)
+            ->where('status', 'active')
+            ->where(function ($query) use ($keywords) {
+                foreach ($keywords as $word) {
+                    $query->orWhere('nm_barang', 'like', "%{$word}%")
+                        ->orWhere('kd_barang', 'like', "%{$word}%")
+                        ->orWhere('indikasi', 'like', "%{$word}%");
+                }
+            })
             ->paginate(8);
 
-        $produk->appends(['q' => $keyword]); // jaga keyword tetap ada saat paginasi
+        $produk->appends(['q' => $keyword]);
 
         return view('frontend.v_produk.index', [
             'produk' => $produk,
         ]);
     }
+
 
 
     public function data(Request $request)
