@@ -14,6 +14,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
     <!-- Di bagian <head> -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+        integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <!-- Bootstrap -->
     <link type="text/css" rel="stylesheet" href="{{ asset('eshop/css/bootstrap.min.css') }}" />
@@ -30,6 +32,9 @@
 
     <!-- Custom stlylesheet -->
     <link type="text/css" rel="stylesheet" href="{{ asset('eshop/css/style.css') }}" />
+    <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js"
+        data-client-key="{{ config('midtrans.client_key') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -85,40 +90,34 @@
                                 <strong class="text-uppercase">My Account <i class="fa fa-caret-down"></i></strong>
                             </div>
                             @if (Auth::check())
-                            <a href="#" class="text-uppercase">{{ Auth::user()->name }}</a>
-                            <ul class="custom-menu list-unstyled">
-                                <li>
-                                    <a href="{{ route('customer.akun', ['id' => Auth::user()->id]) }}">
-                                        <i class="fa fa-user-o me-2"></i> My Account
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <i class="fa fa-heart-o me-2"></i> My Wishlist
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#">
-                                        <i class="fa fa-check me-2"></i> Checkout
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#"
-                                        onclick="event.preventDefault(); document.getElementById('logoutForm').submit();">
-                                        <i class="fa fa-unlock-alt me-2"></i> Logout
-                                    </a>
-                                </li>
-                            </ul>
+                                <a href="#" class="text-uppercase">{{ Auth::user()->name }}</a>
+                                <ul class="custom-menu list-unstyled">
+                                    <li>
+                                        <a href="{{ route('customer.akun', ['id' => Auth::user()->id]) }}">
+                                            <i class="fa fa-user-o me-2"></i> My Account
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('order.history') }}">
+                                            <i class="fa fa-shopping-cart me-2"></i> History Pemesanan
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#"
+                                            onclick="event.preventDefault(); document.getElementById('logoutForm').submit();">
+                                            <i class="fa fa-unlock-alt me-2"></i> Logout
+                                        </a>
+                                    </li>
+                                </ul>
 
-                            <form id="logoutForm" action="{{ route('logout') }}" method="POST" class="d-none">
-                                @csrf
-                            </form>
-
+                                <form id="logoutForm" action="{{ route('logout') }}" method="POST" class="d-none">
+                                    @csrf
+                                </form>
                             @else
-                            <ul class="custom-menu">
-                                <li><a href="{{ route('login.form') }}"><i class="fa fa-unlock-alt"></i> Login</a>
-                                </li>
-                            </ul>
+                                <ul class="custom-menu">
+                                    <li><a href="{{ route('login.form') }}"><i class="fa fa-unlock-alt"></i> Login</a>
+                                    </li>
+                                </ul>
                             @endif
                         </li>
                         <!-- /Account -->
@@ -127,46 +126,15 @@
                         <li class="header-cart dropdown default-dropdown">
                             <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
                                 <div class="header-btns-icon">
-                                    <i class="fa fa-shopping-cart"></i>
-                                    <span class="qty">3</span>
+                                    <a href="{{ route('order.cart') }}">
+                                        <i class="fa fa-shopping-cart"></i>
+                                        <span class="qty">{{ $cartCount }}</span>
+                                    </a>
                                 </div>
                                 <strong class="text-uppercase">My Cart:</strong>
                                 <br>
-                                <span>35.20$</span>
+                                <span style="font-size: 12px">Rp. {{ number_format($cartTotal, 0, ',', '.') }}</span>
                             </a>
-                            <div class="custom-menu">
-                                <div id="shopping-cart">
-                                    <div class="shopping-cart-list">
-                                        <div class="product product-widget">
-                                            <div class="product-thumb">
-                                                <img src="{{ asset('eshop/img/thumb-product01.jpg') }}" alt="">
-                                            </div>
-                                            <div class="product-body">
-                                                <h3 class="product-price">$32.50 <span class="qty">x3</span></h3>
-                                                <h2 class="product-name"><a href="#">Product Name Goes Here</a>
-                                                </h2>
-                                            </div>
-                                            <button class="cancel-btn"><i class="fa fa-trash"></i></button>
-                                        </div>
-                                        <div class="product product-widget">
-                                            <div class="product-thumb">
-                                                <img src="{{ asset('eshop/img/thumb-product01.jpg') }}" alt="">
-                                            </div>
-                                            <div class="product-body">
-                                                <h3 class="product-price">$32.50 <span class="qty">x3</span></h3>
-                                                <h2 class="product-name"><a href="#">Product Name Goes Here</a>
-                                                </h2>
-                                            </div>
-                                            <button class="cancel-btn"><i class="fa fa-trash"></i></button>
-                                        </div>
-                                    </div>
-                                    <div class="shopping-cart-btns">
-                                        <button class="main-btn">View Cart</button>
-                                        <button class="primary-btn">Checkout <i
-                                                class="fa fa-arrow-circle-right"></i></button>
-                                    </div>
-                                </div>
-                            </div>
                         </li>
                         <!-- /Cart -->
 
@@ -190,30 +158,32 @@
         <div class="container">
             <div id="responsive-nav">
                 @if (request()->segment(1) == '' || request()->segment(1) == 'home-page')
-                <!-- category nav -->
-                <div class="category-nav">
-                    <span class="category-header" onclick="toggleKategoriList()" style="cursor: pointer;">
-                        Kategori <i class="fa fa-list"></i>
-                    </span>
-                    <ul class="category-list" id="kategori-list" style="display: none;">
-                        @foreach ($kategori as $item)
-                        <li>
-                            <a href="{{ route('produk.kategori', ['id' => $item->id]) }}">{{ $item->name }}</a>
-                        </li>
-                        @endforeach
-                    </ul>
-                </div>
+                    <!-- category nav -->
+                    <div class="category-nav">
+                        <span class="category-header" onclick="toggleKategoriList()" style="cursor: pointer;">
+                            Kategori <i class="fa fa-list"></i>
+                        </span>
+                        <ul class="category-list" id="kategori-list" style="display: none;">
+                            @foreach ($kategori as $item)
+                                <li>
+                                    <a
+                                        href="{{ route('produk.kategori', ['id' => $item->id]) }}">{{ $item->name }}</a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
                 @else
-                <div class="category-nav show-on-click">
-                    <span class="category-header">Kategori <i class="fa fa-list"></i></span>
-                    <ul class="category-list">
-                        @foreach ($kategori as $item)
-                        <li>
-                            <a href="{{ route('produk.kategori', ['id' => $item->id]) }}">{{ $item->name }}</a>
-                        </li>
-                        @endforeach
-                    </ul>
-                </div>
+                    <div class="category-nav show-on-click">
+                        <span class="category-header">Kategori <i class="fa fa-list"></i></span>
+                        <ul class="category-list">
+                            @foreach ($kategori as $item)
+                                <li>
+                                    <a
+                                        href="{{ route('produk.kategori', ['id' => $item->id]) }}">{{ $item->name }}</a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
                 @endif
                 <!-- /category nav -->
 
@@ -254,82 +224,6 @@
     <footer id="footer" class="section section-grey">
         <!-- container -->
         <div class="container">
-            <!-- row -->
-            <div class="row">
-                <!-- footer widget -->
-                <div class="col-md-3 col-sm-6 col-xs-6">
-                    <div class="footer">
-                        <!-- footer logo -->
-                        <div class="footer-logo">
-                            <a class="logo" href="#">
-                                <img src="{{ asset('eshop/img/image.png') }}" alt="">
-                            </a>
-                        </div>
-                        <!-- /footer logo -->
-
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
-                            labore et dolore magna</p>
-
-                        <!-- footer social -->
-                        <ul class="footer-social">
-                            <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                            <li><a href="#"><i class="fa fa-twitter"></i></a></li>
-                            <li><a href="#"><i class="fa fa-instagram"></i></a></li>
-                            <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
-                            <li><a href="#"><i class="fa fa-pinterest"></i></a></li>
-                        </ul>
-                        <!-- /footer social -->
-                    </div>
-                </div>
-                <!-- /footer widget -->
-
-                <!-- footer widget -->
-                <div class="col-md-3 col-sm-6 col-xs-6">
-                    <div class="footer">
-                        <h3 class="footer-header">My Account</h3>
-                        <ul class="list-links">
-                            <li><a href="#">My Account</a></li>
-                            <li><a href="#">My Wishlist</a></li>
-                            <li><a href="#">Compare</a></li>
-                            <li><a href="#">Checkout</a></li>
-                            <li><a href="#">Login</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <!-- /footer widget -->
-
-                <div class="clearfix visible-sm visible-xs"></div>
-
-                <!-- footer widget -->
-                <div class="col-md-3 col-sm-6 col-xs-6">
-                    <div class="footer">
-                        <h3 class="footer-header">Customer Service</h3>
-                        <ul class="list-links">
-                            <li><a href="#">About Us</a></li>
-                            <li><a href="#">Shiping & Return</a></li>
-                            <li><a href="#">Shiping Guide</a></li>
-                            <li><a href="#">FAQ</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <!-- /footer widget -->
-
-                <!-- footer subscribe -->
-                <div class="col-md-3 col-sm-6 col-xs-6">
-                    <div class="footer">
-                        <h3 class="footer-header">Stay Connected</h3>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor.</p>
-                        <form>
-                            <div class="form-group">
-                                <input class="input" placeholder="Enter Email Address">
-                            </div>
-                            <button class="primary-btn">Join Newslatter</button>
-                        </form>
-                    </div>
-                </div>
-                <!-- /footer subscribe -->
-            </div>
-            <!-- /row -->
             <hr>
             <!-- row -->
             <div class="row">
@@ -340,8 +234,7 @@
                         Copyright &copy;
                         <script>
                             document.write(new Date().getFullYear());
-                        </script> All rights reserved | This template is made with <i class="fa fa-heart-o"
-                            aria-hidden="true"></i> by <a href="https://colorlib.com" target="_blank">Colorlib</a>
+                        </script> All rights reserved | BRIGHT FUTURE
                         <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
                     </div>
                     <!-- /footer copyright -->

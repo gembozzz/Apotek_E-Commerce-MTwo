@@ -85,8 +85,10 @@
                         @foreach ($produkpalingbanyakterjual as $item)
                         <div class="product product-single">
                             <div class="product-thumb">
-                                <button class="main-btn quick-view"><i class="fa fa-search-plus"></i> Quick
-                                    view</button>
+                                <a href="{{ route('produk.detail', $item->id_barang) }}">
+                                    <button class="main-btn quick-view"><i class="fa fa-search-plus"></i>
+                                        Detail</button>
+                                </a>
                                 <img src="{{ asset('eshop/img/product01.jpg') }}" alt="">
                             </div>
                             <div class="product-body">
@@ -101,9 +103,13 @@
                                 </div>
                                 <h2 class="product-name"><a href="#">{{ $item->nm_barang }}</a></h2>
                                 <div class="product-btns">
-                                    <button class="main-btn icon-btn"><i class="fa fa-heart"></i></button>
-                                    <button class="primary-btn add-to-cart"><i class="fa fa-shopping-cart"></i>
-                                        Add to Cart</button>
+                                    <form action="{{ route('order.addToCart', $item->id_barang) }}" method="post"
+                                        style="display: inline-block;" title="Pesan Ke Aplikasi">
+                                        @csrf
+                                        <button type="submit" class="primary-btn add-to-cart"><i
+                                                class="fa fa-shopping-cart"></i> Add to cart</button>
+                                        <input type="hidden" name="redirect" value="0">
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -117,6 +123,62 @@
         <!-- /row -->
     </div>
     <!-- /container -->
+</div>
+<!-- /section -->
+
+<!-- section -->
+<div class="section">
+    <!-- container -->
+    <div class="container">
+        <!-- row -->
+        <div class="row">
+            <!-- section title -->
+            <div class="col-md-12">
+                <div class="section-title">
+                    <h2 class="title">Produk Terbaru</h2>
+                </div>
+            </div>
+            <!-- section title -->
+
+            <!-- Product Single -->
+            @foreach ($produkTerbaru as $item)
+            <div class="col-md-3 col-sm-6 col-xs-6">
+                <div class="product product-single">
+                    <div class="product-thumb">
+                        <a href="{{ route('produk.detail', $item->id_barang) }}">
+                            <button class="main-btn quick-view"><i class="fa fa-search-plus"></i> Detail</button>
+                        </a>
+                        <img src="{{ asset('storage/' . ($item->image ?? 'default.png')) }}" alt="">
+                    </div>
+                    <div class="product-body">
+                        <h3 class="product-price">Rp{{ number_format($item->hrgjual_barang, 0, ',', '.') }}</h3>
+                        <div class="product-rating">
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star-o empty"></i>
+                        </div>
+                        <h2 class="product-name"><a href="#">{{ $item->nm_barang }}</a></h2>
+                        <div class="product-btns">
+                            <form action="{{ route('order.addToCart', $item->id_barang) }}" method="post"
+                                style="display: inline-block;" title="Pesan Ke Aplikasi">
+                                @csrf
+                                <button type="submit" class="primary-btn add-to-cart"><i
+                                        class="fa fa-shopping-cart"></i> Add to cart</button>
+                                <input type="hidden" name="redirect" value="0">
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endforeach
+        </div>
+        <!-- /row -->
+    </div>
+    <!-- /container -->
+</div>
+<!-- /container -->
 </div>
 <!-- /section -->
 

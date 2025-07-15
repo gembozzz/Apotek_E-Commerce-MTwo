@@ -52,10 +52,30 @@
                                     {{-- Email --}}
                                     <div class="form-group">
                                         <label>Email</label>
-                                        <input type="text" name="email" value="{{ old('email', $edit->email) }}"
+                                        <input type="email" name="email" value="{{ old('email', $edit->email) }}"
                                             class="form-control @error('email') is-invalid @enderror"
                                             placeholder="Masukkan Email">
                                         @error('email')
+                                            <div class="invalid-feedback alert-danger">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>Alamat</label>
+                                        <input type="text" name="alamat" value="{{ old('alamat', $edit->alamat) }}"
+                                            class="form-control @error('alamat') is-invalid @enderror"
+                                            placeholder="Masukkan alamat">
+                                        @error('alamat')
+                                            <div class="invalid-feedback alert-danger">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label>No Telephone</label>
+                                        <input type="number" name="no_tlp" value="{{ old('no_tlp', $edit->no_tlp) }}"
+                                            class="form-control @error('no_tlp') is-invalid @enderror"
+                                            placeholder="Masukkan Nomor Telephone Anda">
+                                        @error('no_tlp')
                                             <div class="invalid-feedback alert-danger">{{ $message }}</div>
                                         @enderror
                                     </div>

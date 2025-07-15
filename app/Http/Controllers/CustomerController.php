@@ -74,7 +74,9 @@ class CustomerController extends Controller
         $rules = [
             'name' => 'required|max:255',
             'email' => 'required|email|max:255|unique:users,email,' . $id,
-            'password' => 'nullable|min:6', // tambah validasi password
+            'password' => 'nullable|min:6',
+            'alamat' => 'nullable|max:255',
+            'no_tlp' => 'nullable|max:255' // tambah validasi password
         ];
 
         $validatedData = $request->validate($rules);
