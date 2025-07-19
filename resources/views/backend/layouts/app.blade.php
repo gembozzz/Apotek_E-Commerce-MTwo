@@ -177,6 +177,33 @@
                                 </li>
                             </ul>
                         </li>
+                        <li
+                            class="nav-item {{ in_array(Route::currentRouteName(), ['report.process', 'report.finished']) ? 'menu-open' : '' }}  ">
+                            <a href="#"
+                                class="nav-link {{ in_array(Route::currentRouteName(), ['report.process', 'report.finished']) ? 'active bg-blue-600 text-white' : 'text-white' }}">
+                                <i class="nav-icon fas fa-file"></i>
+                                <p>
+                                    Laporan
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('report.process') }}"
+                                        class="nav-link pl-4 {{ Route::currentRouteName() == 'report.process' ? 'active bg-blue-600 text-black' : 'text-white' }}">
+                                        <i class="fas fa-file-alt nav-icon"></i>
+                                        <p style="margin: 0; font-size: 15px;">Laporan Pesanan Proses</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('report.finished') }}"
+                                        class="nav-link pl-4 {{ Route::currentRouteName() == 'report.finished' ? 'active bg-blue-600 text-black' : 'text-white' }}">
+                                        <i class="fas fa-file-alt nav-icon"></i>
+                                        <p style="margin: 0; font-size: 15px;">Laporan Pesanan Selesai</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
                         {{-- <li
                             class="nav-item {{ in_array(Route::currentRouteName(), ['laporan.formpesananselesai', 'laporan.formpesananproses', 'laporan.formpenjualan', 'laporan.formpembelian']) ? 'menu-open' : '' }}">
                             <a href="#"

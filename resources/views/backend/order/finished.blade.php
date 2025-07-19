@@ -14,7 +14,7 @@
             </div>
 
             <div class="card-body">
-                <table id="example1" class="table table-auto table-sm table-bordered table-striped w-100">
+                <table id="tablePesanan" class="table table-auto table-sm table-bordered table-striped w-100">
                     <thead>
                         <tr>
                             <th>No</th>
@@ -41,20 +41,21 @@
 
 @push('scripts')
 <script>
-    $(function () {
-    $("#example1").DataTable({
-      "responsive": true, "lengthChange": false, "autoWidth": false,
-      "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-    $('#example2').DataTable({
-      "paging": true,
-      "lengthChange": false,
-      "searching": false,
-      "ordering": true,
-      "info": true,
-      "autoWidth": false,
-      "responsive": true,
+    $(document).ready(function() {
+        $('#tablePesanan').DataTable({
+            processing: true,
+            serverSide: true,
+            ajax: '{{ route("pesanan.selesai.data") }}',
+            columns: [
+                { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
+                { data: 'kode_pesanan', name: 'kode_pesanan' },
+                { data: 'created_at', name: 'created_at' },
+                { data: 'total_harga', name: 'total_harga' },
+                { data: 'status', name: 'status' },
+                { data: 'pelanggan', name: 'pelanggan', orderable: false, searchable: false },
+                { data: 'aksi', name: 'aksi', orderable: false, searchable: false },
+            ]
+        });
     });
-  });
 </script>
 @endpush

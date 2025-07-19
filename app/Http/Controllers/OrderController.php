@@ -10,6 +10,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Midtrans\Snap;
 use Midtrans\Config;
+use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\DB;
+
 
 class OrderController extends Controller
 {
@@ -77,7 +80,7 @@ class OrderController extends Controller
         if ($order) {
             $order->load('orderItems.produk');
         }
-        return view('frontend.v_order.cart', compact('order','jarak'));
+        return view('frontend.v_order.cart', compact('order', 'jarak'));
     }
 
 
@@ -158,7 +161,7 @@ class OrderController extends Controller
             return redirect()->route('order.cart')->with('error', 'Keranjang belanja kosong.');
         }
         $jenisLayanan = $order->total_harga >= 50000 ? 'Instan' : 'Reguler';
-        return view('frontend.v_order.shipping', compact('order', 'customer' , 'jenisLayanan'));
+        return view('frontend.v_order.shipping', compact('order', 'customer', 'jenisLayanan'));
     }
 
     public function selectPayment()
@@ -308,53 +311,139 @@ class OrderController extends Controller
         }
     }
 
-
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function processOrder()
     {
-        //
+        //backend 
+        $order = Order::whereIn('status', ['Paid', 'Kirim'])->orderBy('id', 'desc')->get();
+        return view('backend.order.process', [
+            'index' => $order
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function getProcessOrder(Request $request)
     {
-        //
+        if ($request->ajax()) {
+            $data = Order::with('user')
+                ->whereIn('status', ['Paid', 'Kirim'])
+                ->orderBy('id', 'desc');
+
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->editColumn('created_at', fn($row) => $row->created_at->format('Y-m-d H:i'))
+                ->editColumn('total_harga', fn($row) => 'Rp ' . number_format($row->total_harga, 0, ',', '.'))
+                ->addColumn('pelanggan', fn($row) => $row->user->name ?? '-')
+                ->addColumn('aksi', function ($row) {
+                    $btn = '<div class="dropdown">
+                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown">Action</button>
+                        <div class="dropdown-menu p-2">
+                            <a href="' . route('pesanan.proses.detail', $row->id) . '" class="btn btn-primary btn-sm w-100 mb-1">
+                                 Update Pesanan
+                            </a>
+                            <button onclick="batalkanPesanan(' . route('pesanan.batalkan', $row->id) . ')" class="btn btn-danger btn-sm w-100">
+                                Batalkan Pesanan
+                            </button>
+                        </div>
+                    </div>';
+                    return $btn;
+                })
+                ->rawColumns(['aksi'])
+                ->make(true);
+        }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Order $order)
+    public function finishedOrders()
     {
-        //
+        //backend 
+        $order = Order::where('status', 'Selesai')->orderBy('id', 'desc')->get();
+        return view('backend.order.finished', [
+            'judul' => 'Pesanan',
+            'subJudul' => 'Pesanan Selesai',
+            'judul' => 'Data Transaksi',
+            'index' => $order
+        ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Order $order)
+    public function getFinishedOrders(Request $request)
     {
-        //
+        if ($request->ajax()) {
+            $data = Order::with('user')
+                ->where('status', 'Selesai')
+                ->orderBy('id', 'desc');
+
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->editColumn('created_at', fn($row) => $row->created_at->format('Y-m-d H:i'))
+                ->editColumn('total_harga', fn($row) => 'Rp ' . number_format($row->total_harga, 0, ',', '.'))
+                ->addColumn('pelanggan', fn($row) => $row->user->name ?? '-')
+                ->addColumn('aksi', function ($row) {
+                    $btn = '<div class="dropdown">
+                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown">Action</button>
+                        <div class="dropdown-menu p-2">
+                            <a href="' . route('pesanan.proses.detail', $row->id) . '" class="btn btn-primary btn-sm w-100 mb-1">
+                                 Detail Pesanan
+                            </a>
+                        </div>
+                    </div>';
+                    return $btn;
+                })
+                ->rawColumns(['aksi'])
+                ->make(true);
+        }
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Order $order)
+
+    public function statusDetail($id)
     {
-        //
+        $order = Order::findOrFail($id);
+        return view('backend.order.show', [
+            'judul' => 'Pesanan',
+            'subJudul' => 'Pesanan Proses',
+            'judul' => 'Data Transaksi',
+            'order' => $order,
+        ]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Order $order)
+    public function statusUpdate(Request $request, string $id)
     {
-        //
+        $order = Order::findOrFail($id);
+
+        $validatedData = $request->validate([
+            'status' => 'required|in:Paid,Kirim,Selesai', // sesuaikan dengan status valid
+        ]);
+
+        $order->update([
+            'status' => $validatedData['status']
+        ]);
+
+        return redirect()->route('pesanan.proses')->with('success', 'Status pesanan berhasil diperbarui.');
+    }
+
+    public function batalkan($id)
+    {
+        DB::beginTransaction();
+        try {
+            $order = Order::with('orderItems.produk')->findOrFail($id);
+
+            if (!in_array($order->status, ['Paid', 'Kirim'])) {
+                return response()->json(['status' => false, 'message' => 'Pesanan tidak bisa dibatalkan.']);
+            }
+
+            // Kembalikan stok produk
+            foreach ($order->orderItems as $item) {
+                $produk = $item->produk;
+                $produk->stok_barang += $item->quantity;
+                $produk->save();
+            }
+
+            // Update status order
+            $order->status = 'Dibatalkan';
+            $order->save();
+
+            DB::commit();
+            return response()->json(['status' => true, 'message' => 'Pesanan berhasil dibatalkan dan stok dikembalikan.']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['status' => false, 'message' => 'Terjadi kesalahan: ' . $e->getMessage()]);
+        }
     }
 }

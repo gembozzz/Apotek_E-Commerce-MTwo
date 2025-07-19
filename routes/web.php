@@ -9,6 +9,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HomepageController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ArticleController;
+use App\Http\Controllers\ReportController;
 
 Route::get('/', function () {
     return redirect()->route('home-page');
@@ -88,4 +89,24 @@ Route::prefix('/backend')->middleware('auth:admin')->group(function () {
     Route::put('/article/{article}', [ArticleController::class, 'update'])->name('article.update');
     Route::delete('/article/{article}', [ArticleController::class, 'destroy'])->name('article.destroy');
     Route::get('/article-data', [ArticleController::class, 'data'])->name('backend.article.data');
+
+
+    // pesanan proses
+    Route::get('/pesanan-proses', [OrderController::class, 'processOrder'])->name('pesanan.proses');
+    Route::get('/pesanan-proses/{id}/edit', [OrderController::class, 'statusDetail'])->name('pesanan.proses.detail');
+    Route::put('/pesanan-proses/{id}', [OrderController::class, 'statusUpdate'])->name('pesanan.proses.update');
+    Route::get('/pesanan-proses/data', [OrderController::class, 'getProcessOrder'])->name('pesanan.proses.data');
+    Route::delete('/pesanan/{id}/batal', [OrderController::class, 'batalkan'])->name('pesanan.batalkan');
+
+
+    // pesanan selesai
+    Route::get('/pesanan-selesai', [OrderController::class, 'finishedOrders'])->name('pesanan.selesai');
+    Route::get('/pesanan-selesai/data', [OrderController::class, 'getFinishedOrders'])->name('pesanan.selesai.data');
+    Route::get('/pesanan-selesai/{id}', [OrderController::class, 'showFinished'])->name('pesanan.selesai.show');
+
+    // Laporan
+    Route::get('/report/process', [ReportController::class, 'reportProcess'])->name('report.process');
+    Route::get('/report/finished', [ReportController::class, 'reportFinished'])->name('report.finished');
+    Route::match(['get', 'post'], 'backend/laporan/cetak-pesanan-proses', [ReportController::class, 'cetakOrderProses'])->name('backend.laporan.cetakpesananproses')->middleware('auth');
+    Route::match(['get', 'post'], 'backend/laporan/cetak-pesanan-selesai', [ReportController::class, 'cetakOrderSelesai'])->name('backend.laporan.cetakpesananselesai')->middleware('auth');
 });
