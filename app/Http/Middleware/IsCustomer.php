@@ -20,6 +20,6 @@ class IsCustomer
             return $next($request);
         }
 
-        return redirect('/auth/redirect')->with('msgError', 'Silakan login terlebih dahulu.');
+        return redirect()->route('login.form')->with('msgError', 'Silakan login terlebih dahulu.');
     }
 }

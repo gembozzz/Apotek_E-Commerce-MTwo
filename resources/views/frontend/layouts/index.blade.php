@@ -21,8 +21,9 @@
     <link type="text/css" rel="stylesheet" href="{{ asset('eshop/css/bootstrap.min.css') }}" />
 
     <!-- Slick -->
-    <link type="text/css" rel="stylesheet" href="{{ asset('eshop/css/slick.css') }}" />
-    <link type="text/css" rel="stylesheet" href="{{ asset('eshop/css/slick-theme.css') }}" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
+    <link rel="stylesheet" type="text/css"
+        href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css" />
 
     <!-- nouislider -->
     <link type="text/css" rel="stylesheet" href="{{ asset('eshop/css/nouislider.min.css') }}" />
@@ -35,6 +36,7 @@
     <script type="text/javascript" src="https://app.sandbox.midtrans.com/snap/snap.js"
         data-client-key="{{ config('midtrans.client_key') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -83,15 +85,19 @@
                     <ul class="header-btns">
                         <!-- Account -->
                         <li class="header-account dropdown default-dropdown">
-                            <div class="dropdown-toggle" role="button" data-toggle="dropdown" aria-expanded="true">
+                            <!-- Ganti dari <div> ke <a> -->
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                aria-expanded="false">
                                 <div class="header-btns-icon">
                                     <i class="fa fa-user-o"></i>
                                 </div>
                                 <strong class="text-uppercase">My Account <i class="fa fa-caret-down"></i></strong>
-                            </div>
+                            </a>
+
                             @if (Auth::check())
-                                <a href="#" class="text-uppercase">{{ Auth::user()->name }}</a>
-                                <ul class="custom-menu list-unstyled">
+                                <a class="text-uppercase">{{ Auth::user()->name }}</a>
+                                <!-- Tambahkan class dropdown-menu agar dikenali Bootstrap -->
+                                <ul class="dropdown-menu custom-menu list-unstyled">
                                     <li>
                                         <a href="{{ route('customer.akun', ['id' => Auth::user()->id]) }}">
                                             <i class="fa fa-user-o me-2"></i> My Account
@@ -109,13 +115,15 @@
                                         </a>
                                     </li>
                                 </ul>
-
                                 <form id="logoutForm" action="{{ route('logout') }}" method="POST" class="d-none">
                                     @csrf
                                 </form>
                             @else
-                                <ul class="custom-menu">
-                                    <li><a href="{{ route('login.form') }}"><i class="fa fa-unlock-alt"></i> Login</a>
+                                <ul class="dropdown-menu custom-menu list-unstyled">
+                                    <li>
+                                        <a href="{{ route('login.form') }}">
+                                            <i class="fa fa-unlock-alt"></i> Login
+                                        </a>
                                     </li>
                                 </ul>
                             @endif
@@ -145,6 +153,7 @@
                         <!-- / Mobile nav toggle -->
                     </ul>
                 </div>
+
             </div>
             <!-- header -->
         </div>
@@ -227,42 +236,60 @@
             <hr>
             <!-- row -->
             <div class="row">
-                <div class="col-md-8 col-md-offset-2 text-center">
-                    <!-- footer copyright -->
-                    <div class="footer-copyright">
-                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                <!-- Google Map -->
+
+                <!-- Copyright -->
+                <div class="col-md-6 col-md-offset-0 text-center">
+                    <h4 class="text-center">Lokasi Kami</h4>
+                    <div class="embed-responsive embed-responsive-4by3 justify-items-center">
+                        <iframe
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d253784.24518081397!2d106.81676429989291!3d-6.344962672964114!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e698f000df91389%3A0x7cc4674fb7e0f5a1!2sAzzam%20Berkah%20Farma!5e0!3m2!1sid!2sid!4v1752765992036!5m2!1sid!2sid"
+                            width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade" ></iframe>
+                    </div>
+                    <div class="footer-copyright" style="margin-top: 30px;">
                         Copyright &copy;
                         <script>
                             document.write(new Date().getFullYear());
                         </script> All rights reserved | BRIGHT FUTURE
-                        <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
                     </div>
-                    <!-- /footer copyright -->
                 </div>
             </div>
             <!-- /row -->
         </div>
         <!-- /container -->
     </footer>
+
+
     <!-- /FOOTER -->
 
     <!-- jQuery Plugins -->
-    <script>
-        function toggleKategoriList() {
-            const list = document.getElementById('kategori-list');
-            list.style.display = (list.style.display === 'none' || list.style.display === '') ? 'block' : 'none';
-        }
-    </script>
+
     <script src="{{ asset('eshop/js/jquery.min.js') }}"></script>
     <script src="{{ asset('eshop/js/bootstrap.min.js') }}"></script>
     <script src="{{ asset('eshop/js/slick.min.js') }}"></script>
     <script src="{{ asset('eshop/js/nouislider.min.js') }}"></script>
     <script src="{{ asset('eshop/js/jquery.zoom.min.js') }}"></script>
+
+
+    <script>
+        function toggleKategoriList() {
+            const list = document.getElementById('kategori-list');
+            list.style.display = (list.style.display === 'none' || list.style.display === '') ? 'block' : 'none';
+        }
+
+        // Optional: jika butuh jQuery ready
+        $(document).ready(function() {
+            // code yang butuh jQuery
+        });
+    </script>
+
     <script src="{{ asset('eshop/js/main.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     <script>
         AOS.init();
     </script>
+
 
 </body>
 

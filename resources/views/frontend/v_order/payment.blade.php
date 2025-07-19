@@ -44,21 +44,20 @@
                                             $totalHarga += $item->harga * $item->quantity;
                                         @endphp
                                         <tr>
-                                            <td class="thumb"><img
-                                                    src="{{ asset('storage/' . $item->produk->image) }}"
+                                            <td class="thumb"><img src="{{ asset('storage/' . $item->produk->image) }}"
                                                     alt=""></td>
                                             <td class="details">
                                                 <a>{{ $item->produk->nm_barang }}</a>
                                             </td>
                                             <td class="price text-center"><strong>Rp.
-                                                    {{ number_format($item->produk->hrgjual_barang, 0, ',', '.') }}</strong></td>
+                                                    {{ number_format($item->produk->hrgjual_barang, 0, ',', '.') }}</strong>
+                                            </td>
                                             <td class="qty text-center">
                                                 <a> {{ $item->quantity }} </a>
                                             </td>
                                             <td class="total text-center"><strong class="primary-color">Rp.
                                                     {{ number_format($item->harga * $item->quantity, 0, ',', '.') }}</strong>
                                             </td>
-
                                         </tr>
                                     @endforeach
                                 </tbody>
@@ -77,8 +76,14 @@
                                     </tr>
                                 </tfoot>
                             </table>
-
                             <input type="hidden" name="total_price" value="{{ $totalHarga }}">
+                            <div class="form-group" style="max-width: 300px; margin-top: 20px;">
+                                <label for="payment_method">Metode Pembayaran:</label>
+                                <select id="payment_method" name="payment_method" class="form-control" required>
+                                    <option value="midtrans">Bayar Online (Midtrans)</option>
+                                    <option value="cod">Bayar di Tempat (COD)</option>
+                                </select>
+                            </div>
                             <div class="pull-right">
                                 <button class="primary-btn" id="pay-button">Bayar Sekarang</button>
                             </div>
@@ -93,25 +98,33 @@
 
     <script type="text/javascript">
         var payButton = document.getElementById('pay-button');
+        var paymentMethod = document.getElementById('payment_method');
+
         payButton.addEventListener('click', function() {
-            window.snap.pay('{{ $snapToken }}', {
-                onSuccess: function(result) {
-                    alert("payment success!");
-                    console.log(result);
-                    window.location.href = "{{ route('order.complete') }}";
-                },
-                onPending: function(result) {
-                    alert("waiting for your payment!");
-                    console.log(result);
-                },
-                onError: function(result) {
-                    alert("payment failed!");
-                    console.log(result);
-                },
-                onClose: function() {
-                    alert('you closed the popup without finishing the payment');
-                }
-            });
+            if (paymentMethod.value === 'midtrans') {
+                window.snap.pay('{{ $snapToken }}', {
+                    onSuccess: function(result) {
+                        alert("Pembayaran berhasil!");
+                        console.log(result);
+                        window.location.href = "{{ route('order.complete') }}";
+                    },
+                    onPending: function(result) {
+                        alert("Menunggu pembayaran...");
+                        console.log(result);
+                    },
+                    onError: function(result) {
+                        alert("Pembayaran gagal!");
+                        console.log(result);
+                    },
+                    onClose: function() {
+                        alert('Kamu menutup popup tanpa menyelesaikan pembayaran');
+                    }
+                });
+            } else if (paymentMethod.value === 'cod') {
+                // Redirect ke route khusus untuk COD
+                window.location.href = "{{ route('order.cod') }}";
+            }
         });
     </script>
+
 @endsection
