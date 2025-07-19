@@ -55,6 +55,7 @@ Route::middleware('is.customer')->group(function () {
 
     Route::get('history', [OrderController::class, 'orderHistory'])->name('order.history');
     Route::get('order/invoice/{id}', [OrderController::class, 'invoiceFrontend'])->name('order.invoice');
+    Route::get('/order/cod', [OrderController::class, 'cod'])->name('order.cod');
 });
 
 Route::prefix('/backend')->middleware('auth:admin')->group(function () {

@@ -32,22 +32,29 @@ class OrderController extends Controller
         $customer = User::where('id', Auth::id())->first();
         $produk = Product::findOrFail($id);
 
+        // Hitung harga setelah diskon (jika ada diskon)
+        $hargaFinal = $produk->hrgjual_barang;
+        if ($produk->diskon > 0) {
+            $hargaFinal -= ($produk->hrgjual_barang * $produk->diskon / 100);
+        }
+
         // Cek apakah stok mencukupi
         if ($produk->stok_barang <= 0) {
             return redirect()->back()->with('error', 'Stok produk tidak mencukupi');
         }
 
+        // Ambil atau buat order
         $order = Order::firstOrCreate(
             ['user_id' => $customer->id, 'status' => 'pending'],
         );
 
+        // Ambil atau buat item order
         $orderItem = OrderItem::firstOrCreate(
             ['order_id' => $order->id, 'produk_id' => $produk->id_barang],
-            ['quantity' => 1, 'harga' => $produk->hrgjual_barang]
+            ['quantity' => 1, 'harga' => $hargaFinal]
         );
 
         if (!$orderItem->wasRecentlyCreated) {
-            // Cek apakah stok mencukupi untuk ditambah lagi
             if ($produk->stok_barang < 1) {
                 return redirect()->back()->with('error', 'Stok produk tidak mencukupi');
             }
@@ -56,19 +63,18 @@ class OrderController extends Controller
             $orderItem->save();
         }
 
-        // Update total harga
-        $order->total_harga += $produk->hrgjual_barang;
+        // Tambahkan harga final ke total
+        $order->total_harga += $hargaFinal;
         $order->save();
 
-        // Cek parameter redirect
+        // Cek redirect
         if ($request->input('redirect') == '0') {
-            // Kembali ke halaman sebelumnya (tidak pindah)
             return redirect()->back()->with('success', 'Produk berhasil ditambahkan ke keranjang');
         } else {
-            // Redirect ke halaman keranjang
             return redirect()->route('order.cart')->with('success', 'Produk berhasil ditambahkan ke keranjang');
         }
     }
+
 
 
 
@@ -210,6 +216,7 @@ class OrderController extends Controller
                 'email' => $customer->email,
                 'phone' => $customer->hp,
             ],
+            'payment_type' => 'qris',
         ];
 
         $snapToken = Snap::getSnapToken($params);
@@ -243,7 +250,7 @@ class OrderController extends Controller
     {
         $customer = User::where('id', Auth::id())->first();;;
         // $orders = Order::where('customer_id', $customer->id)->where('status', 'completed')->get();
-        $statuses = ['Paid', 'Kirim', 'Selesai'];
+        $statuses = ['Paid', 'Kirim', 'Selesai', 'Proses COD'];
         $orders = Order::where('user_id', $customer->id)
             ->whereIn('status', $statuses)
             ->orderBy('id', 'desc')
@@ -262,40 +269,52 @@ class OrderController extends Controller
         ]);
     }
 
+
     public function complete()
     {
-        // Dapatkan customer yang login
         $customer = Auth::user();
-
-        // Cari order dengan status 'pending' milik customer tersebut
+        // Menggunakan whereIn untuk mencari status 'pending' ATAU 'Proses COD'
         $order = Order::where('user_id', $customer->id)
-            ->where('status', 'pending')
+            ->whereIn('status', ['pending', 'Proses COD']) // Koreksi di sini
+            ->with('orderItems.produk') // Pastikan relasi orderItems dan produk terkait dimuat
             ->first();
 
-        $today = date('Y-m-d');
-
-        // Hitung jumlah order untuk hari ini
-        $todayOrderCount = Order::whereDate('created_at', $today)->where('status', 'Paid')->count();
-
-        // Tentukan nomor urut berikutnya
-        $nextOrderNumber = $todayOrderCount + 1;
-
-        // Buat invoice number
-        $invoice = 'ORD-' . date('Ymd') . '-' . str_pad($nextOrderNumber, 4, '0', STR_PAD_LEFT);
-
-
-        if ($order) {
-            // Update status order menjadi 'Paid'
-
-            // Tentukan layanan ongkir berdasarkan total_harga
-
-            $order->status = 'Paid';
-            $order->kode_pesanan = $invoice;
-            $order->save();
+        // Jika tidak ada order yang ditemukan dengan status pending/Proses COD
+        if (!$order) {
+            return redirect()->route('order.history')->with('error', 'Tidak ada pesanan yang perlu diselesaikan atau status tidak valid.');
         }
 
-        // Redirect ke halaman riwayat dengan pesan sukses
-        return redirect()->route('order.history')->with('success', 'Checkout berhasil');
+        $today = date('Y-m-d');
+        // Pastikan Anda hanya menghitung order yang sudah paid atau completed untuk nomor invoice
+        $todayOrderCount = Order::whereDate('created_at', $today)->where('status', 'Paid')->count();
+        $nextOrderNumber = $todayOrderCount + 1;
+        $invoice = 'ORD-' . date('Ymd') . '-' . str_pad($nextOrderNumber, 4, '0', STR_PAD_LEFT);
+
+        // Update status order dan kode pesanan
+        $order->status = 'Paid'; // Atau 'Completed' jika itu status akhir Anda
+        $order->kode_pesanan = $invoice;
+
+        // --- Logika Pengurangan Stok ---
+        foreach ($order->orderItems as $item) {
+            $product = $item->produk; // Akses model Produk melalui relasi
+            if ($product) {
+                // Pastikan stok tidak menjadi negatif (opsional, tergantung kebijakan Anda)
+                if ($product->stok_barang >= $item->quantity) {
+                    $product->stok_barang -= $item->quantity; // Kurangi stok
+                    $product->save(); // Simpan perubahan stok ke database
+                } else {
+                    // Opsional: Tangani kasus stok tidak mencukupi
+                    // Ini bisa terjadi jika stok berkurang di antara waktu user checkout dan complete
+                    // Anda bisa log error, mengembalikan pembayaran, atau memberi tahu user
+                    return redirect()->route('order.cart')->with('error', 'Stok barang ' . $product->nm_barang . ' tidak mencukupi.');
+                }
+            }
+        }
+        // --- Akhir Logika Pengurangan Stok ---
+
+        $order->save(); // Simpan perubahan status dan kode_pesanan order
+
+        return redirect()->route('order.history')->with('success', 'Checkout berhasil. Stok barang telah diperbarui.');
     }
 
     public function callback(Request $request)
@@ -445,5 +464,25 @@ class OrderController extends Controller
             DB::rollBack();
             return response()->json(['status' => false, 'message' => 'Terjadi kesalahan: ' . $e->getMessage()]);
         }
+    }
+    public function cod()
+    {
+        // Misalnya update status order menjadi COD
+        $order = Order::where('user_id', Auth::id())->latest()->first();
+        $order->status = 'Proses COD';
+        $today = date('Y-m-d');
+
+        // Hitung jumlah order untuk hari ini
+        $todayOrderCount = Order::whereDate('created_at', $today)->where('status', 'Paid')->count();
+
+        // Tentukan nomor urut berikutnya
+        $nextOrderNumber = $todayOrderCount + 1;
+
+        // Buat invoice number
+        $invoice = 'ORD-' . date('Ymd') . '-' . str_pad($nextOrderNumber, 4, '0', STR_PAD_LEFT);
+        $order->kode_pesanan = $invoice;
+        $order->save();
+
+        return redirect()->route('order.complete')->with('success', 'Pesanan COD berhasil dibuat. Silakan tunggu kurir kami.');
     }
 }

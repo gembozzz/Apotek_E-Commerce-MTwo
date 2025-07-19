@@ -858,6 +858,10 @@ textarea.input {
   background-color: #3ea110;
 }
 
+.product .product-label>span.resep {
+  background-color: #a0b102;
+}
+
 .product .product-countdown {
   z-index: 22;
 }

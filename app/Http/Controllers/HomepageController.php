@@ -18,18 +18,14 @@ class HomepageController extends Controller
     public function index()
 
     {
-        $produkpalingbanyakterjual = Product::select('barang.*', DB::raw('SUM(trkasir_detail.qty_dtrkasir) as total_terjual'))
-            ->join('trkasir_detail', 'trkasir_detail.id_barang', '=', 'barang.id_barang')
-            ->groupBy('barang.id_barang')
-            ->orderByDesc('total_terjual')
-            ->limit(6)
-            ->get();
         $jenisobat = JenisObat::get();
         $kategori = Category::orderBy('name', 'desc')->get();
         $produkTerbaru = Product::where('status', 'active')->take(4)->get();
-        $databarang = Product::where('status', 'active')->paginate(6);
+        $databarang = Product::where('status', 'active')->paginate(5);
+        $diskonbarang = Product::where('diskon', '>', 0)->paginate(5);
+        
         $articles = Article::where('status', 'published')->orderBy('created_at', 'desc')->paginate(3);
-        return view('frontend.dashboard.index', compact('databarang', 'produkTerbaru', 'jenisobat', 'produkpalingbanyakterjual', 'kategori', 'articles'));
+        return view('frontend.dashboard.index', compact('databarang', 'produkTerbaru', 'jenisobat', 'kategori', 'articles', 'diskonbarang'));
     }
 
     /**

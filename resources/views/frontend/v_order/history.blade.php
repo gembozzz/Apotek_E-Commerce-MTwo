@@ -39,8 +39,13 @@
                                                 {{ number_format($order->total_harga + $order->biaya_ongkir, 0, ',', '.') }}
                                             </td>
                                             <td>
+                                                @php
+                                                    $status = strtolower($order->status);
+                                                @endphp
                                                 @if ($order->status == 'Paid')
                                                     Proses
+                                                @elseif ($order->status == 'proses cod')
+                                                    Proses COD
                                                 @else
                                                     {{ $order->status }}
                                                 @endif
@@ -51,7 +56,6 @@
                                                 <a href="{{ route('order.invoice', $order->id) }}" target="_blank">
                                                     <button type="button" class="primary-btn">Invoice</button>
                                                 </a>
-
                                                 <!-- Modal -->
                                                 <div class="modal fade" id="orderDetailModal{{ $order->id }}"
                                                     tabindex="-1" role="dialog"
