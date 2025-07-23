@@ -245,7 +245,7 @@
                         <iframe
                             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d253784.24518081397!2d106.81676429989291!3d-6.344962672964114!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e698f000df91389%3A0x7cc4674fb7e0f5a1!2sAzzam%20Berkah%20Farma!5e0!3m2!1sid!2sid!4v1752765992036!5m2!1sid!2sid"
                             width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
-                            referrerpolicy="no-referrer-when-downgrade" ></iframe>
+                            referrerpolicy="no-referrer-when-downgrade"></iframe>
                     </div>
                     <div class="footer-copyright" style="margin-top: 30px;">
                         Copyright &copy;

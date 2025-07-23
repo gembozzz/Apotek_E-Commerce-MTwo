@@ -24,58 +24,91 @@
                             </div>
                         @endif
                         @if ($order && $order->orderItems->count() > 0)
-                            <table class="shopping-cart-table table">
-                                <thead>
-                                    <tr>
-                                        <th>Produk</th>
-                                        <th></th>
-                                        <th class="text-center">Harga</th>
-                                        <th class="text-center">Quantity</th>
-                                        <th class="text-center">Total</th>
-
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @php
-                                        $totalHarga = 0;
-                                    @endphp
-                                    @foreach ($order->orderItems as $item)
-                                        @php
-                                            $totalHarga += $item->harga * $item->quantity;
-                                        @endphp
+                            <div class="hidden-xs">
+                                <table class="shopping-cart-table table">
+                                    <thead>
                                         <tr>
-                                            <td class="thumb"><img src="{{ asset('storage/' . $item->produk->image) }}"
-                                                    alt=""></td>
-                                            <td class="details">
-                                                <a>{{ $item->produk->nm_barang }}</a>
-                                            </td>
-                                            <td class="price text-center"><strong>Rp.
-                                                    {{ number_format($item->produk->hrgjual_barang, 0, ',', '.') }}</strong>
-                                            </td>
-                                            <td class="qty text-center">
-                                                <a> {{ $item->quantity }} </a>
-                                            </td>
-                                            <td class="total text-center"><strong class="primary-color">Rp.
-                                                    {{ number_format($item->harga * $item->quantity, 0, ',', '.') }}</strong>
-                                            </td>
+                                            <th>Produk</th>
+                                            <th></th>
+                                            <th class="text-center">Harga</th>
+                                            <th class="text-center">Quantity</th>
+                                            <th class="text-center">Total</th>
+
                                         </tr>
-                                    @endforeach
-                                </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <th class="empty" colspan="3"></th>
-                                        <th>SUBTOTAL</th>
-                                        <th colspan="2" class="sub-total">Rp.
-                                            {{ number_format($totalHarga, 0, ',', '.') }}</th>
-                                    </tr>
-                                    <tr>
-                                        <th class="empty" colspan="3"></th>
-                                        <th>TOTAL BAYAR</th>
-                                        <th colspan="2" class="total">Rp.
-                                            {{ number_format($totalHarga, 0, ',', '.') }}</th>
-                                    </tr>
-                                </tfoot>
-                            </table>
+                                    </thead>
+                                    <tbody>
+                                        @php
+                                            $totalHarga = 0;
+                                        @endphp
+                                        @foreach ($order->orderItems as $item)
+                                            @php
+                                                $totalHarga += $item->harga * $item->quantity;
+                                            @endphp
+                                            <tr>
+                                                <td class="thumb"><img src="{{ asset('storage/' . $item->produk->image) }}"
+                                                        alt=""></td>
+                                                <td class="details">
+                                                    <a>{{ $item->produk->nm_barang }}</a>
+                                                </td>
+                                                <td class="price text-center"><strong>Rp.
+                                                        {{ number_format($item->produk->hrgjual_barang, 0, ',', '.') }}</strong>
+                                                </td>
+                                                <td class="qty text-center">
+                                                    <a> {{ $item->quantity }} </a>
+                                                </td>
+                                                <td class="total text-center"><strong class="primary-color">Rp.
+                                                        {{ number_format($item->harga * $item->quantity, 0, ',', '.') }}</strong>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th class="empty" colspan="3"></th>
+                                            <th>SUBTOTAL</th>
+                                            <th colspan="2" class="sub-total">Rp.
+                                                {{ number_format($totalHarga, 0, ',', '.') }}</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="empty" colspan="3"></th>
+                                            <th>TOTAL BAYAR</th>
+                                            <th colspan="2" class="total">Rp.
+                                                {{ number_format($totalHarga, 0, ',', '.') }}</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                            <div class="visible-xs">
+                                @php $totalHarga = 0; @endphp
+                                @foreach ($order->orderItems as $item)
+                                    @php $totalHarga += $item->harga * $item->quantity; @endphp
+                                    <div class="panel panel-default" style="margin-bottom: 10px;">
+                                        <div class="panel-body" style="display: flex;">
+                                            <img src="{{ asset('storage/' . $item->produk->image) }}" alt=""
+                                                style="width: 70px; height: 70px; object-fit: cover; margin-right: 10px;">
+                                            <div style="flex: 1;">
+                                                <strong>{{ $item->produk->nm_barang }}</strong>
+                                                <div style="margin-top: 5px; color: #d10024;">Rp.
+                                                    {{ number_format($item->produk->hrgjual_barang, 0, ',', '.') }}</div>
+                                                <div style="font-size: 12px;">Qty: {{ $item->quantity }}</div>
+                                                <div style="font-weight: bold;">Total: Rp.
+                                                    {{ number_format($item->harga * $item->quantity, 0, ',', '.') }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+
+
+                                {{-- Total harga mobile --}}
+                                <div style="margin-top: 15px; background: #f9f9f9; padding: 10px 15px; border-radius: 8px;">
+                                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                                        <span style="font-size: 16px; font-weight: bold;">Subtotal</span>
+                                        <span style="font-size: 18px; font-weight: bold; color: #d10024;">
+                                            Rp. {{ number_format($totalHarga, 0, ',', '.') }}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
                             <input type="hidden" name="total_price" value="{{ $totalHarga }}">
                             <div class="form-group" style="max-width: 300px; margin-top: 20px;">
                                 <label for="payment_method">Metode Pembayaran:</label>
