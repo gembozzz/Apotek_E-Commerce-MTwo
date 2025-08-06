@@ -44,20 +44,19 @@ class ArticleController extends Controller
                 return ucfirst($article->status);
             })
             ->addColumn('aksi', function ($row) {
-                $btn = '
-                <div class="dropdown">
-                    <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
-                        Action
+                $btn = '<div class="dropdown position-relative d-inline-block">
+                <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
+                    Action
+                </button>
+                <div class="dropdown-menu center-below p-2 shadow" style="min-width: 140px;">
+                    <a href="' . route('article.edit', $row->id) . '" class="btn btn-warning btn-sm w-100 mb-1">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                    <button onclick="deleteData(\'' . route('article.destroy', $row->id) . '\', this)" class="btn btn-danger btn-sm w-100" data-konf-delete="' . e($row->title) . '">
+                        <i class="fa fa-trash"></i> Hapus
                     </button>
-                    <div class="dropdown-menu p-2">
-                        <a href="' . route('article.edit', $row->id) . '" class="btn btn-warning btn-sm w-100 mb-1">
-                            <i class="fas fa-edit"></i> Edit
-                        </a>
-                        <button onclick="deleteData(\'' . route('article.destroy', $row->id) . '\', this)" class="btn btn-danger btn-sm w-100" data-konf-delete="' . e($row->title) . '">
-                                <i class="fa fa-trash"></i> Hapus
-                            </button>
-                    </div>
-                </div>';
+                </div>
+            </div>';
                 return $btn;
             })
             ->rawColumns(['aksi']) // penting agar tombol bisa dirender sebagai HTML

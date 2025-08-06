@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Apotek Ku | @yield('title')</title>
+    <link rel="icon" href="{{ asset('storage/' . $companySetting->logo) }}" type="image/png">
+    <title>@yield('title') | {{ $companySetting->nama_perusahaan }}</title>
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
@@ -40,7 +41,19 @@
         href="{{ asset('backend/AdminLTE-3.2.0/plugins/datatables-responsive/css/responsive.bootstrap4.min.css') }}">
     <link rel="stylesheet"
         href="{{ asset('backend/AdminLTE-3.2.0/plugins/datatables-buttons/css/buttons.bootstrap4.min.css') }}">
+
     @stack('css')
+    <style>
+        .dropdown-menu.center-below {
+            position: absolute !important;
+            left: 50% !important;
+            top: 100% !important;
+            transform: translateX(-50%) !important;
+            margin-top: 0.3rem;
+            z-index: 9999;
+        }
+    </style>
+
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -62,10 +75,10 @@
         <aside class="main-sidebar sidebar-dark-primary elevation-4">
             <!-- Brand Logo -->
             <a href="{{ route('backend.dashboard') }}" class="brand-link">
-                <img src="{{ asset('backend/AdminLTE-3.2.0/dist/img/AdminLTELogo.png') }}" alt="AdminLTE Logo"
+                <img src="{{ asset('storage/' . $companySetting->logo) }}" alt="AdminLTE Logo"
                     class="brand-image img-circle elevation-3" style="opacity: .8">
                 <span class="brand-text font-weight-light">
-                    <marquee direction="left">Selamat datang di Apotek E-Commmerce!</marquee>
+                    <marquee direction="left">Selamat datang di {{ $companySetting->nama_perusahaan }}</marquee>
                 </span>
             </a>
 
@@ -100,6 +113,7 @@
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                         data-accordion="false">
                         <!-- Add icons to the links using the .nav-icon class with font-awesome or any other icon font library -->
+                        <li class="nav-header">DASHBOARD</li>
                         <li class="nav-item">
                             <a href="{{ route('backend.dashboard') }}"
                                 class="nav-link {{ Route::currentRouteName() == 'backend.dashboard' ? 'active text-white' : 'text-white' }}">
@@ -109,6 +123,7 @@
                                 </p>
                             </a>
                         </li>
+                        <li class="nav-header">DATA</li>
                         <li
                             class="nav-item {{ in_array(Route::currentRouteName(), ['product.index', 'product.edit', 'product.show', 'customer.index', 'customer.show', 'category.index', 'category.create', 'category.edit', 'article.index', 'article.create', 'article.edit', 'article.show']) ? 'menu-open' : '' }}  ">
                             <a href="#"
@@ -200,6 +215,34 @@
                                         class="nav-link pl-4 {{ Route::currentRouteName() == 'report.finished' ? 'active bg-blue-600 text-black' : 'text-white' }}">
                                         <i class="fas fa-file-alt nav-icon"></i>
                                         <p style="margin: 0; font-size: 15px;">Laporan Pesanan Selesai</p>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li
+                            class="nav-item {{ in_array(Route::currentRouteName(), ['company-setting.index', 'banner.index', 'banner.create', 'banner.edit']) ? 'menu-open' : '' }}  ">
+                            <a href="#"
+                                class="nav-link {{ in_array(Route::currentRouteName(), ['company-setting.index', 'banner.index', 'banner.create', 'banner.edit']) ? 'active bg-blue-600 text-white' : 'text-white' }}">
+                                <i class="nav-icon fas fa-cog"></i>
+                                <p>
+                                    Setting
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="{{ route('company-setting.index') }}"
+                                        class="nav-link pl-4 {{ Route::currentRouteName() == 'company-setting.index' ? 'active bg-blue-600 text-black' : 'text-white' }}">
+                                        <i class="fas fa-cogs nav-icon"></i>
+                                        <p style="margin: 0; font-size: 15px;">Profil Perusahaan</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ route('banner.index') }}"
+                                        class="nav-link pl-4 {{ in_array(Route::currentRouteName(), ['banner.index', 'banner.create', 'banner.edit']) ? 'active bg-blue-600 text-black' : 'text-white' }}">
+
+                                        <i class="fas fa-cogs nav-icon"></i>
+                                        <p style="margin: 0; font-size: 15px;">Banner</p>
                                     </a>
                                 </li>
                             </ul>
@@ -369,6 +412,31 @@
             });
         });
     </script>
+    <script>
+        function batalkanPesanan(url) {
+            if (confirm('Yakin ingin membatalkan pesanan ini?')) {
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert(data.message);
+                    if (data.status) {
+                        location.reload();
+                    }
+                })
+                .catch(error => {
+                    alert('Terjadi kesalahan saat membatalkan pesanan.');
+                    console.error(error);
+                });
+            }
+        }
+    </script>
+
     <script>
         function logoutConfirm(e) {
             e.preventDefault();

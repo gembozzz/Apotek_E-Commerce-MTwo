@@ -134,7 +134,7 @@
                         <div class="form-group">
                             <label>Status</label>
                             <select name="status" class="form-control @error('status') is invalid @enderror" {{
-                                $order->status == 'Selesai' ? 'disabled' : '' }}>
+                                $order->status == 'Selesai' || $order->status == 'Dibatalkan' ? 'disabled' : '' }}>
                                 <option value="" {{ old('status', $order->status) == '' ? 'selected' : '' }}> -
                                     Pilih Status Pesanan -</option>
                                 <option value="Paid" {{ old('status', $order->status) == 'Paid' ? 'selected' : '' }}>
@@ -144,6 +144,9 @@
                                 <option value="Selesai" {{ old('status', $order->status) == 'Selesai' ? 'selected' : ''
                                     }}>
                                     Selesai</option>
+                                <option value="Dibatalkan" {{ old('status', $order->status) == 'Dibatalkan' ? 'selected'
+                                    : ''
+                                    }}>Dibatalkan</option>
                             </select>
                             @error('status')
                             <span class="invalid-feedback alert-danger" role="alert">

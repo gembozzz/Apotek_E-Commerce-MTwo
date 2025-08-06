@@ -7,7 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-    <title>E-SHOP HTML Template</title>
+    <link rel="icon" href="{{ asset('storage/' . $companySetting->logo) }}" type="image/png">
+    <title>E-Commerce {{ $companySetting->nama_perusahaan }}</title>
 
     <!-- Google font -->
     <link href="https://fonts.googleapis.com/css?family=Hind:400,700" rel="stylesheet">
@@ -50,6 +51,30 @@
             color: #3ea110;
             border-bottom: 2px solid #3ea110;
         }
+
+        .dropdown-backdrop {
+            display: none !important;
+        }
+
+        .map-responsive {
+            position: relative;
+            width: 100%;
+            padding-bottom: 56.25%;
+            /* rasio 16:9 */
+            height: 0;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .map-responsive iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
     </style>
 
 </head>
@@ -74,7 +99,7 @@
                     <!-- Logo -->
                     <div class="header-logo">
                         <a class="logo" href="#">
-                            <img src="{{ asset('eshop/img/image.png') }}" alt="">
+                            <img src="{{ asset('storage/' . $companySetting->logo) }}" alt="">
                         </a>
                     </div>
                     <!-- /Logo -->
@@ -84,7 +109,8 @@
                 <div class="pull-right">
                     <ul class="header-btns">
                         <!-- Account -->
-                        <li class="header-account dropdown default-dropdown">
+                        <li class="header-account dropdown default-dropdown" style="margin-left: 15px;">
+
                             <!-- Ganti dari <div> ke <a> -->
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
                                 aria-expanded="false">
@@ -95,37 +121,37 @@
                             </a>
 
                             @if (Auth::check())
-                                <a class="text-uppercase">{{ Auth::user()->name }}</a>
-                                <!-- Tambahkan class dropdown-menu agar dikenali Bootstrap -->
-                                <ul class="dropdown-menu custom-menu list-unstyled">
-                                    <li>
-                                        <a href="{{ route('customer.akun', ['id' => Auth::user()->id]) }}">
-                                            <i class="fa fa-user-o me-2"></i> My Account
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="{{ route('order.history') }}">
-                                            <i class="fa fa-shopping-cart me-2"></i> History Pemesanan
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#"
-                                            onclick="event.preventDefault(); document.getElementById('logoutForm').submit();">
-                                            <i class="fa fa-unlock-alt me-2"></i> Logout
-                                        </a>
-                                    </li>
-                                </ul>
-                                <form id="logoutForm" action="{{ route('logout') }}" method="POST" class="d-none">
-                                    @csrf
-                                </form>
+                            <a class="text-uppercase">{{ Auth::user()->name }}</a>
+                            <!-- Tambahkan class dropdown-menu agar dikenali Bootstrap -->
+                            <ul class="dropdown-menu custom-menu list-unstyled">
+                                <li>
+                                    <a href="{{ route('customer.akun', ['id' => Auth::user()->id]) }}">
+                                        <i class="fa fa-user-o me-2"></i> My Account
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="{{ route('order.history') }}">
+                                        <i class="fa fa-shopping-cart me-2"></i> History Pemesanan
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#"
+                                        onclick="event.preventDefault(); document.getElementById('logoutForm').submit();">
+                                        <i class="fa fa-unlock-alt me-2"></i> Logout
+                                    </a>
+                                </li>
+                            </ul>
+                            <form id="logoutForm" action="{{ route('logout') }}" method="POST" class="d-none">
+                                @csrf
+                            </form>
                             @else
-                                <ul class="dropdown-menu custom-menu list-unstyled">
-                                    <li>
-                                        <a href="{{ route('login.form') }}">
-                                            <i class="fa fa-unlock-alt"></i> Login
-                                        </a>
-                                    </li>
-                                </ul>
+                            <ul class="dropdown-menu custom-menu list-unstyled">
+                                <li>
+                                    <a href="{{ route('login.form') }}">
+                                        <i class="fa fa-unlock-alt"></i> Login
+                                    </a>
+                                </li>
+                            </ul>
                             @endif
                         </li>
                         <!-- /Account -->
@@ -153,7 +179,6 @@
                         <!-- / Mobile nav toggle -->
                     </ul>
                 </div>
-
             </div>
             <!-- header -->
         </div>
@@ -167,32 +192,30 @@
         <div class="container">
             <div id="responsive-nav">
                 @if (request()->segment(1) == '' || request()->segment(1) == 'home-page')
-                    <!-- category nav -->
-                    <div class="category-nav">
-                        <span class="category-header" onclick="toggleKategoriList()" style="cursor: pointer;">
-                            Kategori <i class="fa fa-list"></i>
-                        </span>
-                        <ul class="category-list" id="kategori-list" style="display: none;">
-                            @foreach ($kategori as $item)
-                                <li>
-                                    <a
-                                        href="{{ route('produk.kategori', ['id' => $item->id]) }}">{{ $item->name }}</a>
-                                </li>
-                            @endforeach
-                        </ul>
-                    </div>
+                <!-- category nav -->
+                <div class="category-nav">
+                    <span class="category-header" onclick="toggleKategoriList()" style="cursor: pointer;">
+                        Kategori <i class="fa fa-list"></i>
+                    </span>
+                    <ul class="category-list" id="kategori-list" style="display: none;">
+                        @foreach ($kategori as $item)
+                        <li>
+                            <a href="{{ route('produk.kategori', ['id' => $item->id]) }}">{{ $item->name }}</a>
+                        </li>
+                        @endforeach
+                    </ul>
+                </div>
                 @else
-                    <div class="category-nav show-on-click">
-                        <span class="category-header">Kategori <i class="fa fa-list"></i></span>
-                        <ul class="category-list">
-                            @foreach ($kategori as $item)
-                                <li>
-                                    <a
-                                        href="{{ route('produk.kategori', ['id' => $item->id]) }}">{{ $item->name }}</a>
-                                </li>
-                            @endforeach
-                        </ul>
-                    </div>
+                <div class="category-nav show-on-click">
+                    <span class="category-header">Kategori <i class="fa fa-list"></i></span>
+                    <ul class="category-list">
+                        @foreach ($kategori as $item)
+                        <li>
+                            <a href="{{ route('produk.kategori', ['id' => $item->id]) }}">{{ $item->name }}</a>
+                        </li>
+                        @endforeach
+                    </ul>
+                </div>
                 @endif
                 <!-- /category nav -->
 
@@ -231,34 +254,75 @@
 
     <!-- FOOTER -->
     <footer id="footer" class="section section-grey">
-        <!-- container -->
         <div class="container">
-            <hr>
-            <!-- row -->
-            <div class="row">
-                <!-- Google Map -->
+            <h3 class="text-center">Tentang Kami</h3>
 
-                <!-- Copyright -->
-                <div class="col-md-6 col-md-offset-0 text-center">
-                    <h4 class="text-center">Lokasi Kami</h4>
-                    <div class="embed-responsive embed-responsive-4by3 justify-items-center">
-                        <iframe
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d253784.24518081397!2d106.81676429989291!3d-6.344962672964114!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e698f000df91389%3A0x7cc4674fb7e0f5a1!2sAzzam%20Berkah%20Farma!5e0!3m2!1sid!2sid!4v1752765992036!5m2!1sid!2sid"
-                            width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
-                            referrerpolicy="no-referrer-when-downgrade"></iframe>
+            <hr>
+            <div class="row">
+                <!-- Kolom Kiri: Peta Lokasi -->
+                <div class="col-md-6 mb-5 mb-md-0" style="padding-bottom: 15px;">
+                    <div class="map-responsive shadow rounded overflow-hidden mb-5 pb-3" style="min-height: 250px;">
+                        {!! $companySetting->peta_lokasi ?? 'Peta lokasi tidak tersedia.' !!}
                     </div>
-                    <div class="footer-copyright" style="margin-top: 30px;">
-                        Copyright &copy;
-                        <script>
-                            document.write(new Date().getFullYear());
-                        </script> All rights reserved | BRIGHT FUTURE
+                </div>
+
+                <!-- Kolom Kanan: Info Apotek -->
+                <div class="col-md-6 mb-4 d-flex flex-column justify-content-between"
+                    style="min-height: 250px; padding-bottom: 2rem;">
+                    <div>
+                        <h2 class="mb-0 font-weight-bold text-dark" style="line-height: 1;">
+                            {{ $companySetting->nama_perusahaan ?? 'Nama Apotek' }}
+                        </h2>
+
+                        <p class="text-muted mb-3" style="text-align: justify;">
+                            {{ $companySetting->deskripsi ?? 'Deskripsi apotek belum tersedia.' }}
+                        </p>
+
+                        <ul class="list-unstyled mb-3 text-dark">
+                            <li class="mb-2">
+                                <i class="fas fa-map-marker-alt mr-2 text-secondary"></i>
+                                {{ $companySetting->alamat ?? 'Alamat belum diatur' }}
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-phone-alt mr-2 text-secondary"></i>
+                                {{ $companySetting->telepon ?? '-' }}
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-envelope mr-2 text-secondary"></i>
+                                {{ $companySetting->email ?? '-' }}
+                            </li>
+                            <li class="mb-2">
+                                @php
+                                $website = $companySetting->website;
+                                if ($website && !Str::startsWith($website, ['http://', 'https://'])) {
+                                $website = 'https://' . $website;
+                                }
+                                @endphp
+                                <a href="{{ $website }}" target="_blank">
+                                    <i class="fas fa-globe fa-lg"></i>
+                                    {{ $companySetting->website ?? '-' }}
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                    <!-- Logo di kanan bawah -->
+                    <div class="text-right mt-auto">
+                        <img src="{{ asset('storage/' . $companySetting->logo) }}" alt="Logo"
+                            style="height: 100px; width: auto; object-fit: contain;">
                     </div>
                 </div>
             </div>
-            <!-- /row -->
+
+            <div class="text-center footer-copyright mt-4">
+                &copy; <script>
+                    document.write(new Date().getFullYear());
+                </script> All rights reserved | BRIGHT FUTURE
+            </div>
         </div>
-        <!-- /container -->
     </footer>
+
+
 
 
     <!-- /FOOTER -->
@@ -270,6 +334,7 @@
     <script src="{{ asset('eshop/js/slick.min.js') }}"></script>
     <script src="{{ asset('eshop/js/nouislider.min.js') }}"></script>
     <script src="{{ asset('eshop/js/jquery.zoom.min.js') }}"></script>
+
 
 
     <script>

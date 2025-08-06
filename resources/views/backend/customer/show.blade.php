@@ -23,7 +23,7 @@
                         </tr>
                         <tr>
                             <th>Telepon</th>
-                            <td>{{ $customer->telepon ?? '-' }}</td>
+                            <td>{{ $customer->no_tlp ?? '-' }}</td>
                         </tr>
                         <tr>
                             <th>Alamat</th>

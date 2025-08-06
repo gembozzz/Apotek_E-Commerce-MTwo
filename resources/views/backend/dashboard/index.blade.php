@@ -45,7 +45,8 @@ Dashboard
                     <div class="icon">
                         <i class="ion ion-pricetag"></i>
                     </div>
-                    <a href="#" class="small-box-footer">Lihat detail <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="{{ route('product.index') }}" class="small-box-footer">Lihat detail <i
+                            class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
             <!-- ./col -->
@@ -60,7 +61,8 @@ Dashboard
                     <div class="icon">
                         <i class="ion ion-bag"></i>
                     </div>
-                    <a href="#" class="small-box-footer">Lihat detail <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="{{ route('pesanan.proses') }} " class="small-box-footer">Lihat detail <i
+                            class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
             <!-- ./col -->
@@ -76,7 +78,8 @@ Dashboard
                         <i class="fas fa-user-friends"></i>
 
                     </div>
-                    <a href="#" class="small-box-footer">Lihat detail <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="{{ route('customer.index') }}" class="small-box-footer">Lihat detail <i
+                            class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
             <!-- ./col -->
@@ -91,7 +94,8 @@ Dashboard
                     <div class="icon">
                         <i class="fas fa-file-alt"></i>
                     </div>
-                    <a href="#" class="small-box-footer">Lihat detail <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="{{ route('article.index') }}" class="small-box-footer">Lihat detail <i
+                            class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
             <!-- ./col -->

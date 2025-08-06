@@ -10,6 +10,8 @@ use App\Http\Controllers\HomepageController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ArticleController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\CompanySettingController;
+use App\Http\Controllers\BannerController;
 
 Route::get('/', function () {
     return redirect()->route('home-page');
@@ -97,7 +99,10 @@ Route::prefix('/backend')->middleware('auth:admin')->group(function () {
     Route::get('/pesanan-proses/{id}/edit', [OrderController::class, 'statusDetail'])->name('pesanan.proses.detail');
     Route::put('/pesanan-proses/{id}', [OrderController::class, 'statusUpdate'])->name('pesanan.proses.update');
     Route::get('/pesanan-proses/data', [OrderController::class, 'getProcessOrder'])->name('pesanan.proses.data');
-    Route::delete('/pesanan/{id}/batal', [OrderController::class, 'batalkan'])->name('pesanan.batalkan');
+    Route::get('/invoice/pesanan/{id}', [OrderController::class, 'invoiceBackend'])->name('invoice.backend');
+    Route::delete('/pesanan/batalkan/{id}', [OrderController::class, 'batalkan'])
+        ->middleware(['auth:admin']) // jika ada sistem role
+        ->name('pesanan.batalkan');
 
 
     // pesanan selesai
@@ -110,4 +115,12 @@ Route::prefix('/backend')->middleware('auth:admin')->group(function () {
     Route::get('/report/finished', [ReportController::class, 'reportFinished'])->name('report.finished');
     Route::match(['get', 'post'], 'backend/laporan/cetak-pesanan-proses', [ReportController::class, 'cetakOrderProses'])->name('backend.laporan.cetakpesananproses')->middleware('auth');
     Route::match(['get', 'post'], 'backend/laporan/cetak-pesanan-selesai', [ReportController::class, 'cetakOrderSelesai'])->name('backend.laporan.cetakpesananselesai')->middleware('auth');
+
+    // Setting profil perusahaan
+    Route::get('/company-setting', [CompanySettingController::class, 'index'])->name('company-setting.index');
+    Route::post('/company-setting', [CompanySettingController::class, 'store'])->name('company-setting.store');
+    Route::put('/company-setting/{id}', [CompanySettingController::class, 'update'])->name('company-setting.update');
+
+    // Banner 
+    Route::resource('banner', BannerController::class);
 });

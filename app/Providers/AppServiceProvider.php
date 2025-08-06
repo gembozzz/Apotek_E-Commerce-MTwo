@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Category;
+use App\Models\CompanySetting;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use App\Models\JenisObat;
@@ -24,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        View::share('companySetting', CompanySetting::first());
         View::share('jenisobat', JenisObat::get());
         View::share('kategori', Category::get());
         View::composer('*', function ($view) {

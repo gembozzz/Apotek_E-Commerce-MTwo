@@ -1,14 +1,14 @@
 @extends('backend.layouts.app')
-@section('title', 'Laporan Pesanan Proses')
+@section('title', 'Laporan Pesanan Selesai')
 
-@section('header', 'Halaman Laporan Pesanan Proses')
+@section('header', 'Halaman Laporan Pesanan Selesai')
 
 @section('content')
 <div class="row mt-3 p-3">
     <div class="col-12">
         <div class="card">
             <div class="card-body">
-                <form action="{{ route('backend.laporan.cetakpesananproses') }}" class="form-horizontal" method="POST"
+                <form action="{{ route('backend.laporan.cetakpesananselesai') }}" class="form-horizontal" method="POST"
                     target="_blank">
                     @csrf
 

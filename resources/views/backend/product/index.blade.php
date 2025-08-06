@@ -5,6 +5,7 @@
 @section('header', 'Halaman Data Produk')
 
 @section('content')
+
 <section class="content">
     <div class="container-fluid">
 
@@ -21,11 +22,11 @@
                             <th>Kode</th>
                             <th>Nama Barang</th>
                             <th>Status</th>
-                            <th>Satuan</th>
                             <th>Kategori</th>
                             <th>Jenis Obat</th>
                             <th>Harga Beli</th>
                             <th>Harga Jual</th>
+                            <th>Diskon</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -55,11 +56,17 @@
                 { data: 'kd_barang', name: 'kd_barang' },
                 { data: 'nm_barang', name: 'nm_barang' },
                 { data: 'status', name: 'status' },
-                { data: 'sat_barang', name: 'sat_barang' },
                 { data: 'kategori', name: 'kategori' },
                 { data: 'jenisobat', name: 'jenisobat' },
                 { data: 'hrgsat_barang', name: 'hrgsat_barang', render: $.fn.dataTable.render.number('.', ',', 0) },
                 { data: 'hrgjual_barang', name: 'hrgjual_barang', render: $.fn.dataTable.render.number('.', ',', 0) },
+                { 
+                    data: 'diskon', 
+                    name: 'diskon',
+                    render: function(data, type, row) {
+                        return data + ' %';
+                    }
+                },
                 { data: 'aksi', name: 'aksi', orderable: false, searchable: false },
             ]
         });

@@ -4,7 +4,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>My Apotek | Log in</title>
+    <link rel="icon" href="{{ asset('storage/' . $companySetting->logo) }}" type="image/png">
+    <title>Masuk / Login | {{ $companySetting->nama_perusahaan }}</title>
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
@@ -23,11 +24,12 @@
         <!-- /.login-logo -->
         <div class="card card-outline card-primary">
             <div class="card-header text-center">
-                <a href="#" class="h1"><b>My</b>Apotek</a>
+                <a href="#" class="h1">{{ $companySetting->nama_perusahaan }}</a>
             </div>
 
             <div class="card-body">
-                <p class="login-box-msg">Aplikasi Pengelola Apotek E-Commerce <br> Silahkan Login</p>
+                <p class="login-box-msg">Selamat datang di {{ $companySetting->nama_perusahaan }} <br> Silahkan Masuk
+                </p>
                 @if ($errors->has('auth'))
                 <div class="alert alert-danger">
                     {{ $errors->first('auth') }}
@@ -63,12 +65,16 @@
                         <div class="col-4">
                             <button type="submit" class="btn btn-primary btn-block">Sign In</button>
                         </div>
-                    </div>
+                    </div><br>
                 </form>
+                <div class="text-center">
+                    <h6>Atau masuk dengan</h6>
+                    <hr>
+                </div>
 
-                <div class="social-auth-links text-center mt-2 mb-3">
+                <div class="social-auth-links text-center mt-1 mb-3">
                     <a href="{{ route('google.login') }}" class="btn btn-block btn-danger">
-                        <i class="fab fa-google mr-2"></i> Login dengan Google
+                        <i class="fab fa-google mr-2"></i> Google
                     </a>
                 </div>
 

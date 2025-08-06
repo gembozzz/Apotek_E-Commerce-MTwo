@@ -32,14 +32,16 @@ class CustomerController extends Controller
         return DataTables::of($query)
             ->addIndexColumn()
             ->addColumn('aksi', function ($row) {
-                $btn = '<div class="dropdown">
-                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown">Action</button>
-                        <div class="dropdown-menu p-2">
-                            <a href="' . route('customer.show', $row->id) . '" class="btn btn-info btn-sm w-100 mb-1">
-                                <i class="fas fa-eye"></i> Detail
-                            </a>
-                        </div>
-                    </div>';
+                $btn = '<div class="dropdown position-relative d-inline-block">
+                <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
+                    Action
+                </button>
+                <div class="dropdown-menu center-below p-2 shadow" style="min-width: 140px;">
+                    <a href="' . route('customer.show', $row->id) . '" class="btn btn-info btn-sm w-100 mb-1">
+                        <i class="fas fa-eye"></i> Detail
+                    </a>
+                </div>
+            </div>';
                 return $btn;
             })
             ->rawColumns(['aksi'])

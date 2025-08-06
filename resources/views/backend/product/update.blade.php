@@ -88,6 +88,16 @@
                                 </div>
                                 @enderror
                             </div>
+                            <div class="form-group">
+                                <label for="diskon">Diskon</label>
+                                <input type="number" name="diskon" class="form-control"
+                                    value="{{ old('diskon', $product->diskon) }}">
+                                @error('diskon')
+                                <div class="invalid-feedback d-block">
+                                    {{ $message }}
+                                </div>
+                                @enderror
+                            </div>
                         </div>
                     </div>
                 </div>

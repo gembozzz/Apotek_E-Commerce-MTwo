@@ -63,11 +63,11 @@ class ProductController extends Controller
             'kd_barang',
             'nm_barang',
             'status',
-            'sat_barang',
             'category_id',
             'jenisobat',
             'hrgsat_barang',
-            'hrgjual_barang'
+            'hrgjual_barang',
+            'diskon',
         ]);
 
         return DataTables::of($query)
@@ -76,17 +76,19 @@ class ProductController extends Controller
                 return $row->category->name ?? '-';
             })
             ->addColumn('aksi', function ($row) {
-                $btn = '<div class="dropdown">
-                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown">Action</button>
-                        <div class="dropdown-menu p-2">
-                            <a href="' . route('product.show', $row->id_barang) . '" class="btn btn-info btn-sm w-100 mb-1">
-                                <i class="fas fa-eye"></i> Detail
-                            </a>
-                            <a href="' . route('product.edit', $row->id_barang) . '" class="btn btn-warning btn-sm w-100 mb-1">
-                                <i class="far fa-edit"></i> Edit
-                            </a>
-                        </div>
-                    </div>';
+                $btn = '<div class="dropdown position-relative d-inline-block">
+                <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
+                    Action
+                </button>
+                <div class="dropdown-menu center-below p-2 shadow" style="min-width: 140px;">
+                    <a href="' . route('product.show', $row->id_barang) . '" class="btn btn-info btn-sm w-100 mb-1">
+                        <i class="fas fa-eye"></i> Detail
+                    </a>
+                    <a href="' . route('product.edit', $row->id_barang) . '" class="btn btn-warning btn-sm w-100 mb-1">
+                        <i class="far fa-edit"></i> Edit
+                    </a>
+                </div>
+            </div>';
                 return $btn;
             })
             ->rawColumns(['aksi'])
@@ -135,6 +137,7 @@ class ProductController extends Controller
             'status' => 'required|in:active,inactive',
             'gambar_produk' => 'nullable|image|mimes:jpg,jpeg,png|max:2048', // max 2MB
             'category_id' => 'required|exists:categories,id', // Validasi kategori
+            'diskon' => 'nullable|numeric', // Validasi kategori
         ]);
 
         // Cek jika ada file gambar baru yang diupload
@@ -157,6 +160,7 @@ class ProductController extends Controller
         // Update data lainnya
         $product->status = $request->status;
         $product->category_id = $request->category_id;
+        $product->diskon = $request->diskon;
         $product->save();
 
         return redirect()->route('product.index')->with('success', 'Produk berhasil diperbarui.');

@@ -8,7 +8,7 @@
 <section class="content">
     <div class="container-fluid">
 
-        <div class="card">
+        <div class="card card-warning">
             <div class="card-header">
                 <h3 class="card-title">Form Edit Kategori</h3>
             </div>

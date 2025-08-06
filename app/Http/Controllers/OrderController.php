@@ -269,6 +269,18 @@ class OrderController extends Controller
         ]);
     }
 
+    public function invoiceBackend($id)
+    {
+        $order = Order::with('orderItems.produk')->findOrFail($id);
+
+        return view('backend.order.invoice', [
+            'judul' => 'Pesanan',
+            'subJudul' => 'Pesanan Proses',
+            'judul' => 'Data Transaksi',
+            'order' => $order,
+        ]);
+    }
+
 
     public function complete()
     {
@@ -352,15 +364,20 @@ class OrderController extends Controller
                 ->editColumn('total_harga', fn($row) => 'Rp ' . number_format($row->total_harga, 0, ',', '.'))
                 ->addColumn('pelanggan', fn($row) => $row->user->name ?? '-')
                 ->addColumn('aksi', function ($row) {
-                    $btn = '<div class="dropdown">
-                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown">Action</button>
-                        <div class="dropdown-menu p-2">
+                    $btn = '<div class="dropdown position-relative d-inline-block">
+                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
+                            Action
+                        </button>
+                        <div class="dropdown-menu center-below p-2 shadow" style="min-width: 140px;">
                             <a href="' . route('pesanan.proses.detail', $row->id) . '" class="btn btn-primary btn-sm w-100 mb-1">
                                  Update Pesanan
                             </a>
-                            <button onclick="batalkanPesanan(' . route('pesanan.batalkan', $row->id) . ')" class="btn btn-danger btn-sm w-100">
+                            <button onclick=\'batalkanPesanan("' . route('pesanan.batalkan', $row->id) . '")\' class="btn btn-danger btn-sm w-100 mb-1">
                                 Batalkan Pesanan
                             </button>
+                            <a href=" ' . route('invoice.backend', $row->id) . ' " target="_blank" class="btn btn-success btn-sm w-100">
+                                Cetak Invoice
+                            </a>
                         </div>
                     </div>';
                     return $btn;
@@ -387,6 +404,7 @@ class OrderController extends Controller
         if ($request->ajax()) {
             $data = Order::with('user')
                 ->where('status', 'Selesai')
+                ->orWhere('status', 'Dibatalkan')
                 ->orderBy('id', 'desc');
 
             return DataTables::of($data)
@@ -395,11 +413,16 @@ class OrderController extends Controller
                 ->editColumn('total_harga', fn($row) => 'Rp ' . number_format($row->total_harga, 0, ',', '.'))
                 ->addColumn('pelanggan', fn($row) => $row->user->name ?? '-')
                 ->addColumn('aksi', function ($row) {
-                    $btn = '<div class="dropdown">
-                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown">Action</button>
-                        <div class="dropdown-menu p-2">
+                    $btn = '<div class="dropdown position-relative d-inline-block">
+                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
+                            Action
+                        </button>
+                        <div class="dropdown-menu center-below p-2 shadow" style="min-width: 140px;">
                             <a href="' . route('pesanan.proses.detail', $row->id) . '" class="btn btn-primary btn-sm w-100 mb-1">
                                  Detail Pesanan
+                            </a>
+                            <a href=" ' . route('invoice.backend', $row->id) . ' " target="_blank" class="btn btn-success btn-sm w-100">
+                                Cetak Invoice
                             </a>
                         </div>
                     </div>';
@@ -440,31 +463,50 @@ class OrderController extends Controller
     public function batalkan($id)
     {
         DB::beginTransaction();
+
         try {
+            // Ambil pesanan beserta item dan produk
             $order = Order::with('orderItems.produk')->findOrFail($id);
 
+            // Validasi status
             if (!in_array($order->status, ['Paid', 'Kirim'])) {
-                return response()->json(['status' => false, 'message' => 'Pesanan tidak bisa dibatalkan.']);
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Pesanan tidak bisa dibatalkan.'
+                ]);
             }
 
-            // Kembalikan stok produk
+            // Kembalikan stok setiap produk dari order items
             foreach ($order->orderItems as $item) {
                 $produk = $item->produk;
-                $produk->stok_barang += $item->quantity;
-                $produk->save();
+
+                // Jika produk ditemukan
+                if ($produk) {
+                    $produk->stok_barang += $item->quantity;
+                    $produk->save(); // Eloquent ORM save
+                }
             }
 
-            // Update status order
+            // Update status pesanan
             $order->status = 'Dibatalkan';
             $order->save();
 
             DB::commit();
-            return response()->json(['status' => true, 'message' => 'Pesanan berhasil dibatalkan dan stok dikembalikan.']);
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Pesanan berhasil dibatalkan dan stok dikembalikan.'
+            ]);
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['status' => false, 'message' => 'Terjadi kesalahan: ' . $e->getMessage()]);
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ]);
         }
     }
+
     public function cod()
     {
         // Misalnya update status order menjadi COD
