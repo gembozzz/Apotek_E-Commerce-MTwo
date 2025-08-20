@@ -51,7 +51,7 @@
                                         <a>{{ $item->produk->nm_barang }}</a>
                                     </td>
                                     <td class="price text-center"><strong>Rp.
-                                            {{ number_format($item->produk->hrgjual_barang, 0, ',', '.') }}</strong>
+                                            {{ number_format($item->produk->hrgjual_barang2, 0, ',', '.') }}</strong>
                                     </td>
                                     <td class="qty text-center">
                                         <a> {{ $item->quantity }} </a>
@@ -89,7 +89,7 @@
                                 <div style="flex: 1;">
                                     <strong>{{ $item->produk->nm_barang }}</strong>
                                     <div style="margin-top: 5px; color: #d10024;">Rp.
-                                        {{ number_format($item->produk->hrgjual_barang, 0, ',', '.') }}</div>
+                                        {{ number_format($item->produk->hrgjual_barang2, 0, ',', '.') }}</div>
                                     <div style="font-size: 12px;">Qty: {{ $item->quantity }}</div>
                                     <div style="font-weight: bold;">Total: Rp.
                                         {{ number_format($item->harga * $item->quantity, 0, ',', '.') }}</div>

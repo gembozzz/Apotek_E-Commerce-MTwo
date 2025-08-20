@@ -16,7 +16,9 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->nullable();
             $table->string('status');
             $table->string('kode_pesanan')->nullable();
-            $table->string('layanan_pengirim')->nullable();
+            $table->enum('tipe_layanan', ['Dikirim ke alamat', 'Ambil di tempat']);
+            $table->string('layanan_pengiriman')->nullable();
+            $table->string('tipe_pembayaran')->nullable();
             $table->double('total_harga');
             $table->text('alamat')->nullable();
             $table->timestamps();

@@ -21,6 +21,8 @@
                             <th>ID Order</th>
                             <th>Tanggal</th>
                             <th>Total</th>
+                            <th>Tipe Layanan</th>
+                            <th>Tipe Pembayaran</th>
                             <th>Status</th>
                             <th>Pelanggan</th>
                             <th>Aksi</th>
@@ -51,6 +53,8 @@
                 { data: 'kode_pesanan', name: 'kode_pesanan' },
                 { data: 'created_at', name: 'created_at' },
                 { data: 'total_harga', name: 'total_harga' },
+                { data: 'tipe_layanan', name: 'tipe_layanan' },
+                { data: 'tipe_pembayaran', name: 'tipe_pembayaran' },
                 { data: 'status', name: 'status' },
                 { data: 'pelanggan', name: 'pelanggan', orderable: false, searchable: false },
                 { data: 'aksi', name: 'aksi', orderable: false, searchable: false },

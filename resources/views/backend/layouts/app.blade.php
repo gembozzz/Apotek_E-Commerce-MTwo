@@ -387,7 +387,9 @@
         Swal.fire({
                 icon: 'success',
                 title: 'Berhasil!',
-                text: "{{ session('success') }}"
+                text: "{{ session('success') }}",
+                showConfirmButton: true,
+                timer: 1500
             });
     </script>
     @endif
@@ -404,7 +406,8 @@
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
                 confirmButtonText: 'Ya, dihapus',
-                cancelButtonText: 'Batal'
+                cancelButtonText: 'Batal',
+                timer: 1500
             }).then((result) => {
                 if (result.isConfirmed) {
                     form.submit();

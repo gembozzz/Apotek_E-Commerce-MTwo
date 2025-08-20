@@ -82,15 +82,6 @@
 <body>
     <!-- HEADER -->
     <header>
-        <!-- top Header -->
-        <div id="top-header">
-            <div class="container">
-                <div class="pull-left">
-                    <span>Welcome to E-shop!</span>
-                </div>
-            </div>
-        </div>
-        <!-- /top Header -->
 
         <!-- header -->
         <div id="header">
@@ -98,7 +89,7 @@
                 <div class="pull-left">
                     <!-- Logo -->
                     <div class="header-logo">
-                        <a class="logo" href="#">
+                        <a class="logo" href="{{ route('home-page') }}">
                             <img src="{{ asset('storage/' . $companySetting->logo) }}" alt="">
                         </a>
                     </div>
@@ -121,7 +112,7 @@
                             </a>
 
                             @if (Auth::check())
-                            <a class="text-uppercase">{{ Auth::user()->name }}</a>
+                            <a class="text-uppercase">{{ explode(' ', Auth::user()->name)[0] }}</a>
                             <!-- Tambahkan class dropdown-menu agar dikenali Bootstrap -->
                             <ul class="dropdown-menu custom-menu list-unstyled">
                                 <li>

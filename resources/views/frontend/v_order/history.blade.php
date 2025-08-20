@@ -24,7 +24,7 @@
                         <table class="shopping-cart-table table">
                             <thead>
                                 <tr>
-                                    <th>ID Pesanan</th>
+                                    <th>Kode Pesanan</th>
                                     <th>Tanggal</th>
                                     <th>Total Bayar</th>
                                     <th>Status</th>
@@ -34,7 +34,7 @@
                             <tbody>
                                 @foreach ($orders as $order)
                                 <tr>
-                                    <td>{{ $order->id }}</td>
+                                    <td>{{ $order->kode_pesanan }}</td>
                                     <td>{{ $order->created_at->format('d M Y H:i') }}</td>
                                     <td>Rp.
                                         {{ number_format($order->total_harga + $order->biaya_ongkir, 0, ',', '.') }}
@@ -68,11 +68,30 @@
                         <div class="panel panel-default"
                             style="margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
                             <div class="panel-heading" style="background-color: #f8f8f8; padding: 10px 15px;">
-                                <strong>ID: {{ $order->id }}</strong>
-                                <span class="pull-right label label-info">
-                                    @if ($order->status == 'Paid')
+                                <strong>Kode Pesanan : {{ $order->kode_pesanan }}</strong>
+                                @php
+                                $status = strtolower($order->status);
+                                $labelClass = 'label-default'; // default jika status tidak dikenal
+
+                                switch ($status) {
+                                case 'paid':
+                                case 'proses cod':
+                                case 'kirim':
+                                $labelClass = 'label-info';
+                                break;
+                                case 'selesai':
+                                $labelClass = 'label-success';
+                                break;
+                                case 'dibatalkan':
+                                $labelClass = 'label-danger';
+                                break;
+                                }
+                                @endphp
+
+                                <span class="pull-right label {{ $labelClass }}">
+                                    @if ($status == 'paid')
                                     Proses
-                                    @elseif ($order->status == 'proses cod')
+                                    @elseif ($status == 'proses cod')
                                     Proses COD
                                     @else
                                     {{ ucfirst($order->status) }}
@@ -124,10 +143,8 @@
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <h5 class="modal-title" id="orderDetailModalLabel{{ $order->id }}">
-                                        Detail Pesanan #{{ $order->id }}
+                                        Detail Pesanan #{{ $order->kode_pesanan }}
                                     </h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                                            aria-hidden="true">&times;</span></button>
                                 </div>
                                 <div class="modal-body">
                                     <table class="table table-bordered">

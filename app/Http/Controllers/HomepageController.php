@@ -26,8 +26,8 @@ class HomepageController extends Controller
         $kategori = Category::orderBy('name', 'desc')->get();
         $produkTerbaru = Product::where('status', 'active')->take(4)->get();
         $databarang = Product::where('status', 'active')->where('stok_barang', '>', 0)->where('diskon', 0)->paginate(5);
-        $diskonbarang = Product::where('diskon', '>', 0)->where('stok_barang', '>', 0)->paginate(5);
-        $banners = Banner::where('status', 'active')->take(3)->get();
+        $diskonbarang = Product::where('status', 'active')->where('diskon', '>', 0)->where('stok_barang', '>', 0)->paginate(5);
+        $banners = Banner::where('status', 'active')->get();
 
         $articles = Article::where('status', 'published')->orderBy('created_at', 'desc')->paginate(3);
         return view('frontend.dashboard.index', compact('companySetting', 'databarang', 'produkTerbaru', 'jenisobat', 'kategori', 'articles', 'diskonbarang', 'banners'));

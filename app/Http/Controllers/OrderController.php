@@ -33,9 +33,9 @@ class OrderController extends Controller
         $produk = Product::findOrFail($id);
 
         // Hitung harga setelah diskon (jika ada diskon)
-        $hargaFinal = $produk->hrgjual_barang;
+        $hargaFinal = $produk->hrgjual_barang2;
         if ($produk->diskon > 0) {
-            $hargaFinal -= ($produk->hrgjual_barang * $produk->diskon / 100);
+            $hargaFinal -= ($produk->hrgjual_barang2 * $produk->diskon / 100);
         }
 
         // Cek apakah stok mencukupi
@@ -235,9 +235,16 @@ class OrderController extends Controller
 
 
         if ($order) {
+            if (empty($request->input('alamat')) && empty($request->input('no_tlp'))) {
+                return redirect()
+                    ->route('customer.akun', ['id' => $order->user_id])
+                    ->with('error', 'Alamat dan nomor telepon harus diisi sebelum melanjutkan.');
+            }
+
             $jenisLayanan = $order->total_harga >= 50000 ? 'Instan' : 'Reguler';
             $order->layanan_pengiriman = $jenisLayanan;
             $order->alamat = $request->input('alamat');
+            $order->no_tlp = $request->input('no_tlp');
             $order->save();
             // Simpan ke session flash agar bisa diakses di halaman tujuan
             return redirect()->route('order.selectpayment');
@@ -250,7 +257,7 @@ class OrderController extends Controller
     {
         $customer = User::where('id', Auth::id())->first();;;
         // $orders = Order::where('customer_id', $customer->id)->where('status', 'completed')->get();
-        $statuses = ['Paid', 'Kirim', 'Selesai', 'Proses COD'];
+        $statuses = ['Paid', 'Kirim', 'Selesai', 'Proses COD', 'Dibatalkan'];
         $orders = Order::where('user_id', $customer->id)
             ->whereIn('status', $statuses)
             ->orderBy('id', 'desc')
@@ -287,7 +294,7 @@ class OrderController extends Controller
         $customer = Auth::user();
         // Menggunakan whereIn untuk mencari status 'pending' ATAU 'Proses COD'
         $order = Order::where('user_id', $customer->id)
-            ->whereIn('status', ['pending', 'Proses COD']) // Koreksi di sini
+            ->whereIn('status', ['pending']) // Koreksi di sini
             ->with('orderItems.produk') // Pastikan relasi orderItems dan produk terkait dimuat
             ->first();
 
@@ -303,8 +310,17 @@ class OrderController extends Controller
         $invoice = 'ORD-' . date('Ymd') . '-' . str_pad($nextOrderNumber, 4, '0', STR_PAD_LEFT);
 
         // Update status order dan kode pesanan
+        $order->tipe_pembayaran = 'Midtrans';
         $order->status = 'Paid'; // Atau 'Completed' jika itu status akhir Anda
         $order->kode_pesanan = $invoice;
+
+        // 🚀 Tentukan layanan pengiriman
+        if ($order->tipe_layanan === 'Dikirim ke alamat') {
+            $jenisLayanan = $order->total_harga >= 50000 ? 'Instan' : 'Reguler';
+            $order->layanan_pengiriman = $jenisLayanan;
+        } elseif ($order->tipe_layanan === 'Ambil di toko') {
+            $order->layanan_pengiriman = 'Ambil ditempat';
+        }
 
         // --- Logika Pengurangan Stok ---
         foreach ($order->orderItems as $item) {
@@ -326,7 +342,7 @@ class OrderController extends Controller
 
         $order->save(); // Simpan perubahan status dan kode_pesanan order
 
-        return redirect()->route('order.history')->with('success', 'Checkout berhasil. Stok barang telah diperbarui.');
+        return redirect()->route('order.history')->with('success', 'Checkout berhasil. Pesanan Anda telah diproses.');
     }
 
     public function callback(Request $request)
@@ -355,7 +371,7 @@ class OrderController extends Controller
     {
         if ($request->ajax()) {
             $data = Order::with('user')
-                ->whereIn('status', ['Paid', 'Kirim'])
+                ->whereIn('status', ['Proses COD', 'Paid', 'Kirim'])
                 ->orderBy('id', 'desc');
 
             return DataTables::of($data)
@@ -469,10 +485,14 @@ class OrderController extends Controller
             $order = Order::with('orderItems.produk')->findOrFail($id);
 
             // Validasi status
-            if (!in_array($order->status, ['Paid', 'Kirim'])) {
+            if (in_array($order->status, ['Paid', 'Kirim'])) {
                 return response()->json([
                     'status' => false,
-                    'message' => 'Pesanan tidak bisa dibatalkan.'
+                    'message' => match ($order->status) {
+                        'Paid'  => 'Pesanan tidak bisa dibatalkan karena status pesanan sudah dibayar.',
+                        'Kirim' => 'Pesanan tidak bisa dibatalkan karena status pesanan sedang dikirim.',
+                        default => 'Pesanan tidak bisa dibatalkan karena status pesanan sudah di ' . $order->status . '.',
+                    }
                 ]);
             }
 
@@ -509,22 +529,86 @@ class OrderController extends Controller
 
     public function cod()
     {
-        // Misalnya update status order menjadi COD
-        $order = Order::where('user_id', Auth::id())->latest()->first();
-        $order->status = 'Proses COD';
-        $today = date('Y-m-d');
+        $customer = Auth::user();
 
-        // Hitung jumlah order untuk hari ini
-        $todayOrderCount = Order::whereDate('created_at', $today)->where('status', 'Paid')->count();
+        $order = Order::where('user_id', $customer->id)
+            ->where('status', 'pending') // hanya order yang belum dibayar
+            ->with('orderItems.produk')
+            ->first();
 
-        // Tentukan nomor urut berikutnya
-        $nextOrderNumber = $todayOrderCount + 1;
+        if (!$order) {
+            return redirect()->route('order.history')->with('error', 'Tidak ada pesanan yang bisa diproses COD.');
+        }
 
-        // Buat invoice number
-        $invoice = 'ORD-' . date('Ymd') . '-' . str_pad($nextOrderNumber, 4, '0', STR_PAD_LEFT);
-        $order->kode_pesanan = $invoice;
+        DB::beginTransaction();
+        try {
+            // Hitung jumlah order COD hari ini
+            $today = date('Y-m-d');
+            $todayOrderCount = Order::whereDate('created_at', $today)->where('status', 'Proses COD')->count();
+            $nextOrderNumber = $todayOrderCount + 1;
+            $invoice = 'ORD-' . date('Ymd') . '-' . str_pad($nextOrderNumber, 4, '0', STR_PAD_LEFT);
+            $alamat = User::where('id', $customer->id)->first()->alamat;
+
+            // Update status dan kode pesanan
+            $order->tipe_pembayaran = 'COD';
+            $order->status = 'Proses COD';
+            $order->kode_pesanan = $invoice;
+
+
+            // 🚀 Tentukan layanan pengiriman berdasarkan tipe_layanan
+            if ($order->tipe_layanan === 'Dikirim ke alamat') {
+                $jenisLayanan = $order->total_harga >= 50000 ? 'Instan' : 'Reguler';
+                $order->layanan_pengiriman = $jenisLayanan;
+            } elseif ($order->tipe_layanan === 'Ambil di toko') {
+                $order->layanan_pengiriman = 'Ambil ditempat';
+            }
+
+            // Kurangi stok barang
+            foreach ($order->orderItems as $item) {
+                $product = $item->produk;
+                if ($product) {
+                    if ($product->stok_barang >= $item->quantity) {
+                        $product->stok_barang -= $item->quantity;
+                        $product->save();
+                    } else {
+                        DB::rollBack();
+                        return redirect()->route('order.cart')->with('error', 'Stok barang ' . $product->nm_barang . ' tidak mencukupi.');
+                    }
+                }
+            }
+
+            $order->save();
+            DB::commit();
+
+            return redirect()->route('order.history')->with('success', 'Pesanan COD berhasil dibuat. Silakan tunggu kurir kami.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('order.cart')->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    public function selectPickup(Request $request)
+    {
+        $request->validate([
+            'tipe_layanan' => 'required|in:Dikirim ke alamat,Ambil di toko',
+        ]);
+
+        $customer = Auth::user();
+        $order = Order::where('user_id', $customer->id)->where('status', 'pending')->first();
+
+        if (!$order) {
+            return redirect()->route('order.cart')->with('error', 'Pesanan tidak ditemukan.');
+        }
+
+        // simpan pilihan user
+        $order->tipe_layanan = $request->tipe_layanan;
         $order->save();
 
-        return redirect()->route('order.complete')->with('success', 'Pesanan COD berhasil dibuat. Silakan tunggu kurir kami.');
+        // arahkan sesuai pilihan
+        if ($request->tipe_layanan === 'Dikirim ke alamat') {
+            return redirect()->route('order.selectShipping');
+        }
+
+        return redirect()->route('order.selectpayment');
     }
 }

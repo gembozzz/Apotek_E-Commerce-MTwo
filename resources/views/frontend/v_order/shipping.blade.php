@@ -17,7 +17,14 @@
                             <div class="mb-3">
                                 <label for="alamat" class="form-label">Alamat Anda</label>
                                 <input type="text" name="alamat" id="search" class="form-control"
-                                    placeholder="Alamat Lengkap" value="{{ $customer->alamat }}" required>
+                                    placeholder="Alamat Lengkap" value="{{ $customer->alamat }}" readonly>
+                                <ul id="suggestions" class="list-group mt-1"></ul>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="no_tlp" class="form-label">No Telepon Anda</label>
+                                <input type="text" name="no_tlp" id="no_tlp" class="form-control"
+                                    placeholder="No Telepon" value="{{ $customer->no_tlp }}" readonly>
                                 <ul id="suggestions" class="list-group mt-1"></ul>
                             </div>
 
@@ -52,7 +59,7 @@
                             </div>
 
                             <br><br>
-                            <button type="submit" class="primary-btn add-to-cart">Select Payment</button>
+                            <button type="submit" class="primary-btn">Select Payment</button>
                         </form>
                     </div>
                 </div>

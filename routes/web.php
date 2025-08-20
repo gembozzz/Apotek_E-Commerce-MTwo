@@ -48,6 +48,7 @@ Route::middleware('is.customer')->group(function () {
     Route::get('cart', [OrderController::class, 'viewCart'])->name('order.cart');
     Route::post('cart/update/{id}', [OrderController::class, 'updateCart'])->name('order.updateCart');
     Route::post('remove/{id}', [OrderController::class, 'removeFromCart'])->name('order.remove');
+    Route::post('/order/select-pickup', [OrderController::class, 'selectPickup'])->name('order.selectPickup');
     Route::post('update-ongkir', [OrderController::class, 'updateOngkir'])->name('order.update-ongkir');
     Route::match(['get', 'post'], 'select-payment', [OrderController::class, 'selectPayment'])->name('order.selectpayment');
     Route::match(['get', 'post'], 'select-shipping', [OrderController::class, 'selectShipping'])->name('order.selectShipping');
@@ -75,6 +76,8 @@ Route::prefix('/backend')->middleware('auth:admin')->group(function () {
     Route::put('/product/{product}', [ProductController::class, 'update'])->name('product.update');
     Route::get('/product/{product}', [ProductController::class, 'show'])->name('product.show');
     Route::get('/product-data', [ProductController::class, 'data'])->name('backend.product.data');
+    Route::post('/product/multiple-update-status', [ProductController::class, 'multipleUpdateStatus'])->name('backend.product.multipleUpdateStatus');
+
 
     // category
     Route::resource('category', CategoryController::class);

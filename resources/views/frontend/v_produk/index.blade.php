@@ -1,94 +1,105 @@
 @extends('frontend.layouts.index')
 @section('content')
-    <div class="section">
-        <div class="container">
-            <div class="row row-equal">
-                <div class="col-md-12">
-                    <div class="order-summary clearfix">
-                        <div class="section-title">
-                            <h2 class="title">Seluruh Produk</h2>
-                        </div>
+<div class="section">
+    <div class="container">
+        <div class="row row-equal">
+            <div class="col-md-12">
+                <div class="order-summary clearfix">
+                    <div class="section-title">
+                        <h2 class="title">Seluruh Produk</h2>
+                    </div>
 
-                        <div class="col-md-12 mb-4">
-                            <form action="{{ route('produk.search') }}" method="GET">
-                                <div class="d-flex flex-wrap align-items-center">
-                                    <div class="flex-grow-1">
-                                        <input type="text" name="q" class="form-control"
-                                            placeholder="Cari produk..." value="{{ request('q') }}">
-                                        <br>
-                                        <button type="submit" class="btn btn-success w-100 w-sm-auto">Cari</button>
-                                    </div>
+                    <div class="col-md-12 mb-4">
+                        <form action="{{ route('produk.search') }}" method="GET">
+                            <div class="d-flex flex-wrap align-items-center">
+                                <div class="flex-grow-1">
+                                    <input type="text" name="q" class="form-control" placeholder="Cari produk..."
+                                        value="{{ request('q') }}">
+                                    <br>
+                                    <button type="submit" class="btn btn-success w-100 w-sm-auto">Cari</button>
                                 </div>
-                            </form>
-                        </div>
+                            </div>
+                        </form>
+                    </div>
 
-
+                    <div class="row">
                         @forelse ($produk as $item)
-                            <div class="col-md-3 col-sm-6 col-xs-6">
-                                <div class="product product-single product-hot" data-aos="fade-up" data-aos-duration="600">
-                                    <div class="product-thumb">
-                                        @if ($item->diskon > 0)
-                                            <div class="product-label">
-                                                <span class="sale">-{{ $item->diskon }}%</span>
-                                            </div>
-                                        @elseif ($item->jenisobat == 'ETC1')
-                                            <div class="product-label">
-                                                <span class="resep">Butuh Resep Obat</span>
-                                            </div>
-                                        @endif
-                                        <a href="{{ route('produk.detail', $item->id_barang) }}">
-                                            <button class="main-btn quick-view"><i class="fa fa-search-plus"></i>
-                                                Detail</button>
-                                        </a>
-                                        <img src="{{ asset('storage/' . ($item->image ?? 'default.png')) }}" alt="">
+                        <div class="col-6 col-sm-4 col-md-3">
+                            <div class="product product-single product-grid product-hot" data-aos="fade-up"
+                                data-aos-duration="600">
+                                <div class="product-thumb">
+                                    @if ($item->diskon > 0)
+                                    <div class="product-label">
+                                        <span class="sale">-{{ $item->diskon }}%</span>
                                     </div>
+                                    @elseif ($item->jenisobat == 'ETC1')
+                                    <div class="product-label">
+                                        <span class="resep">Butuh Resep Obat</span>
+                                    </div>
+                                    @endif
+                                    <a href="{{ route('produk.detail', $item->id_barang) }}">
+                                        <button class="main-btn quick-view"><i class="fa fa-search-plus"></i>
+                                            Detail</button>
+                                    </a>
+                                    <img src="{{ asset('storage/' . ($item->image ?? 'default.png')) }}" alt="">
+                                </div>
 
-                                    <div class="product-body">
-                                        <h3 class="product-price">
-                                            @if ($item->diskon > 0)
-                                                Rp.{{ number_format(round($item->hrgjual_barang - ($item->hrgjual_barang * $item->diskon) / 100), 0, ',', '.') }}
-                                                <del
-                                                    class="product-old-price">Rp.{{ number_format($item->hrgjual_barang, 0, ',', '.') }}</del>
-                                            @else
-                                                Rp.{{ number_format($item->hrgjual_barang, 0, ',', '.') }}
-                                            @endif
-                                        </h3>
-                                        <div class="product-rating">
+                                <div class="product-body">
+                                    <h3 class="product-price">
+                                        @if ($item->diskon > 0)
+                                        Rp.{{ number_format(round($item->hrgjual_barang2 - ($item->hrgjual_barang2 *
+                                        $item->diskon) / 100), 0, ',', '.') }}
+                                        <del class="product-old-price">Rp.{{ number_format($item->hrgjual_barang2, 0,
+                                            ',',
+                                            '.') }}</del>
+                                        @else
+                                        Rp.{{ number_format($item->hrgjual_barang2, 0, ',', '.') }}
+                                        @endif
+                                    </h3>
+                                    <div class="product-rating">
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star-o empty"></i>
+                                    </div>
+                                    <h2 class="product-name"><a href="#">{{ Str::limit($item->nm_barang, 34) }}</a></h2>
+                                    <div class="product-btns d-flex align-items-center justify-content-between">
+                                        @if ($item->jenisobat == 'ETC1')
+                                        {{-- Tombol untuk jenis ETC1: Membuka Modal Konfirmasi (Bootstrap 3) --}}
+                                        <button type="button" class="primary-btn add-to-cart" data-toggle="modal"
+                                            data-target="#whatsappConfirmModal" data-item-name="{{ $item->nm_barang }}"
+                                            {{-- Menggunakan nm_barang sesuai kode Anda --}}
+                                            data-item-id="{{ $item->id_barang }}">
+                                            <i class="fa fa-shopping-cart"></i> Pesan (Resep)
+                                        </button>
+                                        @else
+                                        {{-- Tombol untuk jenis NON-ETC1: Tambah ke Keranjang Biasa --}}
+                                        <form action="{{ route('order.addToCart', $item->id_barang) }}" method="post"
+                                            style="display: inline-block;">
+                                            @csrf
+                                            <button type="submit" class="primary-btn add-to-cart">
+                                                <i class="fa fa-shopping-cart"></i> Add to cart
+                                            </button>
+                                            <input type="hidden" name="redirect" value="0">
+                                        </form>
+                                        @endif
+                                        <!-- Tambahkan ini agar bintang bisa muncul di samping tombol saat responsive -->
+                                        <div class="d-inline-flex ms-2 responsive-rating">
                                             <i class="fa fa-star"></i>
                                             <i class="fa fa-star"></i>
                                             <i class="fa fa-star"></i>
                                             <i class="fa fa-star"></i>
                                             <i class="fa fa-star-o empty"></i>
                                         </div>
-                                        <h2 class="product-name"><a href="#">{{ $item->nm_barang }}</a></h2>
-                                        <div class="product-btns">
-                                            @if ($item->jenisobat == 'ETC1')
-                                                {{-- Tombol untuk jenis ETC1: Membuka Modal Konfirmasi (Bootstrap 3) --}}
-                                                <button type="button" class="primary-btn add-to-cart" data-toggle="modal"
-                                                    data-target="#whatsappConfirmModal"
-                                                    data-item-name="{{ $item->nm_barang }}" {{-- Menggunakan nm_barang sesuai kode Anda --}}
-                                                    data-item-id="{{ $item->id_barang }}">
-                                                    <i class="fa fa-shopping-cart"></i> Pesan (Resep)
-                                                </button>
-                                            @else
-                                                {{-- Tombol untuk jenis NON-ETC1: Tambah ke Keranjang Biasa --}}
-                                                <form action="{{ route('order.addToCart', $item->id_barang) }}"
-                                                    method="post" style="display: inline-block;">
-                                                    @csrf
-                                                    <button type="submit" class="primary-btn add-to-cart">
-                                                        <i class="fa fa-shopping-cart"></i> Add to cart
-                                                    </button>
-                                                    <input type="hidden" name="redirect" value="0">
-                                                </form>
-                                            @endif
-                                        </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
                         @empty
-                            <div class="col-md-12">
-                                <p class="text-center">Produk tidak ditemukan.</p>
-                            </div>
+                        <div class="col-md-12">
+                            <p class="text-center">Produk tidak ditemukan.</p>
+                        </div>
                         @endforelse
                     </div>
                 </div>
@@ -116,12 +127,14 @@
                             style="color: #d9534f;"></strong>, yang
                         tergolong Obat Keras</p>
                     <p>Obat ini memerlukan resep dokter untuk pembelian.</p>
-                    <p style="background-color: #fcf8e3; border-left: 5px solid #8a6d3b; padding: 10px; margin-top: 15px;">
+                    <p
+                        style="background-color: #fcf8e3; border-left: 5px solid #8a6d3b; padding: 10px; margin-top: 15px;">
                         <i class="fa fa-exclamation-triangle" style="margin-right: 5px; color: #8a6d3b;"></i>
                         Kami akan mengarahkan Anda ke WhatsApp kami untuk konsultasi lebih lanjut dan proses
                         **pengiriman resep**.
                     </p>
-                    <p style="margin-top: 20px; font-weight: bold;">Apakah Anda bersedia melanjutkan ke WhatsApp sekarang?
+                    <p style="margin-top: 20px; font-weight: bold;">Apakah Anda bersedia melanjutkan ke WhatsApp
+                        sekarang?
                     </p>
                 </div>
                 <div class="modal-footer">
@@ -173,4 +186,4 @@
             });
         });
     </script>
-@endsection
+    @endsection

@@ -157,7 +157,7 @@
 <div class="modal fade" id="checkoutModal" tabindex="-1" role="dialog" aria-labelledby="checkoutModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
-        <form id="checkoutForm" method="POST">
+        <form id="checkoutForm" method="POST" action="{{ route('order.selectPickup') }}">
             @csrf
             <div class="modal-content custom-card-modal">
                 <div class="modal-header border-0 pb-0"> <button type="button" class="close" data-dismiss="modal"
@@ -170,14 +170,14 @@
                     <p class="text-muted mb-4">Bagaimana Anda ingin menerima pesanan Anda?</p>
 
                     <div class="d-grid gap-3"> <label class="custom-selection-box">
-                            <input type="radio" name="metode_pengambilan" value="kirim" required>
+                            <input type="radio" name="tipe_layanan" value="Dikirim ke alamat" required>
                             <div class="content">
                                 <i class="fas fa-truck fa-2x mb-2 text-primary"></i> <span>Dikirim ke Alamat</span>
                             </div>
                         </label>
 
                         <label class="custom-selection-box">
-                            <input type="radio" name="metode_pengambilan" value="ambil" required>
+                            <input type="radio" name="tipe_layanan" value="Ambil di toko" required>
                             <div class="content">
                                 <i class="fas fa-store fa-2x mb-2 text-info"></i> <span>Ambil di Toko</span>
                             </div>
@@ -330,20 +330,24 @@
 
 <script>
     document.getElementById('checkoutForm').addEventListener('submit', function(e) {
-            e.preventDefault(); // cegah form langsung submit
+        e.preventDefault();
 
-            const metode = document.querySelector('input[name="metode_pengambilan"]:checked').value;
-            const form = e.target;
+        const metode = document.querySelector('input[name="tipe_layanan"]:checked').value;
+        const form = e.target;
 
-            if (metode === 'kirim') {
-                // redirect ke form shipping
-                window.location.href = "{{ route('order.selectShipping') }}";
-            } else if (metode === 'ambil') {
-                // submit ke route checkout instan
-                form.action = "{{ route('order.selectpayment') }}";
-                form.submit();
-            }
-        });
+        // selalu submit ke route selectPickup
+        form.action = "{{ route('order.selectPickup') }}";
+
+        // tambahkan hidden input supaya server tahu user pilih apa
+        let hiddenInput = document.createElement('input');
+        hiddenInput.type = 'hidden';
+        hiddenInput.name = 'tipe_layanan';
+        hiddenInput.value = metode;
+        form.appendChild(hiddenInput);
+
+        form.submit();
+    });
+
 </script>
 
 

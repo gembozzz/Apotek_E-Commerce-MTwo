@@ -84,7 +84,7 @@
     responsive: [{
         breakpoint: 991,
         settings: {
-          slidesToShow: 1,
+          slidesToShow: 2,
           slidesToScroll: 1,
         }
       },
@@ -93,7 +93,7 @@
         settings: {
           dots: false,
           arrows: true,
-          slidesToShow: 1,
+          slidesToShow: 2,
           slidesToScroll: 1,
         }
       },
@@ -112,7 +112,7 @@
     responsive: [{
         breakpoint: 991,
         settings: {
-          slidesToShow: 1,
+          slidesToShow: 2,
           slidesToScroll: 1,
         }
       },
@@ -121,7 +121,7 @@
         settings: {
           dots: false,
           arrows: true,
-          slidesToShow: 1,
+          slidesToShow: 2,
           slidesToScroll: 1,
         }
       },

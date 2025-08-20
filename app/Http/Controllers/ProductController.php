@@ -20,6 +20,7 @@ class ProductController extends Controller
             ->where('status', 'active')
             ->paginate(16);
         $kategori = Category::orderBy('name', 'desc')->get();
+
         return view('frontend.v_produk.index', compact('produk', 'kategori'));
     }
 
@@ -66,7 +67,7 @@ class ProductController extends Controller
             'category_id',
             'jenisobat',
             'hrgsat_barang',
-            'hrgjual_barang',
+            'hrgjual_barang2',
             'diskon',
         ]);
 
@@ -74,6 +75,10 @@ class ProductController extends Controller
             ->addIndexColumn()
             ->addColumn('kategori', function ($row) {
                 return $row->category->name ?? '-';
+            })
+            ->addColumn('checkbox', function ($row) {
+                $checked = $row->status === 'active' ? 'checked' : '';
+                return '<input type="checkbox" class="checkItem" value="' . $row->id_barang . '" ' . $checked . '>';
             })
             ->addColumn('aksi', function ($row) {
                 $btn = '<div class="dropdown position-relative d-inline-block">
@@ -91,9 +96,32 @@ class ProductController extends Controller
             </div>';
                 return $btn;
             })
-            ->rawColumns(['aksi'])
+            ->rawColumns(['aksi', 'checkbox'])
             ->make(true);
     }
+
+    public function multipleUpdateStatus(Request $request)
+    {
+        $allIds = $request->input('all_ids', []);
+        $activeIds = $request->input('active_ids', []);
+
+        if (empty($allIds)) {
+            return response()->json(['message' => 'Tidak ada data dikirim.'], 400);
+        }
+
+        // Semua produk default jadi inactive
+        Product::whereIn('id_barang', $allIds)->update(['status' => 'inactive']);
+
+        // Produk yang dicentang jadi active
+        if (!empty($activeIds)) {
+            Product::whereIn('id_barang', $activeIds)->update(['status' => 'active']);
+        }
+
+        return response()->json(['message' => 'Status produk berhasil diperbarui.']);
+    }
+
+
+
 
     /**
      * Show the form for creating a new resource.
@@ -199,7 +227,7 @@ class ProductController extends Controller
         $produk = Product::where('category_id', $id)->where('status', 1)->orderBy('nm_barang', 'desc')->paginate(6);
 
         return view('frontend.v_produk.produkkategori', [
-            'judul' => 'Kategori' . ' ' . $categories->find($id)->name,
+            'judul' => $categories->find($id)->name,
             'kategori' => $categories,
             'produk' => $produk,
         ]);

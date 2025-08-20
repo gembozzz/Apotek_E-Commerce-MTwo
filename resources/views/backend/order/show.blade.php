@@ -27,10 +27,14 @@
                         </address>
                     </div>
                     <div class="col-xs-12 col-sm-12 col-md-6 text-right">
+                        @if (!empty($order->layanan_pengiriman))
                         <h5>Ongkos Kirim</h5>
+                        @endif
+
                         <address>
                             {{-- Kurir: {{ $order->kurir }}<br> --}}
-                            Layanan: {{ $order->layanan_pengiriman ?? '-' }}<br>
+                            Layanan: {{ empty($order->layanan_pengiriman) ? 'Ambil di tempat' :
+                            $order->layanan_pengiriman }}<br>
                             {{-- Estimasi: {{ $order->estimasi_ongkir }} Hari<br>
                             Berat: {{ $order->total_berat }} Gram<br> --}}
                         </address>
@@ -130,24 +134,28 @@
                                 value="{{ old('kode_pesanan', $order->kode_pesanan) }}" class="form-control" readonly>
                         </div>
                     </div>
+                    @php
+                    $statusOptions = config("order_status.{$order->tipe_layanan}.{$order->tipe_pembayaran}", []);
+                    @endphp
+
                     <div class="col-xs-6 col-sm-6 col-md-6">
                         <div class="form-group">
                             <label>Status</label>
-                            <select name="status" class="form-control @error('status') is invalid @enderror" {{
-                                $order->status == 'Selesai' || $order->status == 'Dibatalkan' ? 'disabled' : '' }}>
-                                <option value="" {{ old('status', $order->status) == '' ? 'selected' : '' }}> -
-                                    Pilih Status Pesanan -</option>
-                                <option value="Paid" {{ old('status', $order->status) == 'Paid' ? 'selected' : '' }}>
-                                    Proses</option>
-                                <option value="Kirim" {{ old('status', $order->status) == 'Kirim' ? 'selected' : '' }}>
-                                    Kirim</option>
-                                <option value="Selesai" {{ old('status', $order->status) == 'Selesai' ? 'selected' : ''
-                                    }}>
-                                    Selesai</option>
-                                <option value="Dibatalkan" {{ old('status', $order->status) == 'Dibatalkan' ? 'selected'
-                                    : ''
-                                    }}>Dibatalkan</option>
+                            <select name="status" class="form-control @error('status') is-invalid @enderror" {{
+                                in_array($order->status, ['Selesai', 'Dibatalkan']) ? 'disabled' : '' }}>
+
+                                <option value="" {{ old('status', $order->status) == '' ? 'selected' : '' }}>
+                                    - Pilih Status Pesanan -
+                                </option>
+
+                                @foreach ($statusOptions as $status)
+                                <option value="{{ $status }}" {{ old('status', $order->status) == $status ? 'selected' :
+                                    '' }}>
+                                    {{ $status }}
+                                </option>
+                                @endforeach
                             </select>
+
                             @error('status')
                             <span class="invalid-feedback alert-danger" role="alert">
                                 {{ $message }}

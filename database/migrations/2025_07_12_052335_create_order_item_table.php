@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('order_online_item', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('order_id');
-            $table->unsignedInteger('produk_id');
+            $table->Integer('produk_id');
             $table->integer('quantity');
             $table->double('harga');
             $table->timestamps();

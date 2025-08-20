@@ -397,15 +397,11 @@
         <div class="row invoice-header align-items-center">
             <div class="col-md-6">
                 <img src="{{ asset('storage/' . $companySetting->logo) }}" alt="Company Logo" class="invoice-logo mb-3">
-                <div class="address-block">
-                    <h5 class="fw-bold mb-1">{{ $companySetting->nama_perusahaan }}</h5>
-                    <p class="mb-0">{{ $companySetting->alamat }}</p>
-                </div>
             </div>
             <div class="col-md-6 text-end">
                 <h1 class="invoice-title">INVOICE</h1>
                 <div class="contact-info mt-3">
-                    <p class="mb-0"><i class="fas fa-phone-alt me-2"></i>+62 {{ $companySetting->telepon }}</p>
+                    <p class="mb-0"><i class="fas fa-phone-alt me-2"></i>{{ $companySetting->telepon }}</p>
                     <p class="mb-0"><i class="fas fa-envelope me-2"></i>{{ $companySetting->email }}</p>
                     <p class="mb-0"><i class="fas fa-globe me-2"></i>{{ $companySetting->website }}</p>
                 </div>
@@ -414,17 +410,20 @@
 
         <div class="details-section">
             <div class="details-col">
-                <p class="fw-bold mb-2 text-primary">Bill To</p>
-                <p class="mb-1"><strong class="me-2">Client Name:</strong>{{ $order->user->name }}</p>
-                <p class="mb-1"><strong class="me-2">alamat: </strong>{{ $order->user->alamat ?? 'N/A' }}</p>
+                <p class="fw-bold mb-2 text-primary">Nota Pesanan untuk</p>
+                <p class="mb-1"><strong class="me-2">Nama Pembeli:</strong>{{ $order->user->name }}</p>
+                <p class="mb-1"><strong class="me-2">No. Handphone Pembeli:</strong>{{ $order->user->no_tlp ?? 'N/A' }}
+                </p>
+                <p class="mb-1"><strong class="me-2">Alamat Pembeli:</strong>{{ $order->user->alamat ?? 'N/A' }}</p>
             </div>
             <div class="details-col">
-                <p class="fw-bold mb-2 text-primary">Details</p>
-                <p class="mb-1"><strong class="me-2">Invoice #:</strong> {{ $order->kode_pesanan }}</p>
-                <p class="mb-1"><strong class="me-2">Invoice Date:</strong>
+                <p class="fw-bold mb-2 text-primary">Detail Pesanan</p>
+                <p class="mb-1"><strong class="me-2">No. Pesanan:</strong>{{ $order->kode_pesanan }}</p>
+                <p class="mb-1"><strong class="me-2">Tanggal transaksi:</strong>
                     {{ $order->created_at->format('d/m/Y') }}</p>
-                <p class="mb-0"><strong class="me-2">Due Date:</strong>
-                    {{ $order->due_date ? \Carbon\Carbon::parse($order->due_date)->format('d/m/Y') : 'N/A' }}</p>
+                <p class="mb-1"><strong class="me-2">Layanan:</strong><b>{{ $order->layanan_pengiriman ?? 'Ambil di
+                        tempat'}}</b></p>
+
             </div>
         </div>
 
@@ -432,11 +431,11 @@
             <table class="table table-product">
                 <thead>
                     <tr>
-                        <th class="w-25">Product/Service</th>
-                        <th class="w-25">Description</th>
-                        <th class="text-center">Quantity/hrs</th>
-                        <th class="text-end">Rate</th>
-                        <th class="text-end">Amount</th>
+                        <th class="w-25">Produk</th>
+                        <th class="w-25">Deskripsi</th>
+                        <th class="text-center">Kuantitas</th>
+                        <th class="text-end">Tarif</th>
+                        <th class="text-end">Jumlah</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -464,9 +463,10 @@
 
         <div class="row">
             <div class="col-md-7 customer-message-box">
-                <p class="fw-bold mb-2">Customer Message</p>
-                <p class="mb-0">Hello!,Thank you for your purchase. Please return this invoice with
-                    payment.<br>Thanks!</p>
+                <div class="address-block">
+                    <h5 class="mb-1">{{ $companySetting->nama_perusahaan }}</h5>
+                    <p class="mb-0">{{ $companySetting->alamat }}</p>
+                </div>
             </div>
             <div class="col-md-5">
                 <table class="table table-borderless table-sm text-end">

@@ -26,6 +26,7 @@ class Product extends Model
         'diskon',
         'hrgsat_barang',
         'hrgjual_barang',
+        'hrgjual_barang2',
         'komisi',
         'indikasi',
         'ket_barang',
