@@ -28,7 +28,7 @@ Route::get('auth/google/callback', [LoginController::class, 'handleGoogleCallbac
 Route::get('/home-page', [HomepageController::class, 'index'])->name('home-page');
 
 // Route Product
-Route::get('/produk/all', [ProductController::class, 'index'])->name('produk.all');
+
 Route::get('/produk/detail/{id}', [ProductController::class, 'detail'])->name('produk.detail');
 Route::get('/produk/kategori/{id}', [ProductController::class, 'produkKategori'])->name('produk.kategori');
 Route::get('/produk/cari', [ProductController::class, 'search'])->name('produk.search');
@@ -59,6 +59,7 @@ Route::middleware('is.customer')->group(function () {
     Route::get('history', [OrderController::class, 'orderHistory'])->name('order.history');
     Route::get('order/invoice/{id}', [OrderController::class, 'invoiceFrontend'])->name('order.invoice');
     Route::get('/order/cod', [OrderController::class, 'cod'])->name('order.cod');
+    Route::get('/produk/all', [ProductController::class, 'index'])->name('produk.all');
 });
 
 Route::prefix('/backend')->middleware('auth:admin')->group(function () {

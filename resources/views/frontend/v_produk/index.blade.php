@@ -32,7 +32,7 @@
                                     <div class="product-label">
                                         <span class="sale">-{{ $item->diskon }}%</span>
                                     </div>
-                                    @elseif ($item->jenisobat == 'ETC1')
+                                    @elseif ($item->jenisobat == 'XXXX')
                                     <div class="product-label">
                                         <span class="resep">Butuh Resep Obat</span>
                                     </div>

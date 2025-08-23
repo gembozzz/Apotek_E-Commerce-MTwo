@@ -112,37 +112,37 @@
                             </a>
 
                             @if (Auth::check())
-                            <a class="text-uppercase">{{ explode(' ', Auth::user()->name)[0] }}</a>
-                            <!-- Tambahkan class dropdown-menu agar dikenali Bootstrap -->
-                            <ul class="dropdown-menu custom-menu list-unstyled">
-                                <li>
-                                    <a href="{{ route('customer.akun', ['id' => Auth::user()->id]) }}">
-                                        <i class="fa fa-user-o me-2"></i> My Account
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="{{ route('order.history') }}">
-                                        <i class="fa fa-shopping-cart me-2"></i> History Pemesanan
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#"
-                                        onclick="event.preventDefault(); document.getElementById('logoutForm').submit();">
-                                        <i class="fa fa-unlock-alt me-2"></i> Logout
-                                    </a>
-                                </li>
-                            </ul>
-                            <form id="logoutForm" action="{{ route('logout') }}" method="POST" class="d-none">
-                                @csrf
-                            </form>
+                                <a class="text-uppercase">{{ explode(' ', Auth::user()->name)[0] }}</a>
+                                <!-- Tambahkan class dropdown-menu agar dikenali Bootstrap -->
+                                <ul class="dropdown-menu custom-menu list-unstyled">
+                                    <li>
+                                        <a href="{{ route('customer.akun', ['id' => Auth::user()->id]) }}">
+                                            <i class="fa fa-user-o me-2"></i> My Account
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{ route('order.history') }}">
+                                            <i class="fa fa-shopping-cart me-2"></i> History Pemesanan
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#"
+                                            onclick="event.preventDefault(); document.getElementById('logoutForm').submit();">
+                                            <i class="fa fa-unlock-alt me-2"></i> Logout
+                                        </a>
+                                    </li>
+                                </ul>
+                                <form id="logoutForm" action="{{ route('logout') }}" method="POST" class="d-none">
+                                    @csrf
+                                </form>
                             @else
-                            <ul class="dropdown-menu custom-menu list-unstyled">
-                                <li>
-                                    <a href="{{ route('login.form') }}">
-                                        <i class="fa fa-unlock-alt"></i> Login
-                                    </a>
-                                </li>
-                            </ul>
+                                <ul class="dropdown-menu custom-menu list-unstyled">
+                                    <li>
+                                        <a href="{{ route('login.form') }}">
+                                            <i class="fa fa-unlock-alt"></i> Login
+                                        </a>
+                                    </li>
+                                </ul>
                             @endif
                         </li>
                         <!-- /Account -->
@@ -183,30 +183,32 @@
         <div class="container">
             <div id="responsive-nav">
                 @if (request()->segment(1) == '' || request()->segment(1) == 'home-page')
-                <!-- category nav -->
-                <div class="category-nav">
-                    <span class="category-header" onclick="toggleKategoriList()" style="cursor: pointer;">
-                        Kategori <i class="fa fa-list"></i>
-                    </span>
-                    <ul class="category-list" id="kategori-list" style="display: none;">
-                        @foreach ($kategori as $item)
-                        <li>
-                            <a href="{{ route('produk.kategori', ['id' => $item->id]) }}">{{ $item->name }}</a>
-                        </li>
-                        @endforeach
-                    </ul>
-                </div>
+                    <!-- category nav -->
+                    <div class="category-nav">
+                        <span class="category-header" onclick="toggleKategoriList()" style="cursor: pointer;">
+                            Kategori <i class="fa fa-list"></i>
+                        </span>
+                        <ul class="category-list" id="kategori-list" style="display: none;">
+                            @foreach ($kategori as $item)
+                                <li>
+                                    <a
+                                        href="{{ route('produk.kategori', ['id' => $item->id]) }}">{{ $item->name }}</a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
                 @else
-                <div class="category-nav show-on-click">
-                    <span class="category-header">Kategori <i class="fa fa-list"></i></span>
-                    <ul class="category-list">
-                        @foreach ($kategori as $item)
-                        <li>
-                            <a href="{{ route('produk.kategori', ['id' => $item->id]) }}">{{ $item->name }}</a>
-                        </li>
-                        @endforeach
-                    </ul>
-                </div>
+                    <div class="category-nav show-on-click">
+                        <span class="category-header">Kategori <i class="fa fa-list"></i></span>
+                        <ul class="category-list">
+                            @foreach ($kategori as $item)
+                                <li>
+                                    <a
+                                        href="{{ route('produk.kategori', ['id' => $item->id]) }}">{{ $item->name }}</a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    </div>
                 @endif
                 <!-- /category nav -->
 
@@ -220,12 +222,14 @@
                                 Home
                             </a>
                         </li>
-                        <li>
-                            <a href="{{ route('produk.all') }}"
-                                class="{{ request()->routeIs('produk.all') ? 'active' : '' }}">
-                                All Produk
-                            </a>
-                        </li>
+                        @if (auth()->check())
+                            <li>
+                                <a href="{{ route('produk.all') }}"
+                                    class="{{ request()->routeIs('produk.all') ? 'active' : '' }}">
+                                    All Produk
+                                </a>
+                            </li>
+                        @endif
                         <li>
                             <a href="{{ route('artikel.all') }}"
                                 class="{{ request()->routeIs('artikel.all', 'article.show') ? 'active' : '' }}">
@@ -284,10 +288,10 @@
                             </li>
                             <li class="mb-2">
                                 @php
-                                $website = $companySetting->website;
-                                if ($website && !Str::startsWith($website, ['http://', 'https://'])) {
-                                $website = 'https://' . $website;
-                                }
+                                    $website = $companySetting->website;
+                                    if ($website && !Str::startsWith($website, ['http://', 'https://'])) {
+                                        $website = 'https://' . $website;
+                                    }
                                 @endphp
                                 <a href="{{ $website }}" target="_blank">
                                     <i class="fas fa-globe fa-lg"></i>
@@ -306,7 +310,8 @@
             </div>
 
             <div class="text-center footer-copyright mt-4">
-                &copy; <script>
+                &copy;
+                <script>
                     document.write(new Date().getFullYear());
                 </script> All rights reserved | BRIGHT FUTURE
             </div>
