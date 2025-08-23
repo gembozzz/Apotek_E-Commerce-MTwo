@@ -421,8 +421,13 @@
                 <p class="mb-1"><strong class="me-2">No. Pesanan:</strong>{{ $order->kode_pesanan }}</p>
                 <p class="mb-1"><strong class="me-2">Tanggal transaksi:</strong>
                     {{ $order->created_at->format('d/m/Y') }}</p>
-                <p class="mb-1"><strong class="me-2">Layanan:</strong><b>{{ $order->layanan_pengiriman ?? 'Ambil di
-                        tempat'}}</b></p>
+                <p class="mb-1"><strong class="me-2">Layanan:</strong><b>{{ $order->tipe_layanan}}</b></p>
+                @if ($order->tipe_layanan == 'Ambil di toko')
+                <p class="mb-1"><strong class="me-2">Pengambilan:</strong>{{ $order->layanan_pengiriman ?? 'N/A' }}</p>
+                @elseif ($order->tipe_layanan == 'Dikirim ke alamat' )
+                <p class="mb-1"><strong class="me-2">Kurir:</strong>{{ $order->layanan_pengiriman ?? 'N/A' }}
+                </p>
+                @endif
 
             </div>
         </div>

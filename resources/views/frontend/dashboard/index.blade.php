@@ -132,7 +132,7 @@
                 <div class="row">
                     <div id="product-slick-3" class="product-slick">
                         <!-- Product Single -->
-                        @foreach ($databarang as $item)
+                        @foreach ($produkTerlaris as $item)
                         <div class="product product-single product-hot">
                             <div class="product-thumb">
                                 <div class="product-label">
