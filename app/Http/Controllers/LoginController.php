@@ -101,6 +101,14 @@ class LoginController extends Controller
 
             Auth::login($user);
             session()->regenerate();
+            // Cek apakah telephone dan alamat sudah diisi
+            if (
+                is_null($user->no_tlp) || $user->no_tlp === '' ||
+                is_null($user->alamat) || $user->alamat === ''
+            ) {
+                return redirect()->route('customer.akun', ['id' => Auth::user()->id])->with('warning', 'Lengkapi data telephone dan alamat terlebih dahulu.');
+            }
+
 
             return redirect()->route('home-page');
         } catch (\Throwable $th) {

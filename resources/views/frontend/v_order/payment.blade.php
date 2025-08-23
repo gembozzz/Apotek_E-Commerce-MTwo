@@ -113,7 +113,7 @@
                     <div class="form-group" style="max-width: 300px; margin-top: 20px;">
                         <label for="payment_method">Metode Pembayaran:</label>
                         <select id="payment_method" name="payment_method" class="form-control" required>
-                            <option value="midtrans">Bayar Online (Midtrans)</option>
+                            {{-- <option value="midtrans">Bayar Online (Midtrans)</option> --}}
                             <option value="cod">Bayar di Tempat (COD)</option>
                         </select>
                     </div>

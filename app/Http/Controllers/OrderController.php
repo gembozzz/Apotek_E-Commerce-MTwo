@@ -216,7 +216,11 @@ class OrderController extends Controller
                 'email' => $customer->email,
                 'phone' => $customer->hp,
             ],
-            'payment_type' => 'qris',
+            'enabled_payments' => [
+                'gopay', 
+                'bank_transfer', 
+                'credit_card',
+            ],
         ];
 
         $snapToken = Snap::getSnapToken($params);
@@ -466,15 +470,58 @@ class OrderController extends Controller
         $order = Order::findOrFail($id);
 
         $validatedData = $request->validate([
-            'status' => 'required|in:Paid,Kirim,Selesai', // sesuaikan dengan status valid
+            'status' => 'required|in:Paid,Kirim,Selesai',
         ]);
+
+        $oldStatus = $order->status;
 
         $order->update([
             'status' => $validatedData['status']
         ]);
 
-        return redirect()->route('pesanan.proses')->with('success', 'Status pesanan berhasil diperbarui.');
+        // Jika status berubah ke "Selesai", insert ke trkasir
+        if ($validatedData['status'] === 'Selesai' && $oldStatus !== 'Selesai') {
+            $user = $order->user; // pastikan Order punya relasi user()
+
+            // simpan data ke trkasir dan ambil id auto increment
+            DB::table('trkasir')->insertGetId([
+                'kd_trkasir'       => $order->kode_pesanan,
+                'petugas'          => Auth::user()->username,
+                'shift'            => 1,
+                'tgl_trkasir'      => now(),
+                'nm_pelanggan'     => $user->name,
+                'tlp_pelanggan'    => $user->no_tlp,
+                'alamat_pelanggan' => $order->alamat,
+                'ttl_trkasir'      => $order->total_harga,
+                'id_carabayar'     => $order->tipe_pembayaran === 'COD' ? 1 : 2,
+                'jenistx'          => 3,
+            ]);
+
+            // Ambil semua item order
+            foreach ($order->orderItems as $item) {
+                $barang = DB::table('barang')->where('id_barang', $item->produk_id)->first();
+
+                DB::table('trkasir_detail')->insert([
+                    'kd_trkasir'       => $order->kode_pesanan,
+                    'id_barang'        => $barang->id_barang,
+                    'kd_barang'        => $barang->kd_barang,
+                    'nmbrg_dtrkasir'   => $barang->nm_barang,
+                    'qty_dtrkasir'     => $item->quantity,
+                    'sat_dtrkasir'     => $barang->sat_barang,
+                    'hrgjual_dtrkasir' => $item->harga,
+                    'hrgttl_dtrkasir'  => $item->quantity * $item->harga,
+                    'tipe'             => 3,
+                    'idadmin'          => Auth::id(),
+                    'waktu'            => now(),
+                ]);
+            }
+        }
+
+        return redirect()->route('pesanan.proses')
+            ->with('success', 'Status pesanan berhasil diperbarui.');
     }
+
+
 
     public function batalkan($id)
     {
@@ -542,20 +589,13 @@ class OrderController extends Controller
 
         DB::beginTransaction();
         try {
-            // Hitung jumlah order COD hari ini
-            $today = date('Y-m-d');
-            $todayOrderCount = Order::whereDate('created_at', $today)->where('status', 'Proses COD')->count();
-            $nextOrderNumber = $todayOrderCount + 1;
-            $invoice = 'ORD-' . date('Ymd') . '-' . str_pad($nextOrderNumber, 4, '0', STR_PAD_LEFT);
-            $alamat = User::where('id', $customer->id)->first()->alamat;
+            $alamat = $customer->alamat;
 
-            // Update status dan kode pesanan
+            // Update status dan tipe pembayaran lebih dulu
             $order->tipe_pembayaran = 'COD';
             $order->status = 'Proses COD';
-            $order->kode_pesanan = $invoice;
 
-
-            // 🚀 Tentukan layanan pengiriman berdasarkan tipe_layanan
+            // 🚀 Tentukan layanan pengiriman
             if ($order->tipe_layanan === 'Dikirim ke alamat') {
                 $jenisLayanan = $order->total_harga >= 50000 ? 'Instan' : 'Reguler';
                 $order->layanan_pengiriman = $jenisLayanan;
@@ -577,7 +617,14 @@ class OrderController extends Controller
                 }
             }
 
+            // Simpan dulu biar dapat ID
             $order->save();
+
+            // Generate kode pesanan berdasarkan ID (auto increment)
+            $invoice = 'ORD-' . date('Ymd') . '-' . str_pad($order->id, 6, '0', STR_PAD_LEFT);
+            $order->kode_pesanan = $invoice;
+            $order->save();
+
             DB::commit();
 
             return redirect()->route('order.history')->with('success', 'Pesanan COD berhasil dibuat. Silakan tunggu kurir kami.');
@@ -586,6 +633,8 @@ class OrderController extends Controller
             return redirect()->route('order.cart')->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
     }
+
+
 
     public function selectPickup(Request $request)
     {
