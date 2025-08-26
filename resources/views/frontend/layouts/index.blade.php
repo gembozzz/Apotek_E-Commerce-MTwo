@@ -46,6 +46,25 @@
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
     <style>
+        /* Default: sembunyikan desktop */
+        .nav-toggle {
+            display: none;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .nav-toggle {
+                display: flex;
+                align-items: center;
+            }
+
+            /* kasih jarak antara tombol dan tulisan */
+            .nav-toggle button {
+                margin-right: 10px;
+                /* ini pasti bikin jarak */
+            }
+        }
+
         .menu-list a.active {
             font-weight: bold;
             color: #3ea110;
@@ -103,15 +122,16 @@
                         <li class="header-account dropdown default-dropdown" style="margin-left: 15px;">
 
                             <!-- Ganti dari <div> ke <a> -->
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                                aria-expanded="false">
-                                <div class="header-btns-icon">
-                                    <i class="fa fa-user-o"></i>
-                                </div>
-                                <strong class="text-uppercase">My Account <i class="fa fa-caret-down"></i></strong>
-                            </a>
+
 
                             @if (Auth::check())
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                    aria-expanded="false">
+                                    <div class="header-btns-icon">
+                                        <i class="fa fa-user-o"></i>
+                                    </div>
+                                    <strong class="text-uppercase">My Account <i class="fa fa-caret-down"></i></strong>
+                                </a>
                                 <a class="text-uppercase">{{ explode(' ', Auth::user()->name)[0] }}</a>
                                 <!-- Tambahkan class dropdown-menu agar dikenali Bootstrap -->
                                 <ul class="dropdown-menu custom-menu list-unstyled">
@@ -136,10 +156,18 @@
                                     @csrf
                                 </form>
                             @else
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
+                                    aria-expanded="false">
+                                    <div class="header-btns-icon">
+                                        <i class="fa fa-user-o"></i>
+                                    </div>
+                                    <strong class="text-uppercase">Daftar / Masuk <i
+                                            class="fa fa-caret-down"></i></strong>
+                                </a>
                                 <ul class="dropdown-menu custom-menu list-unstyled">
                                     <li>
                                         <a href="{{ route('login.form') }}">
-                                            <i class="fa fa-unlock-alt"></i> Login
+                                            <i class="fa fa-unlock-alt"></i> Daftar / Masuk
                                         </a>
                                     </li>
                                 </ul>
@@ -165,7 +193,10 @@
 
                         <!-- Mobile nav toggle-->
                         <li class="nav-toggle">
-                            <button class="nav-toggle-btn main-btn icon-btn"><i class="fa fa-bars"></i></button>
+                            <button class="nav-toggle-btn main-btn icon-btn">
+                                <i class="fa fa-bars"></i>
+                            </button>
+                            <strong class="text-uppercase">Menu</strong>
                         </li>
                         <!-- / Mobile nav toggle -->
                     </ul>
@@ -313,7 +344,7 @@
                 &copy;
                 <script>
                     document.write(new Date().getFullYear());
-                </script> All rights reserved | BRIGHT FUTURE
+                </script> All rights reserved | MYSIFA E-COMMERCE
             </div>
         </div>
     </footer>
@@ -351,6 +382,51 @@
         AOS.init();
     </script>
 
+    <!-- 🔽 Tambahkan floating button di sini -->
+    <div class="wa-float">
+        <button onclick="openWhatsApp()" class="wa-button">
+            <img src="https://img.icons8.com/color/48/whatsapp--v1.png" alt="WhatsApp Icon">
+        </button>
+    </div>
+
+    <script>
+        function openWhatsApp() {
+            // Ganti nomor WA sesuai kebutuhan
+            window.open("https://wa.me/{{ $companySetting->telepon }}", "_blank");
+        }
+    </script>
+
+    <style>
+        .wa-float {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 9999;
+        }
+
+        .wa-button {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            background-color: #25D366;
+            box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .wa-button:hover {
+            transform: scale(1.1);
+        }
+
+        .wa-button img {
+            width: 35px;
+            height: 35px;
+        }
+    </style>
 
 </body>
 
