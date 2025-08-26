@@ -98,21 +98,50 @@
                                 </div>
                                 @enderror
                             </div>
+                            <div class="form-group">
+                                <label for="promosi">Produk Promosi</label>
+                                <select name="promosi" class="form-control">
+                                    <option value="" disabled {{ old('promosi', $product->promosi ?? 'standar') == '' ?
+                                        'selected' : '' }}>
+                                        Pilih Produk Promosi
+                                    </option>
+                                    <option value="terlaris" {{ old('promosi', $product->promosi ?? 'standar') ==
+                                        'terlaris' ? 'selected' : '' }}>
+                                        Terlaris
+                                    </option>
+                                    <option value="diskon" {{ old('promosi', $product->promosi ?? 'standar') == 'diskon'
+                                        ? 'selected' : '' }}>
+                                        Diskon
+                                    </option>
+                                    <option value="standar" {{ old('promosi', $product->promosi ?? 'standar') ==
+                                        'standar' ? 'selected' : '' }}>
+                                        Standar
+                                    </option>
+                                </select>
+
+                                @error('promosi')
+                                <div class="invalid-feedback d-block">
+                                    {{ $message }}
+                                </div>
+                                @enderror
+                            </div>
+
                         </div>
                     </div>
                 </div>
-
-
-                <div class="card-footer">
-                    <a href="{{ route('product.index') }}" class="btn btn-secondary">
-                        <i class="fas fa-arrow-left"></i> Kembali
-                    </a>
-                    <button type="submit" class="btn btn-warning ">
-                        <i class="fas fa-save"></i> Update
-                    </button>
-                </div>
-            </form>
         </div>
+
+
+        <div class="card-footer">
+            <a href="{{ route('product.index') }}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Kembali
+            </a>
+            <button type="submit" class="btn btn-warning ">
+                <i class="fas fa-save"></i> Update
+            </button>
+        </div>
+        </form>
+    </div>
 
     </div>
 </section>

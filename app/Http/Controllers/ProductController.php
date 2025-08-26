@@ -165,7 +165,8 @@ class ProductController extends Controller
             'status' => 'required|in:active,inactive',
             'gambar_produk' => 'nullable|image|mimes:jpg,jpeg,png|max:2048', // max 2MB
             'category_id' => 'required|exists:categories,id', // Validasi kategori
-            'diskon' => 'nullable|numeric', // Validasi kategori
+            'diskon' => 'nullable|numeric', // Validasi diskon
+            'promosi' => 'nullable|in:terlaris,diskon,standar', // Validasi produk promosi
         ]);
 
         // Cek jika ada file gambar baru yang diupload
@@ -189,6 +190,7 @@ class ProductController extends Controller
         $product->status = $request->status;
         $product->category_id = $request->category_id;
         $product->diskon = $request->diskon;
+        $product->promosi = $request->promosi;
         $product->save();
 
         return redirect()->route('product.index')->with('success', 'Produk berhasil diperbarui.');

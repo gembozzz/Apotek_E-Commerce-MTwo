@@ -37,6 +37,7 @@ class Product extends Model
         'q30',
         'status',
         'image',
+        'promosi',
     ];
 
     protected $casts = [

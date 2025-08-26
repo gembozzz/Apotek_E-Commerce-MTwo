@@ -421,8 +421,13 @@
                 <p class="mb-1"><strong class="me-2">No. Pesanan:</strong>{{ $order->kode_pesanan }}</p>
                 <p class="mb-1"><strong class="me-2">Tanggal transaksi:</strong>
                     {{ $order->created_at->format('d/m/Y') }}</p>
-                <p class="mb-1"><strong class="me-2">Layanan:</strong><b>{{ $order->layanan_pengiriman ?? 'Ambil di
-                        tempat'}}</b></p>
+                <p class="mb-1"><strong class="me-2">Layanan:</strong><b>{{ $order->tipe_layanan}}</b></p>
+                @if ($order->tipe_layanan == 'Ambil di toko')
+                <p class="mb-1"><strong class="me-2">Pengambilan:</strong>{{ $order->layanan_pengiriman ?? 'N/A' }}</p>
+                @elseif ($order->tipe_layanan == 'Dikirim ke alamat' )
+                <p class="mb-1"><strong class="me-2">Kurir:</strong>{{ $order->layanan_pengiriman ?? 'N/A' }}
+                </p>
+                @endif
 
             </div>
         </div>
@@ -449,7 +454,7 @@
                     @endphp
                     <tr>
                         <td>{{ $item->produk->nm_barang }}</td>
-                        <td>{{ $item->produk->category->name ?? 'Description of product or service' }}</td>
+                        <td>{{ $item->produk->category->name ?? '-' }}</td>
                         <td class="text-center">{{ $item->quantity }}</td>
                         <td class="text-end">Rp. {{ number_format($item->harga, 0, ',', '.') }}</td>
                         <td class="text-end">Rp. {{ number_format($lineTotal, 0, ',', '.') }}</td>
