@@ -217,8 +217,8 @@ class OrderController extends Controller
                 'phone' => $customer->hp,
             ],
             'enabled_payments' => [
-                'gopay', 
-                'bank_transfer', 
+                'gopay',
+                'bank_transfer',
                 'credit_card',
             ],
         ];
@@ -375,7 +375,7 @@ class OrderController extends Controller
     {
         if ($request->ajax()) {
             $data = Order::with('user')
-                ->whereIn('status', ['Proses COD', 'Paid', 'Kirim'])
+                ->whereIn('status', ['Proses COD', 'Paid', 'Kirim', 'Barang Siap Diambil'])
                 ->orderBy('id', 'desc');
 
             return DataTables::of($data)
@@ -470,7 +470,7 @@ class OrderController extends Controller
         $order = Order::findOrFail($id);
 
         $validatedData = $request->validate([
-            'status' => 'required|in:Paid,Kirim,Selesai',
+            'status' => 'required|in:Paid,Kirim,Selesai,Barang Siap Diambil',
         ]);
 
         $oldStatus = $order->status;
@@ -490,8 +490,8 @@ class OrderController extends Controller
                 'shift'            => 1,
                 'tgl_trkasir'      => now(),
                 'nm_pelanggan'     => $user->name,
-                'tlp_pelanggan'    => $user->no_tlp,
-                'alamat_pelanggan' => $order->alamat,
+                'tlp_pelanggan'    => $user->no_tlp ?? '-',
+                'alamat_pelanggan' => $user->alamat ?? '-',
                 'ttl_trkasir'      => $order->total_harga,
                 'id_carabayar'     => $order->tipe_pembayaran === 'COD' ? 1 : 2,
                 'jenistx'          => 3,

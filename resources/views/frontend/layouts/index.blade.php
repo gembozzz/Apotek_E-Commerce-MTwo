@@ -46,6 +46,20 @@
   <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
   <![endif]-->
     <style>
+        .header-logo {
+            display: flex;
+            justify-content: flex-start;
+            /* default desktop */
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .header-logo {
+                justify-content: center;
+                /* logo di tengah */
+            }
+        }
+
         /* Default: sembunyikan desktop */
         .nav-toggle {
             display: none;
