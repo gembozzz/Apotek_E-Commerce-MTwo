@@ -2,7 +2,7 @@
 @section('content')
     <div class="section">
         <div class="container">
-            <div class="row row-equal">
+            <div class="row">
                 <div class="col-md-12">
                     <div class="order-summary clearfix">
                         <div class="section-title">
@@ -49,7 +49,8 @@
                                                     Detail</button>
                                             </a>
                                             <img src="{{ $item->image ? asset('storage/' . $item->image) : asset('images/default.png') }}"
-                                                alt="">
+                                                alt=""
+                                                >
 
                                         </div>
 
@@ -157,6 +158,17 @@
                 </div>
             </div>
         </div>
+
+        <script>
+            $(function() {
+                var maxHeight = 0;
+                $('.product').each(function() {
+                    var h = $(this).outerHeight();
+                    if (h > maxHeight) maxHeight = h;
+                });
+                $('.product').css('min-height', maxHeight + 'px');
+            });
+        </script>
 
         {{-- JavaScript harus ditempatkan di sini, SETELAH SEMUA ELEMEN HTML DAN SETELAH JQUERY & BOOTSTRAP JS TERLOAD --}}
         <script>

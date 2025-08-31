@@ -68,7 +68,7 @@
                     </div><br>
                 </form>
                 <div class="text-center">
-                    <h6>Atau masuk dengan</h6>
+                    <h6>Daftar Atau masuk dengan</h6>
                     <hr>
                 </div>
 
