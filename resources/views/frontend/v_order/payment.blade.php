@@ -6,7 +6,6 @@
             <div class="col-md-12">
                 <div class="order-summary clearfix">
                     <div class="section-title">
-                        <p>KERANJANG</p>
                         <h3 class="title">Keranjang Belanja</h3>
                     </div>
                     @if (session()->has('success'))
