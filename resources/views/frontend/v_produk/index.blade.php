@@ -74,7 +74,7 @@
                                             <h2 class="product-name"><a
                                                     href="#">{{ Str::limit($item->nm_barang, 34) }}</a></h2>
                                             <div class="product-btns d-flex align-items-center justify-content-between">
-                                                @if ($item->jenisobat == 'ETC1')
+                                                @if ($item->jenisobat == 'XXXXX')
                                                     {{-- Tombol untuk jenis ETC1: Membuka Modal Konfirmasi (Bootstrap 3) --}}
                                                     <button type="button" class="primary-btn add-to-cart"
                                                         data-toggle="modal" data-target="#whatsappConfirmModal"
