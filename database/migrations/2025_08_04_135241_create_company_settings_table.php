@@ -21,6 +21,7 @@ return new class extends Migration
             $table->text('alamat')->nullable();
             $table->text('peta_lokasi')->nullable();
             $table->string('telepon', 14)->nullable();
+            $table->text('catatan')->nullable();
             $table->timestamps();
         });
     }

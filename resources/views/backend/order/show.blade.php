@@ -43,78 +43,80 @@
                 <div class="row">
                     <div class="col-xs-12 col-sm-12 col-md-12">
                         <h5>Produk</h5>
-                        <table class="table table-bordered table-hover display">
-                            <thead>
-                                <tr>
-                                    <th class="text-center" colspan="2">Produk</th>
-                                    <th class="text-center">Harga</th>
-                                    <th class="text-center">Quantity</th>
-                                    <th class="text-center">Total</th>
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center" colspan="2">Produk</th>
+                                        <th class="text-center">Harga</th>
+                                        <th class="text-center">Quantity</th>
+                                        <th class="text-center">Total</th>
 
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @php
-                                $totalHarga = 0;
-                                $totalBerat = 0;
-                                @endphp
-                                @foreach ($order->orderItems as $item)
-                                @php
-                                $totalHarga += $item->harga * $item->quantity;
-                                $totalBerat += $item->produk->berat * $item->quantity;
-                                @endphp
-                                <tr>
-                                    <td align="center" style="width: 200px;">
-                                        <img src="{{ asset('storage/' . ($item->produk->image)) }}" alt=""
-                                            style="width: 100px; height: auto;">
-                                    </td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php
+                                    $totalHarga = 0;
+                                    $totalBerat = 0;
+                                    @endphp
+                                    @foreach ($order->orderItems as $item)
+                                    @php
+                                    $totalHarga += $item->harga * $item->quantity;
+                                    $totalBerat += $item->produk->berat * $item->quantity;
+                                    @endphp
+                                    <tr>
+                                        <td align="center" style="width: 200px;">
+                                            <img src="{{ asset('storage/' . ($item->produk->image)) }}" alt=""
+                                                style="width: 100px; height: auto;">
+                                        </td>
 
-                                    <td class="details">
-                                        <a>{{ $item->produk->nm_barang }}
-                                            @if($item->produk->category)
-                                            #{{ $item->produk->category->name }}
-                                            @endif
-                                        </a>
-                                        <ul>
-                                            {{-- <li>
-                                                <span>Jenis Obat: {{ $item->produk->jenisobat }}</span>
-                                            </li> --}}
-                                            <li>
-                                                <span>Stok Produk : {{ $item->produk->stok_barang }} {{
-                                                    $item->produk->sat_barang }}</span>
-                                            </li>
-                                        </ul>
-                                    </td>
-                                    <td class="price text-center">Rp.
-                                        {{ number_format($item->harga, 0, ',', '.') }}</td>
-                                    <td class="qty text-center">
-                                        <a> {{ $item->quantity }} </a>
-                                    </td>
-                                    <td class="total text-center">Rp.
-                                        {{ number_format($item->harga * $item->quantity, 0, ',', '.') }}</td>
+                                        <td class="details">
+                                            <a>{{ $item->produk->nm_barang }}
+                                                @if($item->produk->category)
+                                                #{{ $item->produk->category->name }}
+                                                @endif
+                                            </a>
+                                            <ul>
+                                                {{-- <li>
+                                                    <span>Jenis Obat: {{ $item->produk->jenisobat }}</span>
+                                                </li> --}}
+                                                <li>
+                                                    <span>Stok Produk : {{ $item->produk->stok_barang }} {{
+                                                        $item->produk->sat_barang }}</span>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                        <td class="price text-center">Rp.
+                                            {{ number_format($item->harga, 0, ',', '.') }}</td>
+                                        <td class="qty text-center">
+                                            <a> {{ $item->quantity }} </a>
+                                        </td>
+                                        <td class="total text-center">Rp.
+                                            {{ number_format($item->harga * $item->quantity, 0, ',', '.') }}</td>
 
-                                </tr>
-                                @endforeach
-                            </tbody>
-                            <tfoot>
-                                <tr>
-                                    <th class="empty" rowspan="3" colspan="3"></th>
-                                    <td>Subtotal</td>
-                                    <td colspan="2">Rp. {{ number_format($totalHarga, 0, ',', '.') }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Ongkos Kirim</td>
-                                    <td colspan="2">
-                                        Rp. {{ number_format($order->biaya_ongkir, 0, ',', '.') }}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>TOTAL BAYAR</th>
-                                    <th colspan="2" class="total">Rp.
-                                        {{ number_format($totalHarga + $order->biaya_ongkir, 0, ',', '.') }}</th>
-                                </tr>
-                            </tfoot>
-                        </table>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th class="empty" rowspan="3" colspan="3"></th>
+                                        <td>Subtotal</td>
+                                        <td colspan="2">Rp. {{ number_format($totalHarga, 0, ',', '.') }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Ongkos Kirim</td>
+                                        <td colspan="2">
+                                            Rp. {{ number_format($order->biaya_ongkir, 0, ',', '.') }}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>TOTAL BAYAR</th>
+                                        <th colspan="2" class="total">Rp.
+                                            {{ number_format($totalHarga + $order->biaya_ongkir, 0, ',', '.') }}</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
                     </div>
                     <div class="col-xs-6 col-sm-6 col-md-6">
                         {{-- <div class="form-group">

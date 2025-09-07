@@ -1,4 +1,5 @@
 @extends('frontend.layouts.index')
+
 @section('content')
 <div class="section">
     <div class="container">
@@ -47,11 +48,10 @@
                                     </label>
                                 </div>
 
-                                {{-- Note --}}
+                                <strong>Note</strong>
                                 <div class="alert alert-info mt-2" role="alert">
-                                    <strong>Note:</strong> Jika total pesanan lebih dari <strong>Rp 50.000</strong>,
-                                    maka pengiriman akan dilakukan secara <strong>Instan</strong>. Jika kurang dari
-                                    Rp 50.000, maka akan dikirim <strong>sesuai jam pengiriman Reguler</strong>.
+                                    {!! $companySetting->catatan ?? 'Tidak ada catatan pengiriman dari perusahaan.'
+                                    !!}
                                 </div>
 
                                 {{-- Kirim data tersembunyi tetap ke controller --}}

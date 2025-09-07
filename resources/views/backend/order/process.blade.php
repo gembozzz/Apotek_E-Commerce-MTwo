@@ -1,8 +1,8 @@
 @extends('backend.layouts.app')
 
-@section('title', 'Pesanan Selesai')
+@section('title', 'Pesanan Proses')
 
-@section('header', 'Halaman Data Pesanan Selesai')
+@section('header', 'Halaman Data Pesanan Proses')
 
 @section('content')
 <section class="content">
@@ -47,6 +47,7 @@
         $('#tablePesanan').DataTable({
             processing: true,
             serverSide: true,
+            responsive: true,
             ajax: '{{ route("pesanan.proses.data") }}',
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },

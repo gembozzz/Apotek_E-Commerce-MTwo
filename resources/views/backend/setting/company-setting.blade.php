@@ -116,7 +116,45 @@
                     </div>
                 </div>
             </div>
+
+            <div class="col-md-6 mt-4 mt-md-0">
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Ketentuan Pengiriman</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label for="catatan">Tulis ketentuan pengiriman</label>
+                            <textarea name="catatan" class="form-control @error('catatan') is-invalid @enderror"
+                                rows="7" id="catatan"
+                                placeholder="Isi catatan di sini...">{{ old('catatan', $companySetting->catatan ?? '') }}</textarea>
+
+                            @error('catatan')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                            @enderror
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </form>
 </div>
 @endsection
+
+@push('scripts')
+<!-- CKEditor 5 CDN -->
+<script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Inisialisasi CKEditor
+        ClassicEditor
+            .create(document.querySelector('#catatan'))
+            .catch(error => {
+                console.error(error);
+            });
+    });
+</script>
+
+@endpush

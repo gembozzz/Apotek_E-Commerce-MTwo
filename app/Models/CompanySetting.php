@@ -18,5 +18,6 @@ class CompanySetting extends Model
         'alamat',
         'telepon',
         'peta_lokasi',
+        'catatan',
     ];
 }

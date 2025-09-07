@@ -45,6 +45,7 @@
         $('#tablePesanan').DataTable({
             processing: true,
             serverSide: true,
+            responsive: true,
             ajax: '{{ route("pesanan.selesai.data") }}',
             columns: [
                 { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
