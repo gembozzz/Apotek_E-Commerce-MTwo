@@ -54,6 +54,8 @@
         serverSide: true,
         responsive: true,
         ajax: "{{ route('backend.product.data') }}",
+        displayStart: {{ request('start', 0) }},
+        pageLength: {{ request('length', 10) }},
         columns: [
             { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
             { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false },

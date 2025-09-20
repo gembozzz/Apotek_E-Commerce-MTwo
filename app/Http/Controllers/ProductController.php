@@ -80,7 +80,11 @@ class ProductController extends Controller
                 $checked = $row->status === 'active' ? 'checked' : '';
                 return '<input type="checkbox" class="checkItem" value="' . $row->id_barang . '" ' . $checked . '>';
             })
-            ->addColumn('aksi', function ($row) {
+            ->addColumn('aksi', function ($row) use ($request) {
+                // ambil parameter DataTables
+                $start = $request->input('start', 0);
+                $length = $request->input('length', 10);
+
                 $btn = '<div class="dropdown position-relative d-inline-block">
                 <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
                     Action
@@ -89,7 +93,11 @@ class ProductController extends Controller
                     <a href="' . route('product.show', $row->id_barang) . '" class="btn btn-info btn-sm w-100 mb-1">
                         <i class="fas fa-eye"></i> Detail
                     </a>
-                    <a href="' . route('product.edit', $row->id_barang) . '" class="btn btn-warning btn-sm w-100 mb-1">
+                    <a href="' . route('product.edit', [
+                    'product' => $row->id_barang,
+                    'start'   => $start,
+                    'length'  => $length
+                ]) . '" class="btn btn-warning btn-sm w-100 mb-1">
                         <i class="far fa-edit"></i> Edit
                     </a>
                 </div>
@@ -150,10 +158,12 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Product $product)
+    public function edit(Product $product, Request $request)
     {
-        $categories = Category::all(); // Ambil semua kategori untuk dropdown
-        return view('backend.product.update', compact('product', 'categories'));
+        $categories = Category::all();
+        $start = $request->query('start', 0);
+        $length = $request->query('length', 10); // Ambil semua kategori untuk dropdown
+        return view('backend.product.update', compact('product', 'categories', 'start', 'length'));
     }
 
     /**
@@ -193,7 +203,10 @@ class ProductController extends Controller
         $product->promosi = $request->promosi;
         $product->save();
 
-        return redirect()->route('product.index')->with('success', 'Produk berhasil diperbarui.');
+        $start = $request->query('start', 0);
+        $length = $request->query('length', 10);
+
+        return redirect()->route('product.index', ['start' => $start, 'length' => $length])->with('success', 'Produk berhasil diperbarui.');
     }
 
     /**

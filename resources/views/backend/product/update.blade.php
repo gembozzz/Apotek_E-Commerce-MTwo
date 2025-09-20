@@ -13,8 +13,10 @@
                 <h3 class="card-title">Form Edit Produk</h3>
             </div>
 
-            <form action="{{ route('product.update', $product->id_barang) }}" method="POST"
-                enctype="multipart/form-data">
+            <form
+                action="{{ route('product.update', ['product' => $product->id_barang, 'start' => $start, 'length' => $length]) }}"
+                method="POST" enctype="multipart/form-data">
+
                 @csrf
                 @method('PUT')
 
