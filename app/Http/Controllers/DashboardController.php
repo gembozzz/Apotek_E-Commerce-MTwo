@@ -15,7 +15,7 @@ class DashboardController extends Controller
         $products = Product::all();
         $customers = User::all();
         $articles = Article::all();
-        $orders = Order::all();
+        $orders = Order::whereNotIn('status', ['Selesai', 'pending'])->get();
         return view('backend.dashboard.index', compact('products', 'customers', 'articles', 'orders'));
     }
 }
