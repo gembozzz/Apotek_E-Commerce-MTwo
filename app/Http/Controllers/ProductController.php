@@ -32,27 +32,23 @@ class ProductController extends Controller
 
     public function search(Request $request)
     {
-        $keyword = $request->q;
-
-        // Pecah keyword menjadi array kata
-        $keywords = explode(' ', $keyword);
+        $keyword = trim($request->q);
+        $keywords = preg_split('/\s+/', $keyword);
 
         $produk = Product::where('stok_barang', '>', 0)
             ->where('status', 'active')
             ->where(function ($query) use ($keywords) {
                 foreach ($keywords as $word) {
-                    $query->orWhere('nm_barang', 'like', "%{$word}%")
-                        ->orWhere('kd_barang', 'like', "%{$word}%")
-                        ->orWhere('indikasi', 'like', "%{$word}%");
+                    $query->where(function ($sub) use ($word) {
+                        $sub->where('nm_barang', 'like', "%{$word}%")
+                            ->orWhere('kd_barang', 'like', "%{$word}%");
+                    });
                 }
             })
-            ->paginate(8);
+            ->paginate(8)
+            ->appends(['q' => $keyword]);
 
-        $produk->appends(['q' => $keyword]);
-
-        return view('frontend.v_produk.index', [
-            'produk' => $produk,
-        ]);
+        return view('frontend.v_produk.index', compact('produk'));
     }
 
 

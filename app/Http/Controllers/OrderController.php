@@ -12,6 +12,7 @@ use Midtrans\Snap;
 use Midtrans\Config;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\DB;
+use carbon\Carbon;
 
 
 class OrderController extends Controller
@@ -385,21 +386,34 @@ class OrderController extends Controller
                 ->addColumn('pelanggan', fn($row) => $row->user->name ?? '-')
                 ->addColumn('aksi', function ($row) {
                     $btn = '<div class="dropdown position-relative d-inline-block">
-                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
-                            Action
+                    <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
+                        Action
+                    </button>
+                    <div class="dropdown-menu center-below p-2 shadow" style="min-width: 160px;">
+                        <a href="' . route('pesanan.proses.detail', $row->id) . '" class="btn btn-primary btn-sm w-100 mb-1">
+                             Update Pesanan
+                        </a>
+                        <button onclick=\'batalkanPesanan("' . route('pesanan.batalkan', $row->id) . '")\' class="btn btn-danger btn-sm w-100 mb-1">
+                            Batalkan Pesanan
                         </button>
-                        <div class="dropdown-menu center-below p-2 shadow" style="min-width: 140px;">
-                            <a href="' . route('pesanan.proses.detail', $row->id) . '" class="btn btn-primary btn-sm w-100 mb-1">
-                                 Update Pesanan
-                            </a>
-                            <button onclick=\'batalkanPesanan("' . route('pesanan.batalkan', $row->id) . '")\' class="btn btn-danger btn-sm w-100 mb-1">
-                                Batalkan Pesanan
-                            </button>
-                            <a href=" ' . route('invoice.backend', $row->id) . ' " target="_blank" class="btn btn-success btn-sm w-100">
-                                Cetak Invoice
-                            </a>
-                        </div>
-                    </div>';
+                        <a href="' . route('invoice.backend', $row->id) . '" target="_blank" class="btn btn-success btn-sm w-100 mb-1">
+                            Cetak Invoice
+                        </a>';
+
+                    // Tambahkan tombol WhatsApp
+                    if (!empty($row->user?->no_tlp)) {
+                        // ubah 08xxx menjadi 628xxx
+                        $phone = preg_replace('/^0/', '62', $row->user->no_tlp);
+
+                        // bisa ditambah template pesan otomatis
+                        $message = urlencode("Halo {$row->user->name}, pesanan Anda dengan ID #{$row->id} sedang diproses.");
+
+                        $btn .= '<a href="https://wa.me/' . $phone . '?text=' . $message . '" target="_blank" class="btn btn-outline-success btn-sm w-100 mt-1">
+                                <i class="fab fa-whatsapp"></i> WhatsApp
+                             </a>';
+                    }
+
+                    $btn .= '</div></div>';
                     return $btn;
                 })
                 ->rawColumns(['aksi'])
@@ -470,55 +484,84 @@ class OrderController extends Controller
         $order = Order::findOrFail($id);
 
         $validatedData = $request->validate([
-            'status' => 'required|in:Paid,Kirim,Selesai,Barang Siap Diambil',
+            'status' => 'required|in:Paid,Kirim,Selesai,Barang Siap Diambil,Dibatalkan,Proses COD',
         ]);
 
         $oldStatus = $order->status;
+        $tglharini = Carbon::now()->format('Y-m-d');
 
-        $order->update([
-            'status' => $validatedData['status']
-        ]);
+        $activeShift = DB::table('waktukerja')
+            ->where('status', 'ON')
+            ->where('tanggal', $tglharini)
+            ->orderBy('id_shift', 'desc')
+            ->first();
 
-        // Jika status berubah ke "Selesai", insert ke trkasir
-        if ($validatedData['status'] === 'Selesai' && $oldStatus !== 'Selesai') {
-            $user = $order->user; // pastikan Order punya relasi user()
-
-            // simpan data ke trkasir dan ambil id auto increment
-            DB::table('trkasir')->insertGetId([
-                'kd_trkasir'       => $order->kode_pesanan,
-                'petugas'          => Auth::user()->username,
-                'shift'            => 1,
-                'tgl_trkasir'      => now(),
-                'nm_pelanggan'     => $user->name,
-                'tlp_pelanggan'    => $user->no_tlp ?? '-',
-                'alamat_pelanggan' => $user->alamat ?? '-',
-                'ttl_trkasir'      => $order->total_harga,
-                'id_carabayar'     => $order->tipe_pembayaran === 'COD' ? 1 : 2,
-                'jenistx'          => 3,
-            ]);
-
-            // Ambil semua item order
-            foreach ($order->orderItems as $item) {
-                $barang = DB::table('barang')->where('id_barang', $item->produk_id)->first();
-
-                DB::table('trkasir_detail')->insert([
-                    'kd_trkasir'       => $order->kode_pesanan,
-                    'id_barang'        => $barang->id_barang,
-                    'kd_barang'        => $barang->kd_barang,
-                    'nmbrg_dtrkasir'   => $barang->nm_barang,
-                    'qty_dtrkasir'     => $item->quantity,
-                    'sat_dtrkasir'     => $barang->sat_barang,
-                    'hrgjual_dtrkasir' => $item->harga,
-                    'hrgttl_dtrkasir'  => $item->quantity * $item->harga,
-                    'tipe'             => 3,
-                    'idadmin'          => Auth::id(),
-                    'waktu'            => now(),
-                ]);
-            }
+        if (!$activeShift) {
+            return redirect()->route('pesanan.proses')
+                ->with('error', 'Tidak ada shift aktif. Silakan buka shift terlebih dahulu.');
         }
 
-        return redirect()->route('pesanan.proses')
-            ->with('success', 'Status pesanan berhasil diperbarui.');
+        $shift = $activeShift->shift;
+
+        try {
+            DB::beginTransaction();
+
+            // Jika status berubah ke "Selesai", insert ke trkasir
+            if ($validatedData['status'] === 'Selesai' && $oldStatus !== 'Selesai') {
+                $user = $order->user;
+
+                // insert ke trkasir
+                DB::table('trkasir')->insertGetId([
+                    'kd_trkasir'       => $order->kode_pesanan,
+                    'petugas'          => Auth::user()->username,
+                    'shift'            => $shift,
+                    'tgl_trkasir'      => now(),
+                    'nm_pelanggan'     => $user->name,
+                    'tlp_pelanggan'    => $user->no_tlp ?? '-',
+                    'alamat_pelanggan' => $user->alamat ?? '-',
+                    'ttl_trkasir'      => $order->total_harga,
+                    'id_carabayar'     => $order->tipe_pembayaran === 'COD' ? 1 : 2,
+                    'jenistx'          => 3,
+                ]);
+
+                // insert detail barang
+                foreach ($order->orderItems as $item) {
+                    $barang = DB::table('barang')->where('id_barang', $item->produk_id)->first();
+                    if (!$barang) {
+                        throw new \Exception("Barang dengan ID {$item->produk_id} tidak ditemukan");
+                    }
+
+                    DB::table('trkasir_detail')->insert([
+                        'kd_trkasir'       => $order->kode_pesanan,
+                        'id_barang'        => $barang->id_barang,
+                        'kd_barang'        => $barang->kd_barang,
+                        'nmbrg_dtrkasir'   => $barang->nm_barang,
+                        'qty_dtrkasir'     => $item->quantity,
+                        'sat_dtrkasir'     => $barang->sat_barang,
+                        'hrgjual_dtrkasir' => $item->harga,
+                        'hrgttl_dtrkasir'  => $item->quantity * $item->harga,
+                        'tipe'             => 3,
+                        'idadmin'          => Auth::id(),
+                        'waktu'            => now(),
+                    ]);
+                }
+            }
+
+            // Update status order hanya kalau semua berhasil
+            $order->update([
+                'status' => $validatedData['status']
+            ]);
+
+            DB::commit();
+
+            return redirect()->route('pesanan.proses')
+                ->with('success', 'Status pesanan berhasil diperbarui.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return redirect()->route('pesanan.proses')
+                ->with('error', 'Gagal memperbarui status: ' . $e->getMessage());
+        }
     }
 
 

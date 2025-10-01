@@ -51,17 +51,16 @@
                                             <img src="{{ $item->image ? asset('storage/' . $item->image) : asset('images/default.png') }}"
                                                 alt=""
                                                 >
-
                                         </div>
 
                                         <div class="product-body">
                                             <h3 class="product-price">
                                                 @if ($item->diskon > 0)
-                                                    Rp.{{ number_format(round($item->hrgjual_barang2 - ($item->hrgjual_barang2 * $item->diskon) / 100), 0, ',', '.') }}
+                                                    Rp.{{ number_format(round($item->hrgjual_barang2 - ($item->hrgjual_barang2 * $item->diskon) / 100), 0, ',', '.') }}<small style="font-weight: bold">/{{ $item->sat_barang }}</small>
                                                     <del
                                                         class="product-old-price">Rp.{{ number_format($item->hrgjual_barang2, 0, ',', '.') }}</del>
                                                 @else
-                                                    Rp.{{ number_format($item->hrgjual_barang2, 0, ',', '.') }}
+                                                    Rp.{{ number_format($item->hrgjual_barang2, 0, ',', '.') }}<small style="font-weight: bold">/{{ $item->sat_barang }}</small>
                                                 @endif
                                             </h3>
                                             <div class="product-rating">
