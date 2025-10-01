@@ -71,7 +71,8 @@
                                     </div>
                                     <div class="product-body">
                                         <h3 class="product-price">
-                                            Rp.{{ number_format($item->hrgjual_barang2 - ($item->hrgjual_barang2 * $item->diskon) / 100, 0, ',', '.') }}
+                                            Rp.{{ number_format($item->hrgjual_barang2 - ($item->hrgjual_barang2 * $item->diskon) / 100, 0, ',', '.') }}<small
+                                                style="font-weight: bold">/{{ $item->sat_barang }}</small>
                                             <del
                                                 class="product-old-price">Rp.{{ number_format($item->hrgjual_barang2, 0, ',', '.') }}</del>
                                         </h3>
@@ -156,7 +157,8 @@
                                     </div>
                                     <div class="product-body">
                                         <h3 class="product-price">
-                                            Rp{{ number_format($item->hrgjual_barang2, 0, ',', '.') }}
+                                            Rp{{ number_format($item->hrgjual_barang2, 0, ',', '.') }}<small
+                                                style="font-weight: bold">/{{ $item->sat_barang }}</small>
                                         </h3>
                                         <div class="product-rating">
                                             <i class="fa fa-star"></i>
