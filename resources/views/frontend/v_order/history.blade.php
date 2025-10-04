@@ -68,7 +68,7 @@
                         <div class="panel panel-default"
                             style="margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; overflow: hidden;">
                             <div class="panel-heading" style="background-color: #f8f8f8; padding: 10px 15px;">
-                                <strong>Kode Pesanan : {{ $order->kode_pesanan }}</strong>
+                                <strong>{{ $order->kode_pesanan }}</strong>
                                 @php
                                 $status = strtolower($order->status);
                                 $labelClass = 'label-default'; // default jika status tidak dikenal
