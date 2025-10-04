@@ -35,9 +35,15 @@
 
                                 <img src="{{ $imagePath }}" id="preview-image" class="img-fluid img-thumbnail"
                                     style="height: 270px; width: auto;" alt="Preview Gambar">
-
                             </div>
+
+                            <h6 class="mt-2 text-center">
+                                Terakhir di update oleh {{ $product->admin->nama_lengkap }}
+                            </h6>
                         </div>
+
+
+
 
                         {{-- Form Input di Kanan --}}
                         <div class="col-md-8">
