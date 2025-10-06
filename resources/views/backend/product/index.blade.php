@@ -28,7 +28,6 @@
                             <th><input type="checkbox" id="checkAll"> </th>
                             <th>Kode</th>
                             <th>Nama Barang</th>
-                            <th>Stok</th>
                             <th>Status</th>
                             <th>Kategori</th>
                             <th>Jenis Obat</th>
@@ -62,7 +61,6 @@
             { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false },
             { data: 'kd_barang', name: 'kd_barang' },
             { data: 'nm_barang', name: 'nm_barang' },
-            { data: 'stok_barang', name: 'stok_barang' },
             { data: 'status', name: 'status' },
             { data: 'kategori', name: 'kategori' },
             { data: 'jenisobat', name: 'jenisobat' },

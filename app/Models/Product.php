@@ -65,9 +65,4 @@ class Product extends Model
         return $this->belongsTo(Category::class, 'category_id', 'id');
         // (ModelTujuan::class, foreign_key_di_produk, primary_key_di_category)
     }
-
-    public function admin()
-    {
-        return $this->belongsTo(Admin::class, 'updated_by', 'id_admin');
-    }
 }

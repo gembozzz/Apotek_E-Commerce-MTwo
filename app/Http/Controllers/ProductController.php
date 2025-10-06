@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Product;
 use App\Models\Category;
-use App\Models\JenisObat;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
+use App\Models\Product;
+use Illuminate\Http\Request;
+use App\Models\JenisObat;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -60,7 +59,6 @@ class ProductController extends Controller
             'id_barang',
             'kd_barang',
             'nm_barang',
-            'stok_barang',
             'status',
             'category_id',
             'jenisobat',
@@ -199,7 +197,6 @@ class ProductController extends Controller
         $product->category_id = $request->category_id;
         $product->diskon = $request->diskon;
         $product->promosi = $request->promosi;
-        $product->updated_by = Auth::id();
         $product->save();
 
         $start = $request->query('start', 0);
