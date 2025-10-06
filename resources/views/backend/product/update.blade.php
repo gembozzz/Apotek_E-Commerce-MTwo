@@ -36,6 +36,10 @@
                                 <img src="{{ $imagePath }}" id="preview-image" class="img-fluid img-thumbnail"
                                     style="height: 270px; width: auto;" alt="Preview Gambar">
 
+                                <h6 class="mt-2 text-center">
+                                    Terakhir di update oleh {{ $product->admin ? $product->admin->nama_lengkap : 'Tidak
+                                    diketahui' }}
+                                </h6>
                             </div>
                         </div>
 
