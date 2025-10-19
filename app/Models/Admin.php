@@ -35,4 +35,9 @@ class Admin extends Authenticatable
     {
         return $this->hasMany(Article::class, 'user_id', 'id_admin');
     }
+
+    public function products_updated()
+    {
+        return $this->hasMany(Product::class, 'updated_by', 'id_admin');
+    }
 }
