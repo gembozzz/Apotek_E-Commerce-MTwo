@@ -38,6 +38,7 @@ class Product extends Model
         'status',
         'image',
         'promosi',
+        'updated_by'
     ];
 
     protected $casts = [
