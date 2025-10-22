@@ -66,6 +66,7 @@ class ProductController extends Controller
             'hrgsat_barang',
             'hrgjual_barang2',
             'diskon',
+            'image',
         ]);
 
         return DataTables::of($query)
@@ -76,6 +77,13 @@ class ProductController extends Controller
             ->addColumn('checkbox', function ($row) {
                 $checked = $row->status === 'active' ? 'checked' : '';
                 return '<input type="checkbox" class="checkItem" value="' . $row->id_barang . '" ' . $checked . '>';
+            })
+            ->addColumn('gambar_status', function ($row) {
+                if (!empty($row->image)) {
+                    return '<span class="badge bg-success">Sudah diupload</span>';
+                } else {
+                    return '<span class="badge bg-danger">Belum upload</span>';
+                }
             })
             ->addColumn('aksi', function ($row) use ($request) {
                 // ambil parameter DataTables
@@ -101,7 +109,7 @@ class ProductController extends Controller
             </div>';
                 return $btn;
             })
-            ->rawColumns(['aksi', 'checkbox'])
+            ->rawColumns(['aksi', 'checkbox', 'gambar_status'])
             ->make(true);
     }
 

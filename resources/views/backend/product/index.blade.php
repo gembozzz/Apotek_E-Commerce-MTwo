@@ -34,6 +34,7 @@
                             <th>Harga Beli</th>
                             <th>Harga Jual</th>
                             <th>Diskon</th>
+                            <th>Gambar Produk</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -60,7 +61,17 @@
             { data: 'DT_RowIndex', name: 'DT_RowIndex', orderable: false, searchable: false },
             { data: 'checkbox', name: 'checkbox', orderable: false, searchable: false },
             { data: 'kd_barang', name: 'kd_barang' },
-            { data: 'nm_barang', name: 'nm_barang' },
+            { 
+                data: 'nm_barang', 
+                name: 'nm_barang',
+                render: function (data, type, row) {
+                    if (!data) return '-';
+                    const maxLength = 28; // ubah sesuai kebutuhan
+                    const text = data.length > maxLength ? data.substring(0, maxLength) + '...' : data;
+                    // tambahkan title agar saat hover muncul teks lengkap
+                    return `<span title="${data}">${text}</span>`;
+                }
+            },
             { data: 'status', name: 'status' },
             { data: 'kategori', name: 'kategori' },
             { data: 'jenisobat', name: 'jenisobat' },
@@ -73,6 +84,7 @@
                     return data + ' %';
                 }
             },
+            { data: 'gambar_status', name: 'gambar_status', orderable: false, searchable: false },
             { data: 'aksi', name: 'aksi', orderable: false, searchable: false },
         ]
     });
