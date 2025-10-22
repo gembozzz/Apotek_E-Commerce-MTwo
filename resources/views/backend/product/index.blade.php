@@ -66,7 +66,7 @@
                 name: 'nm_barang',
                 render: function (data, type, row) {
                     if (!data) return '-';
-                    const maxLength = 20; // ubah sesuai kebutuhan
+                    const maxLength = 35; // ubah sesuai kebutuhan
                     const text = data.length > maxLength ? data.substring(0, maxLength) + '...' : data;
                     // tambahkan title agar saat hover muncul teks lengkap
                     return `<span title="${data}">${text}</span>`;
