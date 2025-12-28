@@ -115,7 +115,7 @@
                         <label for="payment_method">Metode Pembayaran:</label>
                         <select id="payment_method" name="payment_method" class="form-control" required>
                             {{-- <option value="midtrans">Bayar Online (Midtrans)</option> --}}
-                            <option value="cod">Bayar di Tempat (COD)</option>
+                            {{-- <option value="cod">Bayar di Tempat (COD)</option> --}}
                             <option value="bank_transfer">Bank Transfer / Qris</option>
                         </select>
                     </div>
@@ -153,10 +153,7 @@
                                 menekan tombol <em>“Bayar Sekarang”</em>.<br>
                                 Setelah transfer, silakan <strong>hubungi nomor WhatsApp</strong> yang ada di pojok
                                 kanan bawah untuk
-                                konfirmasi.<br>
-                                Jika Anda memilih metode <strong>pembayaran Ambil di Tempat (COD)</strong>, segera
-                                konfirmasi ke kasir agar
-                                pembayaran Anda dapat diproses.
+                                konfirmasi.
                             </div>
                         </div>
                     </div>
@@ -205,8 +202,6 @@
                     alert('Kamu menutup popup tanpa menyelesaikan pembayaran');
                 }
             });
-        } else if (paymentMethod.value === 'cod') {
-            window.location.href = "{{ route('order.cod') }}";
         } else if (paymentMethod.value === 'bank_transfer') {
             window.location.href = "{{ route('order.bank_transfer') }}";
         }
