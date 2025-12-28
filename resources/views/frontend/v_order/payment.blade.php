@@ -116,7 +116,7 @@
                         <select id="payment_method" name="payment_method" class="form-control" required>
                             {{-- <option value="midtrans">Bayar Online (Midtrans)</option> --}}
                             {{-- <option value="cod">Bayar di Tempat (COD)</option> --}}
-                            <option value="bank_transfer">Bank Transfer / Qris</option>
+                            <option value="bank_transfer">Qris</option>
                         </select>
                     </div>
 
@@ -126,23 +126,13 @@
 
                         <div class="panel-heading" style="background-color: #f5f5f5;">
                             <h4 class="panel-title" style="font-weight: bold; color: #d10024;">
-                                Pembayaran QRIS / Transfer Bank
+                                Pembayaran QRIS
                             </h4>
                         </div>
 
                         <div class="panel-body">
-                            <p style="margin-bottom: 10px;">Silakan lakukan pembayaran dengan salah satu metode di
-                                bawah ini:</p>
+                            <p style="margin-bottom: 10px;">Silakan scan QRIS berikut untuk pembayaran:</p>
 
-                            <div class="well well-sm" style="display: inline-block; text-align: left;">
-                                <p><strong>Bank:</strong> BSI</p>
-                                <p><strong>No. Rekening:</strong> 7002692613</p>
-                                <p><strong>Atas Nama:</strong> Retno Wulansari</p>
-                            </div>
-
-                            <hr style="margin: 15px auto; width: 60%;">
-
-                            <p style="margin-bottom: 10px;">Atau scan QRIS berikut untuk pembayaran instan:</p>
                             <img src="{{ asset('images/qris.jpeg') }}" alt="QRIS"
                                 class="img-responsive img-thumbnail center-block"
                                 style="max-width: 200px; margin-bottom: 15px;">
@@ -203,7 +193,8 @@
                 }
             });
         } else if (paymentMethod.value === 'bank_transfer') {
-            window.location.href = "{{ route('order.bank_transfer') }}";
+            // window.location.href = "{{ route('order.bank_transfer') }}";
+            alert("Silakan scan QRIS yang tertera, lalu konfirmasi via WhatsApp.");
         }
     });
 </script>
