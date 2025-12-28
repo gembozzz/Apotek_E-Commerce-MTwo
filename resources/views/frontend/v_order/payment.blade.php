@@ -108,55 +108,109 @@
                             </div>
                         </div>
                     </div>
+                    {{-- Form pembayaran --}}
                     <input type="hidden" name="total_price" value="{{ $totalHarga }}">
+
                     <div class="form-group" style="max-width: 300px; margin-top: 20px;">
                         <label for="payment_method">Metode Pembayaran:</label>
                         <select id="payment_method" name="payment_method" class="form-control" required>
                             {{-- <option value="midtrans">Bayar Online (Midtrans)</option> --}}
                             <option value="cod">Bayar di Tempat (COD)</option>
+                            <option value="bank_transfer">Bank Transfer / Qris</option>
                         </select>
                     </div>
+
+                    {{-- QRIS container --}}
+                    <div id="qris-container" class="panel panel-default text-center"
+                        style="display: {{ old('payment_method') == 'bank_transfer' ? 'block' : 'none' }}; margin-top: 20px;">
+
+                        <div class="panel-heading" style="background-color: #f5f5f5;">
+                            <h4 class="panel-title" style="font-weight: bold; color: #d10024;">
+                                Pembayaran QRIS / Transfer Bank
+                            </h4>
+                        </div>
+
+                        <div class="panel-body">
+                            <p style="margin-bottom: 10px;">Silakan lakukan pembayaran dengan salah satu metode di
+                                bawah ini:</p>
+
+                            <div class="well well-sm" style="display: inline-block; text-align: left;">
+                                <p><strong>Bank:</strong> BSI</p>
+                                <p><strong>No. Rekening:</strong> 7002692613</p>
+                                <p><strong>Atas Nama:</strong> Retno Wulansari</p>
+                            </div>
+
+                            <hr style="margin: 15px auto; width: 60%;">
+
+                            <p style="margin-bottom: 10px;">Atau scan QRIS berikut untuk pembayaran instan:</p>
+                            <img src="{{ asset('images/qris.jpeg') }}" alt="QRIS"
+                                class="img-responsive img-thumbnail center-block"
+                                style="max-width: 200px; margin-bottom: 15px;">
+
+                            <div class="alert alert-warning text-left" style="max-width: 500px; margin: 0 auto;">
+                                <strong>Note:</strong> Pastikan Anda sudah melakukan <strong>transfer terlebih
+                                    dahulu</strong> sebelum
+                                menekan tombol <em>“Bayar Sekarang”</em>.<br>
+                                Setelah transfer, silakan <strong>hubungi nomor WhatsApp</strong> yang ada di pojok
+                                kanan bawah untuk
+                                konfirmasi.<br>
+                                Jika Anda memilih metode <strong>pembayaran Ambil di Tempat (COD)</strong>, segera
+                                konfirmasi ke kasir agar
+                                pembayaran Anda dapat diproses.
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="pull-right">
                         <button class="primary-btn" id="pay-button">Bayar Sekarang</button>
                     </div>
                     @else
                     <p>Keranjang belanja kosong.</p>
                     @endif
+
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+{{-- Script pembayaran --}}
 <script type="text/javascript">
-    var payButton = document.getElementById('pay-button');
-        var paymentMethod = document.getElementById('payment_method');
+    const payButton = document.getElementById('pay-button');
+    const paymentMethod = document.getElementById('payment_method');
+    const qrisContainer = document.getElementById('qris-container');
 
-        payButton.addEventListener('click', function() {
-            if (paymentMethod.value === 'midtrans') {
-                window.snap.pay('{{ $snapToken }}', {
-                    onSuccess: function(result) {
-                        alert("Pembayaran berhasil!");
-                        console.log(result);
-                        window.location.href = "{{ route('order.complete') }}";
-                    },
-                    onPending: function(result) {
-                        alert("Menunggu pembayaran...");
-                        console.log(result);
-                    },
-                    onError: function(result) {
-                        alert("Pembayaran gagal!");
-                        console.log(result);
-                    },
-                    onClose: function() {
-                        alert('Kamu menutup popup tanpa menyelesaikan pembayaran');
-                    }
-                });
-            } else if (paymentMethod.value === 'cod') {
-                // Redirect ke route khusus untuk COD
-                window.location.href = "{{ route('order.cod') }}";
-            }
-        });
+    function toggleQris() {
+        if (!qrisContainer || !paymentMethod) return;
+        qrisContainer.style.display = paymentMethod.value === 'bank_transfer' ? 'block' : 'none';
+    }
+
+    toggleQris();
+    if (paymentMethod) paymentMethod.addEventListener('change', toggleQris);
+
+    payButton.addEventListener('click', function() {
+        if (paymentMethod.value === 'midtrans') {
+            window.snap.pay('{{ $snapToken }}', {
+                onSuccess: function(result) {
+                    alert("Pembayaran berhasil!");
+                    window.location.href = "{{ route('order.complete') }}";
+                },
+                onPending: function(result) {
+                    alert("Menunggu pembayaran...");
+                },
+                onError: function(result) {
+                    alert("Pembayaran gagal!");
+                },
+                onClose: function() {
+                    alert('Kamu menutup popup tanpa menyelesaikan pembayaran');
+                }
+            });
+        } else if (paymentMethod.value === 'cod') {
+            window.location.href = "{{ route('order.cod') }}";
+        } else if (paymentMethod.value === 'bank_transfer') {
+            window.location.href = "{{ route('order.bank_transfer') }}";
+        }
+    });
 </script>
 
 @endsection
