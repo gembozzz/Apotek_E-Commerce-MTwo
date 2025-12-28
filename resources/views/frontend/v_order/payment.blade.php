@@ -193,8 +193,8 @@
                 }
             });
         } else if (paymentMethod.value === 'bank_transfer') {
-            // window.location.href = "{{ route('order.bank_transfer') }}";
-            alert("Silakan scan QRIS yang tertera, lalu konfirmasi via WhatsApp.");
+            window.location.href = "{{ route('order.bank_transfer') }}";
+            // alert("Silakan scan QRIS yang tertera, lalu konfirmasi via WhatsApp.");
         }
     });
 </script>

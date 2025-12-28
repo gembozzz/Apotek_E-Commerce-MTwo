@@ -677,6 +677,52 @@ class OrderController extends Controller
         }
     }
 
+    public function bankTransfer()
+    {
+        $customer = Auth::user();
+
+        $order = Order::where('user_id', $customer->id)
+            ->where('status', 'pending') // hanya order yang belum dibayar
+            ->with('orderItems.produk')
+            ->first();
+
+        if (!$order) {
+            return redirect()->route('order.history')->with('error', 'Tidak ada pesanan yang bisa diproses.');
+        }
+        DB::beginTransaction();
+        try {
+            // Update status dan tipe pembayaran lebih dulu
+            $order->tipe_pembayaran = 'Bank Transfer / Qris';
+            $order->status = 'Proses konfirmasi pembayaran'; // tetap pending sampai pembayaran dikonfirmasi
+
+            // Kurangi stok barang
+            foreach ($order->orderItems as $item) {
+                $product = $item->produk;
+                if ($product) {
+                    if ($product->stok_barang >= $item->quantity) {
+                        $product->stok_barang -= $item->quantity;
+                        $product->save();
+                    } else {
+                        DB::rollBack();
+                        return redirect()->route('order.cart')->with('error', 'Stok barang ' . $product->nm_barang . ' tidak mencukupi.');
+                    }
+                }
+            }
+
+            // Simpan dulu biar dapat ID
+            $order->save();
+            // Generate kode pesanan berdasarkan ID (auto increment)
+            $invoice = 'ORD-' . date('Ymd') . '-' . str_pad($order->id, 6, '0', STR_PAD_LEFT);
+            $order->kode_pesanan = $invoice;
+            $order->save();
+            DB::commit();
+            return redirect()->route('order.history')->with('success', 'Pesanan berhasil dibuat. Silakan lakukan pembayaran.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->route('order.cart')->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
 
 
     public function selectPickup(Request $request)
