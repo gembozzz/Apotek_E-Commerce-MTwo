@@ -137,6 +137,12 @@
                                 class="img-responsive img-thumbnail center-block"
                                 style="max-width: 200px; margin-bottom: 15px;">
 
+                            <div class="text-center" style="margin-bottom: 20px;">
+                                <a href="{{ asset('images/qris.jpeg') }}" download="QRIS-Pembayaran.jpeg" class="btn btn-sm btn-info">
+                                    <i class="fa fa-download"></i> Unduh QR Code
+                                </a>
+                            </div>
+
                             <div class="alert alert-warning text-left" style="max-width: 500px; margin: 0 auto;">
                                 <strong>Note:</strong> Pastikan Anda sudah melakukan <strong>transfer terlebih
                                     dahulu</strong> sebelum
